@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌶️ Don Cabrón 🌶️ - Pedidos </title>
+    
+    <link 
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" >
+    <link rel="stylesheet" href="/DonCabron/css/pedidos.css">
+</head>
+<body>
+     <header class="header-pedidos">
+
+        <div class="logo-pedidos">
+            <img
+                src="/DonCabron/img/logo.png"
+                alt="Don Cabrón"
+            >
+        </div>
+
+        <div class="informacoes-pedido">
+
+            <h1>Pedido</h1>
+
+            <p>
+                Mesa:
+                <strong id="numeroMesa">...</strong>
+            </p>
+
+            <p>
+                Comanda:
+                <strong id="numeroComanda">...</strong>
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <main class="container-pedidos">
+
+        <section class="cardapio-pedido">
+
+            <h2>Cardápio</h2>
+
+            <div
+                id="listaProdutos"
+                class="lista-produtos-pedido"
+            >
+                <p>Carregando produtos...</p>
+            </div>
+
+        </section>
+
+
+        <aside class="resumo-pedido">
+
+            <h2>Pedido da Mesa</h2>
+
+
+            <!-- ITENS JÁ ENVIADOS -->
+
+            <div class="secao-pedido">
+
+                <h3>
+                    Itens enviados
+                    <span class="cadeado">🌶️</span>
+                </h3>
+
+                <p class="descricao-secao">
+                    Produtos que já foram enviados para a cozinha.
+                </p>
+
+                <div id="listaItensEnviados">
+
+                    <p class="pedido-vazio">
+                        Nenhum item enviado.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- NOVO PEDIDO -->
+
+            <div class="secao-pedido novo-pedido">
+
+                <h3>
+                    Novo pedido ✏️
+                </h3>
+
+                <p class="descricao-secao">
+                    Adicione os produtos que o cliente está pedindo agora.
+                </p>
+
+
+                <div id="listaPedidoAtual">
+
+                    <p class="pedido-vazio">
+                        Nenhum produto adicionado.
+                    </p>
+
+                </div>
+
+
+                <div class="total-pedido">
+
+                    <span>
+                        Total:
+                    </span>
+
+                    <strong id="totalPedido">
+                        R$ 0,00
+                    </strong>
+
+                </div>
+
+
+                <button
+                    id="btnConfirmarPedido"
+                    class="btn-confirmar"
+                    type="button"
+                    disabled
+                >
+                    Confirmar pedido
+                </button>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <script src="/js/pedidos.js"></script>
+
+    
+</body>
+</html>

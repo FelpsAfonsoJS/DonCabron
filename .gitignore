@@ -1,0 +1,15 @@
+# Dependências e segredos
+**/node_modules/
+**/.env
+**/.env.*
+!.env.example
+
+# Arquivos locais e de IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

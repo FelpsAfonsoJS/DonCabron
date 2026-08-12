@@ -1,0 +1,1132 @@
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   LOGOS
+========================================================= */
+
+.logo-escura {
+  display: none;
+  filter: drop-shadow(0 0 10px orange);
+}
+
+body.dark .logo-clara {
+  display: none;
+}
+
+body.dark .logo-escura {
+  display: block;
+}
+
+/* =========================================================
+   VARIÁVEIS - TEMA CLARO
+========================================================= */
+
+:root {
+  --texto: orange;
+  --sombra: 0px 0px 10px orange;
+  --quadro: rgba(2, 2, 2, 0.3);
+
+  --card: url(/DonCabron/img/tema\ claro\ produtos.jpg);
+  --header: url(/DonCabron/img/tema\ claro\ header.jpg);
+
+  --fundo-card: rgba(255, 255, 255, 0.75);
+  --fundo-input: rgba(252, 249, 249, 0.1);
+
+  --borda: rgba(48, 35, 11, 0.5);
+
+  --fundo-principal: linear-gradient(
+    135deg,
+    #7a1f1f,
+    #c4451c,
+    #e69a2e,
+    #2e7d32,
+    #123c69
+  );
+
+  --cor-menu: rgba(63, 41, 0, 0.9);
+}
+
+/* =========================================================
+   TEMA ESCURO
+========================================================= */
+
+body.dark {
+  --texto: white;
+  --sombra: 0px 0px 10px orange;
+  --quadro: rgba(5, 5, 5, 0.8);
+
+  --card: url(/DonCabron/img/tema\ escuro\ produtos.jpg);
+  --header: url(/DonCabron/img/tema\ escuro\ header.png);
+
+  --fundo-card: rgba(0, 0, 0, 0.7);
+  --fundo-input: rgba(0, 0, 0, 0.55);
+
+  --borda: rgba(255, 165, 0, 0.7);
+
+  --fundo-principal: linear-gradient(
+    135deg,
+    #3a0d0d,
+    #6b2410,
+    #8a5a00,
+    #124020,
+    #06233d
+  );
+
+  --cor-menu: white;
+}
+
+/* =========================================================
+   BODY
+========================================================= */
+
+body {
+  font-family: "Poppins", sans-serif;
+
+  background: var(--fundo-principal);
+
+  background-size: contain;
+  background-position: center;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+  background:
+    linear-gradient(rgba(22, 22, 22, 0.5), rgba(0, 0, 0, 0.5)), var(--header);
+
+  background-size: contain;
+  background-position: center;
+
+  box-shadow: 0 0 20px orange;
+
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 180px;
+
+  display: flex;
+  align-items: center;
+
+  z-index: 1000;
+
+  transition: 0.4s;
+}
+
+.header.scroll-hide {
+  transform: translateY(-100%);
+}
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo {
+  width: 250px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo img {
+  max-width: 180px;
+
+  filter: drop-shadow(0 0 10px orange);
+}
+
+/* =========================================================
+   MENU PRINCIPAL
+========================================================= */
+
+.menu {
+  flex: 1;
+}
+
+.menu ul {
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  list-style: none;
+
+  gap: 40px;
+
+  padding: 0 40px;
+
+  margin-top: 0;
+
+  text-transform: uppercase;
+
+  text-shadow: 0 0 20px orange;
+}
+
+.menu a {
+  display: block;
+
+  padding: 12px 24px;
+
+  color: var(--cor-menu);
+
+  text-decoration: none;
+
+  font-size: 35px;
+
+  font-weight: bold;
+
+  font-family: "Poppins", sans-serif;
+
+  text-shadow: var(--sombra);
+
+  border-radius: 25px;
+
+  transition: 0.3s;
+}
+
+.menu a:hover {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(/DonCabron/img/away.png);
+
+  background-size: cover;
+
+  color: white;
+
+  text-shadow: 3px 3px 8px red;
+
+  border-color: black;
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================================
+   BOTÃO HAMBURGUER
+========================================================= */
+
+.menu-toggle {
+  margin-right: 30px;
+
+  width: 50px;
+  height: 50px;
+
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  font-size: 25px;
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+
+  color: orange;
+
+  text-shadow: 0 0 10px orange;
+
+  transition: 0.4s;
+}
+
+.menu-toggle:hover {
+  transform: rotate(20deg) scale(1.1);
+
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(/DonCabron/img/away.png);
+
+  border-radius: 50%;
+}
+
+/* =========================================================
+   BOTÃO TEMA
+========================================================= */
+
+.tema {
+  margin-right: 30px;
+
+  width: 50px;
+  height: 50px;
+
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  font-size: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+
+  transition: 0.4s;
+}
+
+.tema:hover {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(/DonCabron/img/away.png);
+
+  transform: rotate(20deg) scale(1.1);
+}
+
+.icone-tema {
+  display: inline-block;
+
+  transition: 0.5s;
+}
+
+/* =========================================================
+   MENU CADASTRO / SUBMENU
+========================================================= */
+
+.menu-cadastro {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: flex-start;
+
+  align-items: flex-start;
+}
+
+.spanteste {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+}
+
+.spanlista {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.spanlista.escondido {
+  display: none;
+}
+
+#btnMenu {
+  display: block;
+
+  padding: 12px 24px;
+
+  color: var(--cor-menu);
+
+  background: transparent;
+
+  border: transparent;
+
+  border-radius: 25px;
+
+  text-decoration: none;
+
+  font-size: 35px;
+
+  font-weight: bold;
+
+  font-family: "Poppins", sans-serif;
+
+  text-shadow: var(--sombra);
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+#btnMenu:hover {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(/DonCabron/img/away.png);
+
+  background-size: cover;
+
+  color: white;
+
+  text-shadow: 3px 3px 8px red;
+
+  border-color: black;
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================================
+   TÍTULOS
+========================================================= */
+
+h2 {
+  color: var(--cor-menu);
+
+  text-shadow: var(--sombra);
+}
+
+/* =========================================================
+   CADASTRO DE MESAS
+========================================================= */
+
+.cadastro {
+  width: 100%;
+
+  margin-top: 180px;
+
+  padding: 40px 20px;
+
+  display: flex;
+
+  justify-content: center;
+}
+
+.cadastro-mesas {
+  width: 100%;
+
+  max-width: 900px;
+
+  padding: 35px;
+
+  color: var(--texto);
+
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), var(--quadro);
+
+  border: 2px solid var(--borda);
+
+  border-radius: 25px;
+
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
+
+  backdrop-filter: blur(8px);
+}
+
+.cadastro-mesas h1 {
+  margin-bottom: 30px;
+
+  text-align: center;
+
+  color: var(--texto);
+
+  text-transform: uppercase;
+
+  text-shadow: 0 0 10px orange;
+
+  font-size: 36px;
+}
+
+/* =========================================================
+   FORMULÁRIO DE MESAS
+========================================================= */
+
+#formMesa {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 18px 25px;
+}
+
+#formMesa .campo {
+  display: flex;
+
+  flex-direction: column;
+}
+
+#formMesa label {
+  margin-bottom: 6px;
+
+  font-weight: 600;
+
+  color: var(--texto);
+
+  text-shadow: var(--sombra);
+}
+
+#formMesa input {
+  width: 100%;
+
+  height: 50px;
+
+  padding: 0 16px;
+
+  border: 2px solid var(--borda);
+
+  border-radius: 12px;
+
+  outline: none;
+
+  background: var(--fundo-input);
+
+  color: var(--texto);
+
+  font:
+    15px "Poppins",
+    sans-serif;
+
+  transition: 0.3s;
+}
+
+#formMesa input::placeholder {
+  color: var(--texto);
+
+  opacity: 0.6;
+}
+
+#formMesa input:focus {
+  border-color: orange;
+
+  box-shadow: 0 0 12px rgba(255, 165, 0, 0.5);
+}
+
+/* =========================================================
+   BOTÃO CADASTRAR
+========================================================= */
+
+#formMesa button {
+  grid-column: 1 / -1;
+
+  width: 220px;
+  height: 50px;
+
+  margin: 10px auto 0;
+
+  border: none;
+
+  border-radius: 15px;
+
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #7a1f1f, #c4451c, #e69a2e);
+
+  color: white;
+
+  font-family: "Poppins", sans-serif;
+
+  font-size: 18px;
+
+  font-weight: bold;
+
+  text-transform: uppercase;
+
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.4),
+    0 0 10px rgba(255, 165, 0, 0.4);
+
+  transition: 0.3s;
+}
+
+#formMesa button:hover {
+  transform: translateY(-3px) scale(1.03);
+
+  box-shadow: 0 0 20px orange;
+}
+
+/* =========================================================
+   LINHA SEPARADORA
+========================================================= */
+
+.cadastro-mesas hr {
+  border: none;
+
+  height: 2px;
+
+  margin: 45px 0;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    orange,
+    red,
+    orange,
+    transparent
+  );
+
+  box-shadow: 0 0 10px orange;
+}
+
+/* =========================================================
+   LISTA DE MESAS
+========================================================= */
+
+.lista-mesas h2 {
+  margin-bottom: 20px;
+
+  text-align: center;
+
+  color: var(--texto);
+
+  text-transform: uppercase;
+
+  text-shadow: 0 0 10px orange;
+}
+
+.resultado-mesas {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 15px;
+}
+
+/* =========================================================
+   CARD DA MESA
+========================================================= */
+
+.mesa {
+  padding: 20px;
+
+  border: 1px solid var(--borda);
+
+  border-radius: 15px;
+
+  background: var(--fundo-input);
+
+  text-align: center;
+
+  transition: 0.3s;
+}
+
+.mesa:hover {
+  transform: translateY(-5px);
+
+  border-color: orange;
+
+  box-shadow: 0 0 15px rgba(255, 165, 0, 0.4);
+}
+
+.mesa h3 {
+  margin: 0 0 10px;
+
+  background: none;
+
+  color: var(--texto);
+
+  text-shadow: var(--sombra);
+}
+
+.mesa p {
+  margin: 5px 0;
+
+  color: var(--texto);
+}
+
+/* =========================================================
+   STATUS DA MESA
+========================================================= */
+
+.mesa .status {
+  display: inline-block;
+
+  margin-top: 10px;
+
+  padding: 5px 12px;
+
+  border-radius: 10px;
+
+  font-weight: bold;
+}
+
+.mesa .livre {
+  color: #4caf50;
+
+  border: 1px solid #4caf50;
+}
+
+.mesa .ocupada {
+  color: #ff4444;
+
+  border: 1px solid #ff4444;
+}
+
+/* =========================================================
+   BOTÃO ALTERAR
+========================================================= */
+
+.btn-alterar {
+  margin-top: 10px;
+
+  padding: 3px 10px;
+
+  border: 1px solid rgba(0, 26, 255, 0.5);
+
+  border-radius: 8px;
+
+  background: rgba(0, 26, 255, 0.5);
+
+  color: var(--texto);
+
+  text-shadow: var(--sombra);
+
+  text-transform: uppercase;
+
+  font:
+    15px "Poppins",
+    sans-serif;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.btn-alterar:hover {
+  transform: translateY(-3px) scale(1.05);
+
+  box-shadow: 0 0 15px rgba(0, 26, 255, 0.5);
+}
+
+/* =========================================================
+   BOTÃO DESATIVAR
+========================================================= */
+
+.btn-desativar {
+  margin-top: 10px;
+
+  padding: 3px 10px;
+
+  border: 1px solid rgba(255, 1, 1, 0.5);
+
+  border-radius: 8px;
+
+  background: rgba(255, 1, 1, 0.5);
+
+  color: var(--texto);
+
+  text-shadow: var(--sombra);
+
+  text-transform: uppercase;
+
+  font:
+    15px "Poppins",
+    sans-serif;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.btn-desativar:hover {
+  transform: translateY(-3px) scale(1.05);
+
+  box-shadow: 0 0 15px rgba(255, 1, 1, 0.5);
+}
+
+/* =========================================================
+   RESPONSIVIDADE - ATÉ 900px
+========================================================= */
+
+@media (max-width: 900px) {
+  .header {
+    height: auto;
+
+    min-height: 120px;
+
+    padding: 10px 15px;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+  }
+
+  .logo {
+    width: auto;
+
+    flex: 1;
+
+    justify-content: flex-start;
+  }
+
+  .logo img {
+    max-width: 130px;
+  }
+
+  /* BOTÃO HAMBURGUER */
+
+  .menu-toggle {
+    display: flex;
+
+    width: 45px;
+    height: 45px;
+
+    margin-right: 10px;
+
+    font-size: 25px;
+  }
+
+  /* MENU */
+
+  .menu {
+    display: none;
+
+    width: 100%;
+
+    flex-basis: 100%;
+  }
+
+  .menu.ativo {
+    display: block;
+  }
+
+  .menu ul {
+    width: 100%;
+
+    height: auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    padding: 10px 0 15px;
+
+    margin: 0;
+  }
+
+  .menu li {
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+  }
+
+  .menu a {
+    width: 90%;
+
+    padding: 8px 15px;
+
+    font-size: 22px;
+
+    text-align: center;
+  }
+
+  /* MENU CADASTRO */
+
+  .menu-cadastro {
+    width: 100%;
+
+    align-items: center;
+  }
+
+  .spanteste {
+    width: 100%;
+
+    align-items: center;
+  }
+
+  .spanteste p,
+  .spanlista p {
+    margin: 0;
+  }
+
+  #btnMenu {
+    font-size: 22px;
+
+    padding: 8px 15px;
+
+    cursor: pointer;
+  }
+
+  .spanlista {
+    width: 100%;
+
+    align-items: center;
+  }
+
+  .spanlista.escondido {
+    display: none;
+  }
+
+  /* BOTÃO TEMA */
+
+  .tema {
+    position: static;
+
+    width: 45px;
+    height: 45px;
+
+    margin-right: 5px;
+
+    font-size: 22px;
+  }
+
+  /* CONTEÚDO */
+
+  main {
+    margin-top: 140px;
+  }
+
+  .produtos {
+    width: 100%;
+
+    max-width: 100%;
+
+    padding: 30px 15px;
+  }
+
+  /* PRODUTOS */
+
+  .lista-produtos {
+    width: 100%;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+  }
+
+  .produto {
+    min-width: 0;
+
+    width: 100%;
+
+    padding: 15px;
+
+    border-radius: 20px;
+  }
+
+  .produto img {
+    width: 100%;
+
+    height: 220px;
+
+    object-fit: cover;
+  }
+
+  h3 {
+    font-size: 22px;
+  }
+
+  .descricao {
+    font-size: 17px;
+  }
+
+  .produto span {
+    font-size: 16px;
+
+    padding: 12px;
+  }
+
+  .bebidas {
+    padding-top: 80px;
+  }
+
+  /* CADASTRO DE MESAS */
+
+  .cadastro {
+    margin-top: 150px;
+
+    padding: 25px 15px;
+  }
+
+  .cadastro-mesas {
+    padding: 25px 20px;
+  }
+
+  .cadastro-mesas h1 {
+    font-size: 28px;
+  }
+
+  #formMesa {
+    grid-template-columns: 1fr;
+  }
+
+  #formMesa button {
+    width: 100%;
+  }
+
+  .resultado-mesas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* =========================================================
+   RESPONSIVIDADE - ATÉ 600px
+========================================================= */
+
+@media (max-width: 600px) {
+  .header {
+    min-height: 90px;
+
+    padding: 5px 10px;
+  }
+
+  .logo img {
+    max-width: 100px;
+  }
+
+  .menu-toggle {
+    width: 40px;
+    height: 40px;
+
+    margin-right: 5px;
+
+    font-size: 22px;
+  }
+
+  .tema {
+    width: 40px;
+    height: 40px;
+
+    font-size: 20px;
+  }
+
+  /* MENU ABERTO */
+
+  .menu ul {
+    gap: 3px;
+
+    padding: 8px 0 12px;
+  }
+
+  .menu a,
+  #btnMenu {
+    width: 90%;
+
+    font-size: 19px;
+
+    padding: 6px 10px;
+  }
+
+  /* CONTEÚDO */
+
+  main {
+    margin-top: 110px;
+  }
+
+  .produtos {
+    padding: 25px 10px;
+  }
+
+  /* PRODUTOS */
+
+  .lista-produtos {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+  .produto {
+    width: 100%;
+
+    padding: 15px;
+  }
+
+  .produto img {
+    height: 230px;
+  }
+
+  h3 {
+    font-size: 21px;
+  }
+
+  .descricao {
+    font-size: 16px;
+  }
+
+  .produto span {
+    font-size: 16px;
+  }
+
+  .bebidas {
+    padding-top: 60px;
+  }
+
+  /* CADASTRO DE MESAS */
+
+  .cadastro {
+    margin-top: 140px;
+
+    padding: 20px 10px;
+  }
+
+  .cadastro-mesas {
+    padding: 20px 15px;
+  }
+
+  .cadastro-mesas h1 {
+    font-size: 23px;
+  }
+
+  #formMesa input {
+    height: 45px;
+
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVIDADE - ATÉ 400px
+========================================================= */
+
+@media (max-width: 400px) {
+  .logo img {
+    max-width: 90px;
+  }
+
+  .menu-toggle {
+    width: 38px;
+    height: 38px;
+
+    font-size: 20px;
+  }
+
+  .tema {
+    width: 38px;
+    height: 38px;
+
+    font-size: 18px;
+  }
+
+  .produto img {
+    height: 200px;
+  }
+
+  h3 {
+    font-size: 19px;
+  }
+
+  .descricao {
+    font-size: 15px;
+  }
+
+  .produto span {
+    font-size: 15px;
+  }
+
+  /* MESAS */
+
+  .resultado-mesas {
+    grid-template-columns: 1fr;
+  }
+}

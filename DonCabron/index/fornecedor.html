@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🌶️ Don Cabron 🌶️ - Cadastro</title>
+    <link rel="stylesheet" href="/DonCabron/css/fornecedor.css" />
+  </head>
+  <body>
+     <header class="header">
+      <div class="logo">
+        <img class="logo-clara" src="/DonCabron/img/logo.png" alt="Logo"/>
+        <img class="logo-escura" src="/DonCabron/img/logo escura.png" srcset="">
+      </div>
+      <button class="menu-toggle" id="menu-toggle">☰</button>
+      <nav class="menu" id="menu">
+        <ul>
+          <li>
+            <a href="/DonCabron/index/index.html" target="_blank" rel="">Inicio</a>
+          </li>
+          <li>
+            <a href="#" target="_blank" rel="">Cardapio</a>
+          </li>
+          <li>
+            <a href="#" target="_blank" rel="">Historico</a>
+          </li>
+          <!-- <li>
+            <a href="#" target="_blank" rel="">Cadastro</a>
+          </li> -->
+            <span class="spanteste">
+              <p>
+              <button id="btnMenu" class="menu">MENU</button>
+              </p>
+              <span class="spanlista escondido">
+                <p><a href="/DonCabron/index/fornecedor.html">Fornecedor</a></p>
+              </span>
+            </span>
+        </ul>
+      </nav>
+      <button class="tema" id="tema">
+        <span class="icone-tema">🌙</span>
+      </button>
+    </header>
+
+    <div class="cadastro">
+      <section class="cadastro-fornecedores">
+        <h1>Cadastro de Fornecedores</h1>
+
+        <form id="formFornecedor" novalidate>
+          <label for="documento">CPF / CNPJ</label>
+          <input
+            type="text"
+            id="documento"
+            name="documento"
+            placeholder="Digite CPF ou CNPJ"
+            maxlength="14"
+            inputmode="numeric"
+            autocomplete="off"
+            required
+          />
+
+          <label for="nome">Nome Fantasia</label>
+          <input
+            type="text"
+            id="nome"
+            name="nome"
+            placeholder="Nome do fornecedor"
+            maxlength="150"
+            autocomplete="organization"
+            required
+          />
+
+          <label for="endereco">Endereço</label>
+          <input
+            type="text"
+            id="endereco"
+            name="endereco"
+            placeholder="Endereço"
+            maxlength="150"
+            autocomplete="street-address"
+            required
+          />
+
+          <label for="bairro">Bairro</label>
+          <input
+            type="text"
+            id="bairro"
+            name="bairro"
+            placeholder="Bairro"
+            maxlength="100"
+            autocomplete="address-level3"
+            required
+          />
+
+          <label for="cidade">Cidade</label>
+          <input
+            type="text"
+            id="cidade"
+            name="cidade"
+            placeholder="Cidade"
+            maxlength="100"
+            autocomplete="address-level2"
+            required
+          />
+
+          <label for="telefone">Telefone</label>
+          <input
+            type="text"
+            id="telefone"
+            name="telefone"
+            placeholder="Telefone"
+            maxlength="11"
+            inputmode="numeric"
+            autocomplete="tel"
+            required
+          />
+
+          <button type="submit">Cadastrar</button>
+        </form>
+
+        <hr />
+
+        <section class="pesquisa-fornecedores">
+          <h2>Pesquisar fornecedor</h2>
+
+          <label for="pesquisaFornecedor"> Nome, CPF ou CNPJ </label>
+
+          <input
+            type="search"
+            id="pesquisaFornecedor"
+            name="pesquisaFornecedor"
+            placeholder="Digite nome, CPF ou CNPJ"
+            maxlength="150"
+            autocomplete="off"
+          />
+
+          <div
+            id="resultadoFornecedores"
+            class="resultado-fornecedores"
+            aria-live="polite"
+          ></div>
+        </section>
+      </section>
+    </div>
+    <script src="/js/fornecedor.js"></script>
+  </body>
+</html>

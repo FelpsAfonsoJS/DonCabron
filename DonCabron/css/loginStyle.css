@@ -1,0 +1,87 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(
+    135deg,
+    #7a1f1f,
+    #c4451c,
+    #e69a2e,
+    #2e7d32,
+    #123c69
+  );
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+
+}
+.tela-de-login {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.login {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    width: 400px;
+    height: 400px;
+    border-radius: 100px 75px 50px 0;
+    background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(/DonCabron/img/login.jpg);
+    background-position: bottom;
+    background-size: cover;
+    text-align: center;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+.login .usuario {
+    background-color: rgba(0, 0, 0, 0.85);
+    color: orange;
+    display: flex;
+    width: 250px;
+    height: 25px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 0 25px orange;
+}
+
+::placeholder {
+    color: white;
+}
+.login .logar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100px;
+    height: 25px;
+    background-color: transparent;
+    font-style: italic bold;
+    color: orange;
+    box-shadow: 0 0 25px orange;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+.logar:hover {
+    background-size: cover;
+ background: rgb(221, 168, 69);
+ transform: scale(1.2);
+ transition-duration: 0.4s;
+      color: black;
+      text-shadow: 0 0 10px red;
+      cursor: pointer;
+      box-shadow: 0 0 25px orange;
+}
+img {
+    margin-bottom: 75px;
+    max-width: 180px;
+    filter: drop-shadow(0 0 10px orange)
+}
