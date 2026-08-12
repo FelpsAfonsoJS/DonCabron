@@ -15,7 +15,6 @@ Aplicação web em desenvolvimento para apoiar a operação de um restaurante: a
 - [Modelo de dados inferido](#modelo-de-dados-inferido)
 - [API HTTP](#api-http)
 - [Instalação e execução](#instalação-e-execução)
-- [Limitações e melhorias recomendadas](#limitações-e-melhorias-recomendadas)
 
 ## Visão do produto
 
