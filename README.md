@@ -82,6 +82,116 @@ O banco utiliza as entidades `usuarios`, `produtos`, `estoque`, `fornecedores`, 
 
 Relações principais: `mesa 1:N comanda`, `comanda 1:N pedido`, `pedido 1:N item_comanda` e `produto 1:N item_comanda`.
 
+## Diagrama de classes
+
+```mermaid
+classDiagram
+    class Usuario {
+        +int id
+        +string nome
+        +string email
+        +string senha
+        +string tipo
+        +boolean ativo
+    }
+    class Mesa {
+        +int id
+        +int numero
+        +int capacidade
+        +string status
+        +boolean ativo
+    }
+    class Comanda {
+        +int id
+        +date data_abertura
+        +date data_fechamento
+        +string status
+    }
+    class Pedido {
+        +int id
+        +date data_pedido
+        +string status
+    }
+    class ItemComanda {
+        +int id
+        +int quantidade
+        +int quantidade_paga
+        +decimal preco_unitario
+        +decimal valor_pago
+    }
+    class Produto {
+        +int id
+        +string nome
+        +string categoria
+        +string descricao
+        +decimal preco
+        +boolean controla_estoque
+    }
+    class Estoque {
+        +int produto_id
+        +int quantidade
+    }
+    class Fornecedor {
+        +int id
+        +string documento
+        +string nome
+        +string endereco
+        +string telefone
+    }
+
+    Mesa "1" --> "0..*" Comanda : possui
+    Comanda "1" --> "0..*" Pedido : agrupa
+    Comanda "1" --> "0..*" ItemComanda : registra
+    Pedido "1" --> "1..*" ItemComanda : contém
+    Produto "1" --> "0..*" ItemComanda : compõe
+    Produto "1" --> "0..1" Estoque : controla
+```
+
+## Requisitos funcionais por página
+
+### Cardápio (`index.html`)
+
+- **RF01:** Exibir os produtos cadastrados, com imagem, nome, descrição e preço.
+- **RF02:** Organizar os produtos por categoria: comidas, bebidas alcoólicas, bebidas gaseificadas e artesanais.
+- **RF03:** Permitir alternância entre tema claro e escuro.
+- **RF04:** Disponibilizar navegação responsiva pelas páginas do sistema.
+
+### Login (`login.html`)
+
+- **RF05:** Permitir que o usuário informe e-mail e senha para autenticação.
+- **RF06:** Direcionar o usuário para a área compatível com seu perfil após login válido.
+- **RF07:** Informar ao usuário quando as credenciais forem inválidas.
+
+### Mesas (`mesas.html`)
+
+- **RF08:** Cadastrar mesas com número e capacidade.
+- **RF09:** Listar mesas cadastradas e seus status.
+- **RF10:** Alterar os dados de mesas livres e ativas.
+- **RF11:** Desativar e reativar mesas conforme as regras de negócio.
+- **RF12:** Abrir ou recuperar a comanda de uma mesa e direcionar ao pedido.
+
+### Pedidos (`pedidos.html`)
+
+- **RF13:** Exibir o cardápio para a mesa selecionada.
+- **RF14:** Adicionar produtos e ajustar suas quantidades em um pedido.
+- **RF15:** Exibir os itens que estão em montagem e os já enviados.
+- **RF16:** Confirmar o pedido e enviá-lo para a cozinha.
+- **RF17:** Consultar e atualizar o andamento dos pedidos na cozinha.
+
+### Fornecedores (`fornecedor.html`)
+
+- **RF18:** Cadastrar fornecedor com documento, nome, endereço, bairro, cidade e telefone.
+- **RF19:** Validar CPF/CNPJ e telefone antes do envio do cadastro.
+- **RF20:** Pesquisar fornecedores por nome ou documento.
+- **RF21:** Informar conflitos quando o documento já estiver cadastrado.
+
+### Usuários (`usuarios.html`)
+
+- **RF22:** Permitir que administradores cadastrem funcionários.
+- **RF23:** Listar funcionários cadastrados e seus respectivos perfis.
+- **RF24:** Ativar ou desativar contas de funcionários.
+- **RF25:** Restringir as operações administrativas a usuários autorizados.
+
 ## Status
 
 Em desenvolvimento. Ainda não há suíte automatizada de testes ou script SQL versionado no repositório.
