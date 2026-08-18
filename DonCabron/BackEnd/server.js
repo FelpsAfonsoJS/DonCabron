@@ -11,7 +11,7 @@ const fornecedoresRoutes = require("./routes/fornecedoresRoute"); //consulta os 
 const mesasRoutes = require("./routes/mesasRoutes"); //consulta as mesas
 const comandasRoutes = require("./routes/comandasRoutes"); //consulta as comandas
 const comandaItensRoutes = require("./routes/comandaItensRoutes"); //consulta os itens das comandas
-
+const authRoutes = require("./routes/authRoutes"); //rotas para segurança e autenticaçao para o login e cadastro de usuarios
 const app = express();
 
 const PORT = 3000;
@@ -33,6 +33,7 @@ app.use(
 
 app.use("/js", express.static(path.join(__dirname, "../../", "js")));
 
+app.use("/auth", authRoutes); //autenticação
 app.use("/produtos", produtosRoutes); //produtos
 app.use("/estoque", estoqueRoutes); //estoque
 app.use("/fornecedores", fornecedoresRoutes); //fornecedores

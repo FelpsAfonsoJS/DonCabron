@@ -85,3 +85,30 @@ img {
     max-width: 180px;
     filter: drop-shadow(0 0 10px orange)
 }
+#mensagem-login {
+    color: white;
+    text-transform: uppercase;
+    font-size: 12px;
+    margin-top: 10px;
+    text-shadow: 0 0 10px rgb(253, 0, 0);
+}
+
+
+.login input:-webkit-autofill,
+.login input:-webkit-autofill:hover,
+.login input:-webkit-autofill:focus,
+.login input:-webkit-autofill:active {
+
+    -webkit-text-fill-color: orange;
+
+    -webkit-box-shadow:
+        0 0 0 1000px var(--fundo-input) inset;
+
+    box-shadow:
+        0 0 0 1000px var(--fundo-input) inset;
+
+    border-color: var(--borda);
+
+    transition:
+        background-color 5000s ease-in-out 0s;
+}

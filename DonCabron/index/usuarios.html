@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>🌶️ Don Cabrón 🌶️ - Usuários</title>
+
+    <link
+        rel="stylesheet"
+        href="/DonCabron/css/usuarios.css"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header">
+
+        <!-- LOGO -->
+
+        <div class="logo">
+
+            <img
+                class="logo-clara"
+                src="/DonCabron/img/logo.png"
+                alt="Logo Don Cabrón"
+            >
+
+            <img
+                class="logo-escura"
+                src="/DonCabron/img/logo escura.png"
+                alt="Logo Don Cabrón"
+            >
+
+        </div>
+
+
+        <!-- MENU HAMBURGUER -->
+
+        <button
+            class="menu-toggle"
+            id="menu-toggle"
+            type="button"
+            aria-label="Abrir menu"
+        >
+            ☰
+        </button>
+
+
+        <!-- MENU -->
+
+        <nav
+            class="menu"
+            id="menu"
+        >
+
+            <ul>
+
+                <li>
+
+                    <a href="/DonCabron/index/index.html">
+                        Inicio
+                    </a>
+
+                </li>
+
+
+                <li>
+
+                    <a href="#">
+                        Cardapio
+                    </a>
+
+                </li>
+
+
+                <li>
+
+                    <a href="#">
+                        Historico
+                    </a>
+
+                </li>
+
+
+                <!-- MENU CADASTRO -->
+
+                <li class="spanteste">
+
+                    <button
+                        id="btnMenu"
+                        type="button"
+                    >
+                        MENU
+                    </button>
+
+
+                    <span class="spanlista escondido">
+
+                        <p>
+
+                            <a href="/DonCabron/index/fornecedor.html">
+                                Fornecedor
+                            </a>
+
+                        </p>
+
+
+                        <p>
+
+                            <a href="/DonCabron/index/usuarios.html">
+                                Usuários
+                            </a>
+
+                        </p>
+
+                    </span>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+
+        <!-- BOTÃO TEMA -->
+
+        <button
+            class="tema"
+            id="tema"
+            type="button"
+            aria-label="Alterar tema"
+        >
+
+            <span class="icone-tema">
+                🌙
+            </span>
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CONTEÚDO
+    ====================================================== -->
+
+    <main>
+
+        <section class="cadastro-usuarios">
+
+
+            <!-- =================================================
+                 BLOCO DE CADASTRO
+            ================================================== -->
+
+            <div class="bloco-cadastro">
+
+                <h1>
+                    Cadastro de Funcionários
+                </h1>
+
+
+                <form
+                    id="formUsuario"
+                    novalidate
+                >
+
+
+                    <!-- NOME -->
+
+                    <div class="campo">
+
+                        <label for="nome">
+                            Nome
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nome"
+                            name="nome"
+                            placeholder="Nome do funcionário"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="campo">
+
+                        <label for="email">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="E-mail do funcionário"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- SENHA -->
+
+                    <div class="campo">
+
+                        <label for="senha">
+                            Senha
+                        </label>
+
+                        <input
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            placeholder="Senha de acesso"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- FUNÇÃO -->
+
+                    <div class="campo">
+
+                        <label for="tipo">
+                            Função
+                        </label>
+
+                        <select
+                            id="tipo"
+                            name="tipo"
+                            required
+                        >
+
+                            <option
+                                value=""
+                                selected
+                                disabled
+                            >
+                                Selecione a função
+                            </option>
+
+
+                            <option value="GARCOM">
+                                Garçom
+                            </option>
+
+
+                            <option value="COZINHA">
+                                Cozinha
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- BOTÃO -->
+
+                    <button
+                        type="submit"
+                        class="botao-cadastrar"
+                    >
+                        Cadastrar Funcionário
+                    </button>
+
+                </form>
+
+
+                <!-- MENSAGEM -->
+
+                <p
+                    id="mensagem-usuario"
+                    class="mensagem-usuario"
+                    aria-live="polite"
+                ></p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 LISTA DE FUNCIONÁRIOS
+            ================================================== -->
+
+            <div class="lista-usuarios">
+
+                <h2>
+                    Funcionários Cadastrados
+                </h2>
+
+
+                <!--
+                    IMPORTANTE:
+
+                    Esta div NÃO usa "lista-usuarios".
+
+                    Ela usa "resultado-usuarios", porque
+                    "lista-usuarios" pertence ao quadro externo.
+                -->
+
+                <div
+                    id="listaUsuarios"
+                    class="resultado-usuarios"
+                >
+
+                    <p class="carregando">
+                        Carregando funcionários...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="/js/script.js"></script>
+
+    <script src="/js/usuarios.js"></script>
+
+
+</body>
+
+</html>

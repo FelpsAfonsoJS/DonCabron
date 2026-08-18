@@ -683,7 +683,7 @@ h2 {
   text-transform: uppercase;
 
   font:
-    15px "Poppins",
+    12px "Poppins",
     sans-serif;
 
   font-weight: bold;
@@ -721,7 +721,7 @@ h2 {
   text-transform: uppercase;
 
   font:
-    15px "Poppins",
+    12px "Poppins",
     sans-serif;
 
   font-weight: bold;
@@ -735,6 +735,39 @@ h2 {
   transform: translateY(-3px) scale(1.05);
 
   box-shadow: 0 0 15px rgba(255, 1, 1, 0.5);
+}
+.btn-reativar {
+    margin-top: 10px;
+
+    padding: 3px 10px;
+
+    border: 1px solid rgba(0, 255, 0, 0.5);
+
+    border-radius: 8px;
+
+    background: rgba(0, 0, 0, 0.5);
+
+    color: var(--texto);
+
+    text-shadow: var(--sombra);
+
+    text-transform: uppercase;
+
+    font:
+      15px "Poppins",
+      sans-serif;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+  }
+
+  .btn-reativar:hover {
+    transform: translateY(-3px) scale(1.05);
+
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
 }
 
 /* =========================================================
@@ -1084,7 +1117,12 @@ h2 {
     font-size: 14px;
   }
 }
-
+.mesa {
+  cursor: pointer;
+}
+.mesa:hover {
+  transform: translateX(-5px);
+}
 /* =========================================================
    RESPONSIVIDADE - ATÉ 400px
 ========================================================= */
