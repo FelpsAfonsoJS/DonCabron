@@ -26,18 +26,14 @@ Aplicação web para apoiar a operação de restaurantes: cardápio, mesas, coma
 | Configuração | `dotenv` e variáveis de ambiente |
 | Dependências principais | `express`, `cors`, `mysql2`, `bcryptjs`, `jsonwebtoken`, `dotenv` |
 
-## Segurança implementada
+## Segurança
 
-- Senhas armazenadas com hash **bcrypt** (10 rounds); nunca em texto puro.
-- Autenticação baseada em **JWT**, enviado no cabeçalho `Authorization: Bearer <token>`.
-- Tokens têm validade de **8 horas**.
-- Controle de acesso por perfil (RBAC): apenas `ADMIN` cria, lista e altera funcionários; não é permitido alterar uma conta `ADMIN`.
-- Variáveis sensíveis, incluindo credenciais do banco e `JWT_SECRET`, ficam em `.env`, ignorado pelo Git.
-- Consultas SQL usam parâmetros, reduzindo risco de SQL Injection.
-- Validações de campos obrigatórios, quantidade, tipo de usuário e regras de transição de status.
-- Transações e bloqueios `FOR UPDATE` nas operações críticas de mesa/comanda e pedido, protegendo a consistência em acessos simultâneos.
+O sistema utiliza os seguintes mecanismos de segurança:
 
-> Para produção, recomenda-se restringir o CORS, usar HTTPS, validar formato/complexidade de credenciais e adicionar rate limiting às rotas de autenticação.
+- **JWT (JSON Web Token)** para autenticação de usuários.
+- **bcrypt** para proteção de senhas.
+- **RBAC (controle de acesso baseado em papéis)** para autorização por tipo de usuário.
+- **Consultas SQL parametrizadas** para proteção contra injeção de SQL.
 
 ## Regras de negócio
 
@@ -85,31 +81,6 @@ As rotas administrativas exigem token JWT e perfil `ADMIN`.
 O banco utiliza as entidades `usuarios`, `produtos`, `estoque`, `fornecedores`, `mesas`, `comandas`, `pedidos` e `itens_comanda`.
 
 Relações principais: `mesa 1:N comanda`, `comanda 1:N pedido`, `pedido 1:N item_comanda` e `produto 1:N item_comanda`.
-
-## Como executar
-
-Pré-requisitos: Node.js, npm e MySQL.
-
-1. Crie `DonCabron/BackEnd/.env`:
-
-```env
-DB_HOST=localhost
-DB_USER=seu_usuario
-DB_PASSWORD=sua_senha
-DB_NAME=nome_do_banco
-DB_PORT=3306
-JWT_SECRET=uma_chave_secreta_forte
-```
-
-2. Instale e execute o back-end:
-
-```bash
-cd DonCabron/BackEnd
-npm install
-node server.js
-```
-
-3. Acesse `http://localhost:3000/DonCabron/index/index.html`.
 
 ## Status
 
