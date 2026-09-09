@@ -1,6 +1,12 @@
 const formulario = document.getElementById("formUsuario");
 const mensagem = document.getElementById("mensagem-usuario");
 
+document.getElementById("btnInicio").addEventListener("click", () => {
+    window.location.href = "/DonCabron/index/index.html";
+});
+
+const btnMenu = document.getElementById("btnMenu");
+const listaCadastro = document.querySelector(".dropdown-cadastro");
 
 formulario.addEventListener("submit", async (evento) => {
 
@@ -42,7 +48,7 @@ formulario.addEventListener("submit", async (evento) => {
 
     try {
 
-        const resposta = await fetch("/auth/usuarios", {
+        fetch("http://localhost:3000/auth/usuarios", {
 
             method: "POST",
 
@@ -127,7 +133,7 @@ async function carregarUsuarios() {
     try {
 
         const resposta = await fetch(
-            "/auth/usuarios",
+            "http://localhost:3000/auth/usuarios",
             {
                 method: "GET",
 
@@ -307,7 +313,7 @@ async function alterarStatusUsuario(id, statusAtual) {
     try {
 
         const resposta = await fetch(
-            `/auth/usuarios/${id}/status`,
+            `http://localhost:3000/auth/usuarios/${id}/status`,
             {
 
                 method: "PATCH",

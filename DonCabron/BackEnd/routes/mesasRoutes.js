@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const conexao = require("../config/database");
+const { autenticar, permitir } = require("../middleware/auth");
 
 // ============================================================
 // LISTAR TODAS AS MESAS
@@ -487,7 +488,11 @@ router.patch("/:id/reativar", async (req, res) => {
 //    recupera a comanda aberta existente
 // ============================================================
 
-router.post("/:id/abrir", async (req, res) => {
+router.post(
+    "/:id/abrir",
+    autenticar,
+    permitir("GARCOM", "ADMIN"),
+    async (req, res) => {
 
     const conexaoTransacao = await conexao.getConnection();
 
@@ -584,6 +589,26 @@ router.post("/:id/abrir", async (req, res) => {
 
             }
 
+            const [pedidos] = await conexaoTransacao.query(
+                `
+                SELECT id
+                FROM pedidos
+                WHERE comanda_id = ?
+                LIMIT 1
+                `,
+                [comandas[0].id]
+            );
+
+            const [itens] = await conexaoTransacao.query(
+                `
+                SELECT id
+                FROM itens_comanda
+                WHERE comanda_id = ?
+                LIMIT 1
+                `,
+                [comandas[0].id]
+            );
+
 
             await conexaoTransacao.commit();
 
@@ -600,7 +625,10 @@ router.post("/:id/abrir", async (req, res) => {
                     ativo: mesa.ativo
                 },
 
-                comanda: comandas[0]
+                comanda: comandas[0],
+
+                pode_liberar:
+                    pedidos.length === 0 && itens.length === 0
 
             });
 
@@ -662,7 +690,9 @@ router.post("/:id/abrir", async (req, res) => {
                 id: comandaId,
                 mesa_id: mesa.id,
                 status: "ABERTA"
-            }
+            },
+
+            pode_liberar: true
 
         });
 
@@ -683,6 +713,156 @@ router.post("/:id/abrir", async (req, res) => {
     }
 
 });
+
+
+// ============================================================
+// LIBERAR MESA SEM PEDIDOS
+// Fecha a comanda vazia para manter o histórico e libera a mesa.
+// ============================================================
+
+router.post(
+    "/:id/liberar-sem-pedidos",
+    autenticar,
+    permitir("GARCOM", "ADMIN"),
+    async (req, res) => {
+
+        const conexaoTransacao = await conexao.getConnection();
+
+        try {
+
+            const { id } = req.params;
+
+            await conexaoTransacao.beginTransaction();
+
+            const [mesas] = await conexaoTransacao.query(
+                `
+                SELECT id, numero, status, ativo
+                FROM mesas
+                WHERE id = ?
+                FOR UPDATE
+                `,
+                [id]
+            );
+
+            if (mesas.length === 0) {
+                await conexaoTransacao.rollback();
+
+                return res.status(404).json({
+                    erro: "Mesa não encontrada"
+                });
+            }
+
+            const mesa = mesas[0];
+
+            if (mesa.ativo !== 1 || mesa.status !== "OCUPADA") {
+                await conexaoTransacao.rollback();
+
+                return res.status(409).json({
+                    erro: "A mesa não está ocupada e ativa"
+                });
+            }
+
+            const [comandas] = await conexaoTransacao.query(
+                `
+                SELECT id
+                FROM comandas
+                WHERE mesa_id = ?
+                AND status = 'ABERTA'
+                ORDER BY id DESC
+                LIMIT 1
+                FOR UPDATE
+                `,
+                [id]
+            );
+
+            if (comandas.length === 0) {
+                await conexaoTransacao.rollback();
+
+                return res.status(409).json({
+                    erro: "A mesa não possui uma comanda aberta para liberar"
+                });
+            }
+
+            const comandaId = comandas[0].id;
+
+            const [pedidos] = await conexaoTransacao.query(
+                `
+                SELECT id
+                FROM pedidos
+                WHERE comanda_id = ?
+                LIMIT 1
+                FOR UPDATE
+                `,
+                [comandaId]
+            );
+
+            const [itens] = await conexaoTransacao.query(
+                `
+                SELECT id
+                FROM itens_comanda
+                WHERE comanda_id = ?
+                LIMIT 1
+                FOR UPDATE
+                `,
+                [comandaId]
+            );
+
+            if (pedidos.length > 0 || itens.length > 0) {
+                await conexaoTransacao.rollback();
+
+                return res.status(409).json({
+                    erro: "A mesa não pode ser liberada porque já possui pedido ou itens lançados"
+                });
+            }
+
+            await conexaoTransacao.query(
+                `
+                UPDATE comandas
+                SET
+                    status = 'FECHADA',
+                    data_fechamento = NOW()
+                WHERE id = ?
+                AND status = 'ABERTA'
+                `,
+                [comandaId]
+            );
+
+            await conexaoTransacao.query(
+                `
+                UPDATE mesas
+                SET status = 'LIVRE'
+                WHERE id = ?
+                AND status = 'OCUPADA'
+                `,
+                [id]
+            );
+
+            await conexaoTransacao.commit();
+
+            return res.json({
+                mensagem: "Mesa liberada com segurança",
+                mesa_id: Number(id),
+                comanda_id: comandaId,
+                status: "LIVRE"
+            });
+
+        } catch (erro) {
+
+            await conexaoTransacao.rollback();
+            console.error("Erro ao liberar mesa sem pedidos:", erro);
+
+            return res.status(500).json({
+                erro: "Erro interno ao liberar mesa"
+            });
+
+        } finally {
+
+            conexaoTransacao.release();
+
+        }
+
+    }
+);
 
 
 // ============================================================
@@ -745,7 +925,11 @@ router.get("/:id/comanda", async (req, res) => {
 // BUSCAR ITENS DA COMANDA ABERTA
 // ============================================================
 
-router.get("/:id/comanda/itens", async (req, res) => {
+router.get(
+    "/:id/comanda/itens",
+    autenticar,
+    permitir("GARCOM", "ADMIN"),
+    async (req, res) => {
 
     try {
 
@@ -822,7 +1006,11 @@ router.get("/:id/comanda/itens", async (req, res) => {
 // ADICIONAR PRODUTO À COMANDA
 // ============================================================
 
-router.post("/:id/comanda/itens", async (req, res) => {
+router.post(
+    "/:id/comanda/itens",
+    autenticar,
+    permitir("GARCOM", "ADMIN"),
+    async (req, res) => {
 
     try {
 

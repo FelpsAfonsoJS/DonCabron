@@ -425,6 +425,34 @@ body {
     width: 30px;
     text-align: center;
 }
+
+#btnLiberarMesa {
+     width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    border: none;
+    border-radius: 15px;
+    background:
+        linear-gradient(
+            135deg,
+            #7a1f1f,
+            #c4451c,
+            #e69a2e
+        );
+    color: white;
+    font-family:
+        "Poppins", sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+#btnLiberarMesa:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 0 15px orange;
+}
 /* ============================= */
 /* CELULAR */
 /* ============================= */

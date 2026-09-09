@@ -39,14 +39,18 @@ window.addEventListener("scroll", () => {
 });
 
 const btnMenu = document.getElementById("btnMenu");
-const classeLista = document.querySelector(".spanlista");
+const listaCadastro = document.querySelector(".dropdown-cadastro");
 
 btnMenu.addEventListener("click", () => {
-  classeLista.classList.toggle("escondido");
+  listaCadastro.classList.toggle("escondido");
 });
 
 const formMesa = document.querySelector("#formMesa");
 const resultadoMesas = document.querySelector("#resultadoMesas");
+
+document.getElementById("btnInicio").addEventListener("click", () => {
+    window.location.href = "/DonCabron/index/index.html";
+});
 
 // ========================================
 // CARREGAR MESAS

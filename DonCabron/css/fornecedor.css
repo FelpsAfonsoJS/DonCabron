@@ -1,17 +1,8 @@
-/* =========================================================
-   RESET
-========================================================= */
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
-
-/* =========================================================
-   LOGOS
-========================================================= */
 
 .logo-escura {
     display: none;
@@ -26,24 +17,17 @@ body.dark .logo-escura {
     display: block;
 }
 
-
-/* =========================================================
-   VARIÁVEIS - TEMA CLARO
-========================================================= */
-
 :root {
     --texto: orange;
     --sombra: 0px 0px 10px orange;
     --quadro: rgba(2, 2, 2, 0.3);
-
     --card: url(/DonCabron/img/tema\ claro\ produtos.jpg);
     --header: url(/DonCabron/img/tema\ claro\ header.jpg);
-
     --fundo-card: rgba(255, 255, 255, 0.75);
     --fundo-input: rgba(252, 249, 249, 0.1);
-
+    --cor-menu: rgba(63, 41, 0, 0.9);
+    --cor-menu2: rgba(255, 255, 255, 0.644);
     --borda: rgba(48, 35, 11, 0.5);
-
     --fundo-principal: linear-gradient(
         135deg,
         #7a1f1f,
@@ -56,24 +40,17 @@ body.dark .logo-escura {
     --cor-menu: rgba(63, 41, 0, 0.9);
 }
 
-
-/* =========================================================
-   TEMA ESCURO
-========================================================= */
-
 body.dark {
     --texto: white;
     --sombra: 5px 5px 10px orange;
     --quadro: rgba(5, 5, 5, 0.8);
-
     --card: url(/DonCabron/img/tema\ escuro\ produtos.jpg);
     --header: url(/DonCabron/img/tema\ escuro\ header.png);
-
     --fundo-card: rgba(0, 0, 0, 0.7);
+    --cor-menu: white;
+    --cor-menu2: white;
     --fundo-input: rgba(0, 0, 0, 0.55);
-
     --borda: rgba(255, 165, 0, 0.7);
-
     --fundo-principal: linear-gradient(
         135deg,
         #3a0d0d,
@@ -152,59 +129,99 @@ body {
     max-width: 180px;
     filter: drop-shadow(0 0 10px orange);
 }
-
-
-/* =========================================================
-   MENU PRINCIPAL
-========================================================= */
-
 .menu {
-    flex: 1;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.menu-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
-.menu ul {
-    margin-top: 0;
-
-    text-transform: uppercase;
-
-    height: 60px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    list-style: none;
-
-    gap: 40px;
-
-    padding: 0 40px;
-
-    text-shadow: 0 0 20px orange;
+.menu-list > li {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
-
-.menu a {
-    display: block;
-
-    padding: 12px 24px;
-
-    font-weight: bold;
-
-    border-radius: 25px;
-
-    transition: 0.3s;
-
+.menu-list > li:not(:last-child)::after {
+    content: "";
+    margin: 0 15px;
     color: var(--cor-menu);
-
-    text-decoration: none;
-
-    font-size: 35px;
-
+    font-size: 30px;
+    font-weight: bold;
     text-shadow: var(--sombra);
-
-    font-family: "Poppins", sans-serif;
+}
+.menu-botao {
+  display: block;
+  padding: 12px 10px;
+  font-size: 25px;
+  font-weight: bold;
+  color: var(--cor-menu);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-shadow: var(--sombra);
 }
 
-.menu a:hover {
+.menu-botao:hover {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(/DonCabron/img/away.png);
+  background-size: cover;
+  color: white;
+  text-shadow: 3px 3px 8px red;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+.menu-cadastro {
+    position: relative;
+}
+.dropdown-cadastro {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 100px;
+    padding: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.6),
+            rgba(0, 0, 0, 0.6)
+        ),
+        var(--header);
+    background-size: cover;
+    border-radius: 15px;
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.5),
+        0 0 15px orange;
+    z-index: 2000;
+    
+}
+.dropdown-cadastro a {
+
+    display: block;
+    padding: 10px 20px;
+    color: var(--cor-menu2);
+    text-shadow: var(--sombra);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.dropdown-cadastro a:hover {
+
     background:
         linear-gradient(
             rgba(0, 0, 0, 0.5),
@@ -213,16 +230,32 @@ body {
         url(/DonCabron/img/away.png);
 
     background-size: cover;
-
     color: white;
+    text-shadow: 2px 2px 5px red;
+    transform: translateX(3px);
+}
+.dropdown-cadastro.escondido {
+    display: none;
+}
+    #btnMenu, #btnInicio, #btnRelatorios {
+        font-size: 22px;
 
-    text-shadow: 3px 3px 8px red;
+        padding: 8px 15px;
 
-    border-color: black;
-
-    transform: translateY(-3px);
-
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+    }
+    #btnMenu:hover, #btnInicio:hover, #btnRelatorios:hover {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(/DonCabron/img/away.png);
+  background-size: cover;
+  color: white;
+  text-shadow: 3px 3px 8px red;
+  border-color: black;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 25px;
+  transition: 0.4s;
 }
 
 
@@ -272,30 +305,18 @@ body {
     border-radius: 50%;
 }
 
-
-/* =========================================================
-   BOTÃO TEMA
-========================================================= */
-
 .tema {
     margin-right: 30px;
-
     width: 50px;
     height: 50px;
-
     border-radius: 50%;
     border: none;
-
     cursor: pointer;
-
     font-size: 25px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: transparent;
-
     transition: 0.4s;
 }
 
@@ -662,33 +683,6 @@ h3 {
     display: none;
 }
 
-#btnMenu {
-    display: block;
-
-    padding: 12px 24px;
-
-    font-weight: bold;
-
-    border-radius: 25px;
-
-    transition: 0.3s;
-
-    color: var(--cor-menu);
-
-    text-decoration: none;
-
-    font-size: 35px;
-
-    background: transparent;
-
-    border: transparent;
-
-    text-shadow: var(--sombra);
-
-    font-family: "Poppins", sans-serif;
-
-    cursor: pointer;
-}
 
 #btnMenu:hover {
     background:
@@ -721,10 +715,6 @@ h2 {
     text-shadow: var(--sombra);
 }
 
-
-/* =========================================================
-   TABLETS / TELAS ATÉ 900px
-========================================================= */
 
 @media (max-width: 900px) {
 
@@ -830,13 +820,6 @@ h2 {
         margin: 0;
     }
 
-    #btnMenu {
-        font-size: 22px;
-
-        padding: 8px 15px;
-
-        cursor: pointer;
-    }
 
     .spanlista {
         width: 100%;

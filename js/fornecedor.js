@@ -13,6 +13,9 @@ botaoTema.addEventListener("click", () => {
     }
 });
 }
+document.getElementById("btnInicio").addEventListener("click", () => {
+    window.location.href = "/DonCabron/index/index.html";
+});
 
 const menuToggle = document.getElementById("menu-toggle");
 const menu = document.getElementById("menu");
@@ -22,6 +25,13 @@ menuToggle.addEventListener("click", () => {
     menu.classList.toggle("ativo");
 });
 }
+
+const btnMenu = document.getElementById("btnMenu");
+const listaCadastro = document.querySelector(".dropdown-cadastro");
+
+btnMenu.addEventListener("click", () => {
+  listaCadastro.classList.toggle("escondido");
+});
 
 let lastScrollTop = 0;
 const header = document.querySelector('.header');
@@ -293,10 +303,4 @@ resultadoFornecedores.addEventListener("click", (evento) => {
 
     pesquisaFornecedor.value = fornecedor.nome;
 
-});
-const btnMenu = document.getElementById('btnMenu')
-const classeLista = document.querySelector('.spanlista')
-
-btnMenu.addEventListener('click', () => {
-  classeLista.classList.toggle('escondido')
 });

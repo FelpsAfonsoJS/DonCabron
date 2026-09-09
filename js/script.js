@@ -13,6 +13,9 @@ if (botaoTema) {
     }
   });
 }
+document.getElementById("btnInicio").addEventListener("click", () => {
+    window.location.href = "/DonCabron/index/index.html";
+});
 
 
 const menuToggle = document.getElementById("menu-toggle");
@@ -40,15 +43,14 @@ window.addEventListener("scroll", () => {
   lastScrollTop = currentScroll;
 });
 
-const btnMenu = document.getElementById('btnMenu')
-const classeLista = document.querySelector('.spanlista')
+//esconder botao
+const btnMenu = document.getElementById("btnMenu");
+const listaCadastro = document.querySelector(".dropdown-cadastro");
 
-btnMenu.addEventListener('click', () => {
-  classeLista.classList.toggle('escondido')
+btnMenu.addEventListener("click", () => {
+  listaCadastro.classList.toggle("escondido");
 });
-// ========================================
-// CARREGAR PRODUTOS
-// ========================================
+
 
 async function carregarProdutos() {
 

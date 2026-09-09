@@ -14,26 +14,26 @@
         <img class="logo-escura" src="/DonCabron/img/logo escura.png" srcset="">
       </div>
       <button class="menu-toggle" id="menu-toggle">☰</button>
-      <nav class="menu" id="menu">
-        <ul>
+     <nav class="menu" id="menu">
+        <ul class="menu-list">
           <li>
-            <a href="/DonCabron/index/index.html" target="_blank" rel="">Inicio</a>
-          </li>
-          <li>
-            <a href="#" target="_blank" rel="">Cardapio</a>
-          </li>
-          <li>
-            <a href="#" target="_blank" rel="">Historico</a>
+            <button id="btnInicio" class="menu-botao">INÍCIO</button>
           </li>
           <li class="menu-cadastro">
-            <span class="spanteste">
-              <p>
-                <button id="btnMenu" class="menu">MENU</button>
-              </p>
-              <span class="spanlista escondido">
-                <p><a href="/DonCabron/index/fornecedor.html">Fornecedor</a></p>
-              </span>
-            </span>
+            <button id="btnMenu" class="menu-botao">CADASTRO</button>
+
+            <div class="dropdown-cadastro escondido">
+              <a href="/DonCabron/index/fornecedor.html"> Fornecedor </a>
+
+              <a href="/DonCabron/index/usuarios.html"> Usuários </a>
+
+              <a href="/DonCabron/index/mesas.html"> Mesas </a>
+            </div>
+          </li>
+
+          <li>
+            <button id="btnRelatorios" class="menu-botao">RELATÓRIOS</button>
+          </li>
         </ul>
       </nav>
       <button class="tema" id="tema">

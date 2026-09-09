@@ -23,6 +23,7 @@ body.dark .logo-clara {
   --card: url(/DonCabron/img/tema\ claro\ produtos.jpg);
   --header: url(/DonCabron/img/tema\ claro\ header.jpg);
   --cor-menu: rgba(63, 41, 0, 0.9);
+  --cor-menu2: rgba(255, 255, 255, 0.644);
   --fundo-principal: linear-gradient(
     135deg,
     #7a1f1f,
@@ -35,9 +36,10 @@ body.dark .logo-clara {
 
 body.dark {
   --texto: white;
-  --sombra: 5px 5px 10px orange;
+  --sombra: 0px 0px 10px orange;
   --quadro: rgba(0, 0, 0, 0.8);
   --cor-menu: white;
+  --cor-menu2: white;
   --card: url(/DonCabron/img/tema\ escuro\ produtos.jpg);
   --header: url(/DonCabron/img/tema\ escuro\ header.png);
   --fundo-principal: linear-gradient(
@@ -143,39 +145,112 @@ body {
 }
 .menu {
   flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.menu ul {
-  text-shadow: 0 0 20px orange;
-  margin-top: 0;
-  text-transform: uppercase;
-  height: 60px;
+.menu-list {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  list-style: none;
-  gap: 40px;
-  padding: 0 40px;
+  justify-content: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
-.menu a {
+
+.menu-list > li {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.menu-list > li:not(:last-child)::after {
+    content: "";
+    margin: 0 15px;
+    color: var(--cor-menu);
+    font-size: 30px;
+    font-weight: bold;
+    text-shadow: var(--sombra);
+}
+
+.menu-botao {
   display: block;
-  padding: 12px 24px;
+  padding: 12px 10px;
+  font-size: 25px;
   font-weight: bold;
-  border-radius: 25px;
-  transition: 0.3s;
   color: var(--cor-menu);
-  text-decoration: none;
-  font-size: 35px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-shadow: var(--sombra);
 }
-.menu a:hover {
+
+.menu-botao:hover {
   background:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(/DonCabron/img/away.png);
   background-size: cover;
   color: white;
   text-shadow: 3px 3px 8px red;
-  border-color: black;
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+.menu-cadastro {
+    position: relative;
+}
+.dropdown-cadastro {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 100px;
+    padding: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.6),
+            rgba(0, 0, 0, 0.6)
+        ),
+        var(--header);
+    background-size: cover;
+    border-radius: 15px;
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.5),
+        0 0 15px orange;
+    z-index: 2000;
+    
+}
+.dropdown-cadastro a {
+
+    display: block;
+    padding: 10px 20px;
+    color: var(--cor-menu2);
+    text-shadow: var(--sombra);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.dropdown-cadastro a:hover {
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.5),
+            rgba(0, 0, 0, 0.5)
+        ),
+        url(/DonCabron/img/away.png);
+
+    background-size: cover;
+    color: white;
+    text-shadow: 2px 2px 5px red;
+    transform: translateX(3px);
+}
+.dropdown-cadastro.escondido {
+    display: none;
 }
 main {
   display: flex;
@@ -335,10 +410,8 @@ h3 {
 
     .menu-cadastro {
         width: 100%;
-
         display: flex;
         flex-direction: column;
-
         align-items: center;
     }
 
@@ -355,7 +428,7 @@ h3 {
         margin: 0;
     }
 
-    #btnMenu {
+    #btnMenu, #btnInicio, #btnRelatorios {
         font-size: 22px;
 
         padding: 8px 15px;
@@ -363,22 +436,7 @@ h3 {
         cursor: pointer;
     }
 
-    .spanlista {
-        width: 100%;
-
-        display: flex;
-        flex-direction: column;
-
-        align-items: center;
-    }
-
-    .spanlista p {
-        margin: 0;
-    }
-
-    .spanlista.escondido {
-        display: none;
-    }
+  
 
     /* BOTÃO TEMA */
 
@@ -589,48 +647,7 @@ h3 {
 }
 
 
-  .menu-cadastro{
-    display: flex;
-    flex-direction: column;
-     justify-content: flex-start;
-    align-items: flex-start;
-  }
-
-  .spanteste {
-    display: flex;
-    flex-direction: column;
-    justify-items: flex-start;
-    align-items: flex-start;
-}
-
-.spanlista {
-  display: flex;
-  flex-direction: column;
-}
-
-.spanlista.escondido {
-  display: none;
-}
-
-#btnMenu {
-
- display: block;
-  padding: 12px 24px;
-  font-weight: bold;
-  border-radius: 25px;
-  transition: 0.3s;
-  color: var(--cor-menu);
-  text-decoration: none;
-  font-size: 35px;
-  background: transparent;
-  border: transparent;
-  text-shadow: var(--sombra);
-  font-style: inherit;
-  font-weight: bold;
-  font-family: "Poppins", sans-serif;
-}
-
-#btnMenu:hover {
+#btnMenu:hover, #btnInicio:hover, #btnRelatorios:hover {
   background:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(/DonCabron/img/away.png);

@@ -16,7 +16,8 @@ formulario.addEventListener("submit", async (evento) => {
 
     try {
 
-        const resposta = await fetch("/auth/login", {
+        const resposta = await fetch("http://localhost:3000/auth/login", {
+        // const resposta = await fetch("/auth/login", {
 
             method: "POST",
 
