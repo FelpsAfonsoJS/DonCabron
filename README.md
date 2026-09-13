@@ -1,88 +1,110 @@
 # Don Cabrón — Sistema de Gestão para Restaurante
 
-Aplicação web para apoiar a operação de restaurantes: cardápio, mesas, comandas, pedidos, cozinha, estoque, fornecedores e usuários.
+Aplicação web para gestão operacional de restaurante, desenvolvida como projeto acadêmico de Estágio Supervisionado. O projeto organiza o ciclo de operação entre administração, atendimento e cozinha, com uma API REST em Node.js/Express, banco MySQL e front-end em HTML, CSS e JavaScript puro.
 
-> Projeto acadêmico de Estágio Supervisionado. A documentação descreve a implementação atual.
+## Visão técnica
 
-## Funcionalidades
-
-- **Cardápio:** consulta e exibição de produtos por categoria, com imagem, descrição e preço; tema claro/escuro e menu responsivo.
-- **Mesas:** cadastro, listagem, edição, desativação e reativação de mesas. Mesas ocupadas não podem ser editadas, desativadas ou reativadas indevidamente.
-- **Comandas:** abertura transacional de mesa e comanda; uma mesa ocupada recupera sua comanda aberta.
-- **Pedidos:** inclusão e soma de itens em pedido pendente, confirmação e envio para a cozinha.
-- **Cozinha:** consulta de pedidos e progressão controlada de status: `RECEBIDO` → `EM_PREPARO` → `PRONTO`.
-- **Fornecedores:** cadastro e busca por nome ou documento, com prevenção de documentos duplicados.
-- **Estoque:** consulta de saldo; a rota legada de inclusão direta na comanda verifica e reduz o estoque quando o produto é controlado.
-- **Usuários:** login, criação/listagem de funcionários e ativação/desativação de contas pela área administrativa.
-
-## Tecnologias
-
-| Camada | Tecnologias |
+| Camada | Implementação |
 | --- | --- |
-| Front-end | HTML5, CSS3 e JavaScript puro (ES6+) |
+| Front-end | HTML5, CSS3 responsivo e JavaScript ES6+ sem framework |
 | Back-end | Node.js, Express 5 e CommonJS |
-| Banco de dados | MySQL com `mysql2/promise` e pool de conexões |
-| Integração | API REST com JSON e `fetch` |
-| Configuração | `dotenv` e variáveis de ambiente |
-| Dependências principais | `express`, `cors`, `mysql2`, `bcryptjs`, `jsonwebtoken`, `dotenv` |
+| Persistência | MySQL com `mysql2/promise` e pool de conexões |
+| API | REST/JSON, com `fetch` no cliente |
+| Autenticação | JWT assinado e armazenado na sessão do navegador |
+| Autorização | RBAC por perfil: `ADMIN`, `GARCOM` e `COZINHA` |
+| Senhas | Hash com `bcryptjs` |
+| PDF | jsPDF e AutoTable na área de relatórios |
 
-## Segurança
+## Funcionalidades implementadas
 
-O sistema utiliza os seguintes mecanismos de segurança:
+### Operação e cadastros
 
-- **JWT (JSON Web Token)** para autenticação de usuários.
-- **bcrypt** para proteção de senhas.
-- **RBAC (controle de acesso baseado em papéis)** para autorização por tipo de usuário.
-- **Consultas SQL parametrizadas** para proteção contra injeção de SQL.
+- Cardápio com produtos organizados por categoria, imagem, descrição e preço.
+- Mesas com cadastro, alteração, ativação, desativação e validações de status.
+- Abertura transacional de comandas para mesas livres e recuperação de comandas abertas.
+- Pedidos pendentes, inclusão e soma de itens, confirmação e envio para a cozinha.
+- Quadro de produção com atualização periódica e fluxo de status controlado.
+- Cadastro e busca de fornecedores, com prevenção de documento duplicado.
+- Gestão de funcionários: criação, listagem e ativação/desativação.
+- Consulta de produtos e suporte ao estoque controlado.
 
-## Regras de negócio
+### Perfis e navegação
 
-- Números de mesa e documentos de fornecedor são únicos.
-- Uma mesa começa como `LIVRE`; ao abrir uma comanda passa a `OCUPADA`.
-- A abertura de mesa é transacional e reutiliza uma comanda aberta quando ela já existe.
-- Itens só podem ser adicionados a comandas abertas e devem ter quantidade maior que zero.
-- Um pedido só pode ser confirmado se estiver `PENDENTE` e possuir itens.
-- Transições da cozinha respeitam a sequência de status definida.
-- Funcionários inativos não conseguem realizar login.
+- `ADMIN`: acesso administrativo completo, incluindo cadastros, cozinha e relatórios.
+- `GARCOM`: acesso restrito a mesas e pedidos; não acessa início, cadastros, relatórios ou cozinha.
+- `COZINHA`: acesso restrito ao quadro de produção.
+- Proteção de páginas no cliente, redirecionamento por perfil e proteção equivalente nas rotas sensíveis da API.
+- Logout, menu responsivo, submenu administrativo e temas claro/escuro nas telas atualizadas.
 
-## Estrutura
+### Relatórios
+
+- Relatório de itens mais vendidos, filtrável por item específico ou todos os itens e por período.
+- Relatório de atendimentos por garçom, filtrável por garçom específico ou todos e por período.
+- Exportação em PDF com título, tabela, identidade visual Don Cabrón e numeração de páginas.
+- Registro do garçom responsável nas novas comandas, possibilitando o ranking de atendimentos.
+
+> Comandas anteriores à migração `001_adiciona_garcom_na_comanda.sql` não possuem vínculo histórico com garçom e podem aparecer como **Não informado** nos relatórios.
+
+## Regras de negócio implementadas
+
+- Número de mesa e documento de fornecedor são únicos.
+- Mesa ativa livre pode ser aberta; ao abrir, seu status passa para `OCUPADA`.
+- Mesas ocupadas não podem ser editadas ou desativadas.
+- Uma comanda é aberta de forma transacional para evitar duplicidade de atendimento.
+- Itens só podem ser incluídos em comandas abertas e com quantidade válida.
+- Um pedido só é enviado à cozinha se estiver pendente e possuir itens.
+- O fluxo da cozinha não permite saltar estados.
+- Funcionários inativos não autenticam no sistema.
+- Apenas administradores criam, listam ou alteram o status de funcionários.
+
+## Segurança aplicada
+
+| Controle | Implementação atual |
+| --- | --- |
+| Autenticação | Token JWT emitido no login e validado pelo middleware `autenticar` |
+| Senhas | Comparação por hash `bcrypt`; senhas não são retornadas pela API |
+| Autorização | Middleware `permitir(...perfis)` em operações restritas |
+| Menor privilégio | Menus, páginas e endpoints são limitados ao perfil necessário |
+| SQL Injection | Consultas parametrizadas com placeholders do MySQL |
+| Sessão | Token e dados mínimos do perfil em `sessionStorage`; limpeza no logout/expiração |
+| Dados administrativos | Rotas de usuários e relatórios exigem `ADMIN` |
+| Integridade operacional | Transações e bloqueios no fluxo de abertura de mesas/comandas |
+| Validação | Campos obrigatórios, estados permitidos, quantidades e conflitos de unicidade verificados no servidor |
+| Configuração | Credenciais e chave JWT mantidas em variáveis de ambiente via `dotenv` |
+
+## Estrutura do projeto
 
 ```text
 .
 ├── DonCabron/
 │   ├── BackEnd/
-│   │   ├── config/database.js    # conexão MySQL
-│   │   ├── middleware/auth.js    # JWT e autorização por perfil
-│   │   ├── routes/               # rotas da API
-│   │   └── server.js             # servidor Express
-│   ├── css/                      # estilos das telas
-│   ├── img/                      # imagens e identidade visual
-│   └── index/                    # páginas HTML
-└── js/                           # scripts do front-end
+│   │   ├── config/database.js
+│   │   ├── middleware/auth.js
+│   │   ├── migrations/
+│   │   ├── routes/
+│   │   └── server.js
+│   ├── css/
+│   ├── img/
+│   └── index/
+├── js/
+└── README.md
 ```
 
 ## API principal
 
 Base local: `http://localhost:3000`.
 
-| Área | Rotas principais |
+| Área | Endpoints principais |
 | --- | --- |
 | Autenticação | `POST /auth/login`, `POST /auth/usuarios`, `GET /auth/usuarios`, `PATCH /auth/usuarios/:id/status` |
 | Produtos e estoque | `GET /produtos`, `GET /estoque` |
 | Fornecedores | `GET /fornecedores?busca=`, `POST /fornecedores` |
 | Mesas | `GET/POST /mesas`, `PUT /mesas/:id`, `PATCH /mesas/:id/desativar`, `PATCH /mesas/:id/reativar`, `POST /mesas/:id/abrir` |
-| Comandas e pedidos | `POST /comandas`, `POST /comandas/:comanda_id/itens`, `GET /comandas/:comanda_id/itens`, `PUT /comandas/:comanda_id/pedido/:pedido_id/confirmar` |
-| Cozinha | `GET /comandas/cozinha/pedidos`, `PUT /comandas/cozinha/pedido/:pedido_id/preparo`, `PUT /comandas/cozinha/pedido/:pedido_id/pronto` |
+| Comandas e pedidos | `POST /comandas`, rotas de itens e confirmação de pedido |
+| Cozinha | consulta de pedidos e transições para preparo/pronto |
+| Relatórios | `GET /relatorios/produtos`, `GET /relatorios/atendimentos`, `GET /relatorios/garcons` |
 
-As rotas administrativas exigem token JWT e perfil `ADMIN`.
-
-## Modelo de dados
-
-O banco utiliza as entidades `usuarios`, `produtos`, `estoque`, `fornecedores`, `mesas`, `comandas`, `pedidos` e `itens_comanda`.
-
-Relações principais: `mesa 1:N comanda`, `comanda 1:N pedido`, `pedido 1:N item_comanda` e `produto 1:N item_comanda`.
-
-## Diagrama de classes
+## Modelo de domínio
 
 ```mermaid
 classDiagram
@@ -90,55 +112,46 @@ classDiagram
         +int id
         +string nome
         +string email
-        +string senha
-        +string tipo
+        +string senhaHash
+        +Perfil tipo
         +boolean ativo
     }
     class Mesa {
         +int id
         +int numero
         +int capacidade
-        +string status
+        +StatusMesa status
         +boolean ativo
     }
     class Comanda {
         +int id
-        +date data_abertura
-        +date data_fechamento
-        +string status
+        +datetime data_abertura
+        +datetime data_fechamento
+        +StatusComanda status
     }
     class Pedido {
         +int id
-        +date data_pedido
-        +string status
+        +datetime data_pedido
+        +StatusPedido status
     }
     class ItemComanda {
         +int id
         +int quantidade
-        +int quantidade_paga
         +decimal preco_unitario
+        +int quantidade_paga
         +decimal valor_pago
     }
     class Produto {
         +int id
         +string nome
         +string categoria
-        +string descricao
         +decimal preco
         +boolean controla_estoque
     }
-    class Estoque {
-        +int produto_id
-        +int quantidade
-    }
-    class Fornecedor {
-        +int id
-        +string documento
-        +string nome
-        +string endereco
-        +string telefone
-    }
+    class Estoque { +int produto_id +int quantidade }
+    class Fornecedor { +int id +string documento +string nome +string endereco +string bairro +string cidade +string telefone }
 
+    Usuario "1" --> "0..*" Comanda : abre (garcom_id)
     Mesa "1" --> "0..*" Comanda : possui
     Comanda "1" --> "0..*" Pedido : agrupa
     Comanda "1" --> "0..*" ItemComanda : registra
@@ -147,51 +160,49 @@ classDiagram
     Produto "1" --> "0..1" Estoque : controla
 ```
 
-## Requisitos funcionais por página
+## Diagramas de estado
 
-### Cardápio (`index.html`)
+### Mesa e comanda
 
-- **RF01:** Exibir os produtos cadastrados, com imagem, nome, descrição e preço.
-- **RF02:** Organizar os produtos por categoria: comidas, bebidas alcoólicas, bebidas gaseificadas e artesanais.
-- **RF03:** Permitir alternância entre tema claro e escuro.
-- **RF04:** Disponibilizar navegação responsiva pelas páginas do sistema.
+```mermaid
+stateDiagram-v2
+    [*] --> LIVRE
+    LIVRE --> OCUPADA: abrir mesa / criar comanda
+    OCUPADA --> LIVRE: liberar comanda vazia ou fechar atendimento
+    LIVRE --> DESATIVADA: desativar mesa
+    DESATIVADA --> LIVRE: reativar mesa
+    OCUPADA --> OCUPADA: recuperar comanda aberta
+```
 
-### Login (`login.html`)
+### Pedido e produção
 
-- **RF05:** Permitir que o usuário informe e-mail e senha para autenticação.
-- **RF06:** Direcionar o usuário para a área compatível com seu perfil após login válido.
-- **RF07:** Informar ao usuário quando as credenciais forem inválidas.
+```mermaid
+stateDiagram-v2
+    [*] --> PENDENTE
+    PENDENTE --> RECEBIDO: confirmar pedido
+    RECEBIDO --> EM_PREPARO: iniciar preparo
+    EM_PREPARO --> PRONTO: marcar como pronto
+    PRONTO --> [*]
+```
 
-### Mesas (`mesas.html`)
+## Migrações
 
-- **RF08:** Cadastrar mesas com número e capacidade.
-- **RF09:** Listar mesas cadastradas e seus status.
-- **RF10:** Alterar os dados de mesas livres e ativas.
-- **RF11:** Desativar e reativar mesas conforme as regras de negócio.
-- **RF12:** Abrir ou recuperar a comanda de uma mesa e direcionar ao pedido.
+| Arquivo | Objetivo |
+| --- | --- |
+| `DonCabron/BackEnd/migrations/001_adiciona_garcom_na_comanda.sql` | Adiciona `garcom_id` à comanda e a chave estrangeira para `usuarios`, necessária ao relatório de atendimentos. |
 
-### Pedidos (`pedidos.html`)
+## Roadmap técnico
 
-- **RF13:** Exibir o cardápio para a mesa selecionada.
-- **RF14:** Adicionar produtos e ajustar suas quantidades em um pedido.
-- **RF15:** Exibir os itens que estão em montagem e os já enviados.
-- **RF16:** Confirmar o pedido e enviá-lo para a cozinha.
-- **RF17:** Consultar e atualizar o andamento dos pedidos na cozinha.
+Os próximos incrementos previstos para a evolução do projeto são:
 
-### Fornecedores (`fornecedor.html`)
+- Encerramento financeiro de comandas, pagamento e baixa consistente de estoque.
+- Histórico completo de fechamento e indicadores financeiros por período.
+- Auditoria de operações administrativas e trilha de eventos.
+- Paginação, filtros adicionais e testes automatizados de rotas e regras de negócio.
+- Versionamento adicional de migrações e rotina formal de backup/restauração.
+- Fortalecimento de segurança com expiração/renovação de sessão, validação de entrada mais abrangente, cabeçalhos HTTP de segurança e limitação de tentativas de login.
+- Observabilidade do back-end com logs estruturados e monitoramento de falhas.
 
-- **RF18:** Cadastrar fornecedor com documento, nome, endereço, bairro, cidade e telefone.
-- **RF19:** Validar CPF/CNPJ e telefone antes do envio do cadastro.
-- **RF20:** Pesquisar fornecedores por nome ou documento.
-- **RF21:** Informar conflitos quando o documento já estiver cadastrado.
+## Estado do projeto
 
-### Usuários (`usuarios.html`)
-
-- **RF22:** Permitir que administradores cadastrem funcionários.
-- **RF23:** Listar funcionários cadastrados e seus respectivos perfis.
-- **RF24:** Ativar ou desativar contas de funcionários.
-- **RF25:** Restringir as operações administrativas a usuários autorizados.
-
-## Status
-
-Em desenvolvimento. Ainda não há suíte automatizada de testes ou script SQL versionado no repositório.
+Em desenvolvimento ativo. A base operacional, controle de perfis, cozinha e relatórios administrativos estão implementados. O roadmap descreve melhorias técnicas e módulos ainda não entregues.

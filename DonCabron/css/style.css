@@ -184,6 +184,15 @@ body {
   text-shadow: var(--sombra);
 }
 
+.menu-link {
+  text-decoration: none;
+}
+
+.menu-botao,
+.menu-link {
+  transition: transform .3s ease, box-shadow .3s ease, color .3s ease, background .3s ease;
+}
+
 .menu-botao:hover {
   background:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -428,7 +437,7 @@ h3 {
         margin: 0;
     }
 
-    #btnMenu, #btnInicio, #btnRelatorios {
+    #btnMenu, #btnInicio, #btnRelatorios, #btnCozinha {
         font-size: 22px;
 
         padding: 8px 15px;
@@ -647,7 +656,7 @@ h3 {
 }
 
 
-#btnMenu:hover, #btnInicio:hover, #btnRelatorios:hover {
+#btnMenu:hover, #btnInicio:hover, #btnRelatorios:hover, #btnCozinha:hover {
   background:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(/DonCabron/img/away.png);

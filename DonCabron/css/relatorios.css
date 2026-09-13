@@ -1,0 +1,46 @@
+:root { --laranja:#ff9d00; --vinho:#3e1207; --fundo:#190b06; --card:rgba(44,20,10,.92); }
+* { box-sizing:border-box; }
+body { margin:0; min-height:100vh; font-family:Poppins,sans-serif; color:#3e1808; background:linear-gradient(rgba(255,247,230,.84),rgba(255,247,230,.92)),url('/DonCabron/img/tema claro produtos.jpg') center/cover fixed; }
+.cabecalho-relatorios { min-height:112px; padding:12px 5vw; display:flex; align-items:center; gap:22px; background:linear-gradient(rgba(33,12,3,.88),rgba(33,12,3,.88)),url('/DonCabron/img/tema claro header.jpg') center/cover; border-bottom:2px solid var(--laranja); box-shadow:0 3px 20px #000; }
+.cabecalho-relatorios img { width:110px; max-height:88px; object-fit:contain; filter:drop-shadow(0 0 7px var(--laranja)); }.cabecalho-relatorios h1 { margin:0; color:var(--laranja); }.cabecalho-relatorios p { margin:2px 0; }.cabecalho-relatorios nav { margin-left:auto; display:flex; gap:12px; }.cabecalho-relatorios a,button { font:inherit; font-weight:700; cursor:pointer; }.cabecalho-relatorios a { color:var(--laranja); text-decoration:none; padding:10px 13px; border:1px solid transparent; }.cabecalho-relatorios a:hover { border-color:var(--laranja); border-radius:8px; }
+.botao-tema { width:42px; height:42px; border:1px solid var(--laranja); border-radius:50%; color:var(--laranja); background:transparent; font-size:19px; }
+main { max-width:1180px; margin:220px auto 0; padding:34px 22px 60px; }.introducao h2 { margin:0; color:var(--laranja); font-size:30px; }.introducao p { margin-top:4px; opacity:.8; }.relatorio-card { margin-top:24px; padding:25px; border:1px solid rgba(255,157,0,.55); border-radius:18px; background:var(--card); box-shadow:0 0 22px rgba(0,0,0,.35); }.titulo-card { display:flex; align-items:center; gap:15px; }.titulo-card span { display:grid; place-items:center; width:42px; height:42px; border-radius:50%; color:#2d1004; background:var(--laranja); font-weight:700; }.titulo-card h2,.titulo-card p { margin:0; }.titulo-card p { opacity:.75; font-size:14px; }.filtros { display:flex; align-items:end; flex-wrap:wrap; gap:15px; padding:22px 0; }.filtros label { display:grid; gap:6px; font-weight:600; }.filtros input,.filtros select { min-width:185px; padding:10px; color:#2a1509; border:1px solid var(--laranja); border-radius:8px; background:#fff7e9; }.acoes { display:flex; gap:9px; }.acoes button { border:1px solid var(--laranja); border-radius:8px; padding:10px 15px; color:#2a1004; background:var(--laranja); }.acoes .secundario { color:var(--laranja); background:transparent; }.resultado { overflow:auto; border-top:1px solid rgba(255,255,255,.18); padding-top:14px; }.resultado table { width:100%; border-collapse:collapse; }.resultado th,.resultado td { padding:11px 9px; text-align:left; border-bottom:1px solid rgba(255,255,255,.14); }.resultado th { color:var(--laranja); }.resultado .vazio { opacity:.75; }
+@media (max-width:700px) { .cabecalho-relatorios { gap:10px; padding:10px; }.cabecalho-relatorios img { width:74px; }.cabecalho-relatorios h1 { font-size:19px; }.cabecalho-relatorios nav { gap:2px; }.cabecalho-relatorios a { padding:7px; font-size:12px; }.relatorio-card { padding:17px; }.acoes { width:100%; }.filtros input,.filtros select { width:100%; } }
+body.tema-claro { color:#3e1808; background:linear-gradient(rgba(255,247,230,.84),rgba(255,247,230,.92)),url('/DonCabron/img/tema claro produtos.jpg') center/cover fixed; }
+body.tema-claro .cabecalho-relatorios { background:linear-gradient(rgba(255,232,184,.9),rgba(255,232,184,.9)),url('/DonCabron/img/tema claro header.jpg') center/cover; }
+body.tema-claro .cabecalho-relatorios a { color:#592506; } body.tema-claro .relatorio-card { background:rgba(255,252,245,.94); box-shadow:0 0 22px rgba(99,43,8,.18); } body.tema-claro .botao-tema { color:#592506; background:#fff8e9; }
+body.dark { color:#fff; background:linear-gradient(rgba(15,5,2,.82),rgba(15,5,2,.92)),url('/DonCabron/img/tema escuro produtos.jpg') center/cover fixed; }
+body.dark .relatorio-card { background:rgba(44,20,10,.92); box-shadow:0 0 22px rgba(0,0,0,.35); }
+body.dark .introducao h2, body.dark .resultado th { color:var(--laranja); }
+
+.relatorios-paineis {
+  display: block;
+}
+
+/* Mantém a mesma composição visual do cardápio: título acima e fundo do sistema. */
+body,
+body.tema-claro,
+body.dark {
+  color: #fff;
+  background: var(--fundo-principal);
+  background-size: contain;
+  background-position: center;
+}
+
+main {
+  display: block;
+  max-width: 1180px;
+}
+
+.introducao {
+  width: 100%;
+  padding: 0;
+}
+
+.relatorios-paineis {
+  width: 100%;
+}
+
+body:not(.dark) .relatorio-card {
+  background: rgba(62, 18, 7, .92);
+}

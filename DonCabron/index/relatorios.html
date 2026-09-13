@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Don Cabrón - Relatórios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/DonCabron/css/style.css">
+  <link rel="stylesheet" href="/DonCabron/css/relatorios.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <img class="logo-clara" src="/DonCabron/img/logo.png" alt="Logo Don Cabrón">
+      <img class="logo-escura" src="/DonCabron/img/logo escura.png" alt="Logo Don Cabrón">
+    </div>
+    <button class="menu-toggle" id="menu-toggle" type="button">☰</button>
+    <nav class="menu" id="menu">
+      <ul class="menu-list">
+        <li><button id="btnInicio" class="menu-botao">INÍCIO</button></li>
+        <li class="menu-cadastro"><button id="btnMenu" class="menu-botao">CADASTRO</button>
+          <div class="dropdown-cadastro escondido">
+            <a href="/DonCabron/index/fornecedor.html">Fornecedor</a>
+            <a href="/DonCabron/index/usuarios.html">Usuários</a>
+            <a href="/DonCabron/index/mesas.html">Mesas</a>
+          </div>
+        </li>
+        <li><button id="btnRelatorios" class="menu-botao">RELATÓRIOS</button></li>
+        <li><button id="btnCozinha" class="menu-botao">COZINHA</button></li>
+        <li class="menu-sair"><a class="menu-botao menu-link" href="#" onclick="sairSistema(); return false;">SAIR</a></li>
+      </ul>
+    </nav>
+    <button class="tema" id="tema" type="button" aria-label="Alternar tema"><span class="icone-tema">🌙</span></button>
+  </header>
+  <main>
+    <section class="introducao"><h2>Central de relatórios</h2><p>Filtre, consulte e exporte os dados em PDF.</p></section>
+    <div class="relatorios-paineis">
+    <section class="relatorio-card">
+      <div class="titulo-card"><span>01</span><div><h2>Itens mais vendidos</h2><p>Quantidade e valor vendido por produto.</p></div></div>
+      <form id="filtroProdutos" class="filtros">
+        <label>Item<select id="produtoId"><option value="">Todos os itens</option></select></label>
+        <label>Data inicial<input id="produtoInicio" type="date" required></label>
+        <label>Data final<input id="produtoFim" type="date" required></label>
+        <div class="acoes"><button type="submit">Consultar</button><button type="button" class="secundario" id="pdfProdutos">Gerar PDF</button></div>
+      </form>
+      <div id="resultadoProdutos" class="resultado"><p>Selecione os filtros para consultar os itens.</p></div>
+    </section>
+    <section class="relatorio-card">
+      <div class="titulo-card"><span>02</span><div><h2>Atendimentos por garçom</h2><p>Ranking de comandas abertas por cada garçom.</p></div></div>
+      <form id="filtroAtendimentos" class="filtros">
+        <label>Garçom<select id="garcomId"><option value="">Todos os garçons</option></select></label>
+        <label>Data inicial<input id="atendimentoInicio" type="date" required></label>
+        <label>Data final<input id="atendimentoFim" type="date" required></label>
+        <div class="acoes"><button type="submit">Consultar</button><button type="button" class="secundario" id="pdfAtendimentos">Gerar PDF</button></div>
+      </form>
+      <div id="resultadoAtendimentos" class="resultado"><p>Selecione o período para consultar os atendimentos.</p></div>
+    </section>
+    </div>
+  </main>
+  <script src="/js/permissoes.js"></script>
+  <script src="/js/script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="/js/relatorios.js?v=2"></script>
+</body>
+</html>

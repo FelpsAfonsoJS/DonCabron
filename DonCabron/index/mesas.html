@@ -16,23 +16,45 @@
       <button class="menu-toggle" id="menu-toggle">☰</button>
      <nav class="menu" id="menu">
         <ul class="menu-list">
-          <li>
+          <li class="menu-admin" hidden>
             <button id="btnInicio" class="menu-botao">INÍCIO</button>
           </li>
-          <li class="menu-cadastro">
+          <li class="menu-cadastro menu-admin" hidden>
             <button id="btnMenu" class="menu-botao">CADASTRO</button>
 
             <div class="dropdown-cadastro escondido">
               <a href="/DonCabron/index/fornecedor.html"> Fornecedor </a>
-
               <a href="/DonCabron/index/usuarios.html"> Usuários </a>
-
               <a href="/DonCabron/index/mesas.html"> Mesas </a>
             </div>
           </li>
 
-          <li>
+          <li class="menu-admin" hidden>
             <button id="btnRelatorios" class="menu-botao">RELATÓRIOS</button>
+          </li>
+
+          <li class="menu-admin" hidden>
+    <a class="menu-botao menu-link"
+       href="/DonCabron/index/mesas.html">
+       MESAS
+    </a>
+</li>
+
+<li class="menu-admin" hidden>
+    <a class="menu-botao menu-link"
+       href="/DonCabron/index/pedidos.html">
+       PEDIDOS
+    </a>
+</li>
+
+<li class="menu-admin" hidden>
+    <a class="menu-botao menu-link"
+       href="/DonCabron/index/cozinha.html">
+       COZINHA
+    </a>
+</li>
+          <li class="menu-sair">
+            <a class="menu-botao menu-link" href="#" onclick="sairSistema(); return false;">SAIR</a>
           </li>
         </ul>
       </nav>
@@ -101,6 +123,7 @@
 
 </main>
 
+<script src="/js/permissoes.js"></script>
 <script src="/js/mesas.js"></script>
 
     

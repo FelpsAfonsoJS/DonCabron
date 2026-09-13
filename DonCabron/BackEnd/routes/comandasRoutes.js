@@ -111,11 +111,12 @@ router.post(
             INSERT INTO comandas
             (
                 mesa_id,
+                garcom_id,
                 status
             )
-            VALUES (?, 'ABERTA')
+            VALUES (?, ?, 'ABERTA')
             `,
-            [mesa_id]
+            [mesa_id, req.usuario.id]
         );
 
 

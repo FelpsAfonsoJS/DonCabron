@@ -13,10 +13,27 @@ if (botaoTema) {
     }
   });
 }
-document.getElementById("btnInicio").addEventListener("click", () => {
-    window.location.href = "/DonCabron/index/index.html";
-});
+const btnInicio = document.getElementById("btnInicio");
+const btnCozinha = document.getElementById("btnCozinha");
+const btnRelatorios = document.getElementById("btnRelatorios");
 
+if (btnInicio) {
+  btnInicio.addEventListener("click", () => {
+    window.location.href = "/DonCabron/index/index.html";
+  });
+}
+
+if (btnCozinha) {
+  btnCozinha.addEventListener("click", () => {
+    window.location.href = "/DonCabron/index/cozinha.html";
+  });
+}
+
+if (btnRelatorios) {
+  btnRelatorios.addEventListener("click", () => {
+    window.location.href = "/DonCabron/index/relatorios.html";
+  });
+}
 
 const menuToggle = document.getElementById("menu-toggle");
 const menu = document.getElementById("menu");
@@ -47,9 +64,11 @@ window.addEventListener("scroll", () => {
 const btnMenu = document.getElementById("btnMenu");
 const listaCadastro = document.querySelector(".dropdown-cadastro");
 
-btnMenu.addEventListener("click", () => {
-  listaCadastro.classList.toggle("escondido");
-});
+if (btnMenu && listaCadastro) {
+  btnMenu.addEventListener("click", () => {
+    listaCadastro.classList.toggle("escondido");
+  });
+}
 
 
 async function carregarProdutos() {
@@ -163,4 +182,6 @@ async function carregarProdutos() {
 // INICIAR
 // ========================================
 
-carregarProdutos();
+if (document.querySelector("#listaComidas")) {
+  carregarProdutos();
+}

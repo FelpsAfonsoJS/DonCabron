@@ -48,7 +48,7 @@ formulario.addEventListener("submit", async (evento) => {
 
     try {
 
-        fetch("http://localhost:3000/auth/usuarios", {
+        const resposta = await fetch("http://localhost:3000/auth/usuarios", {
 
             method: "POST",
 
@@ -91,6 +91,8 @@ formulario.addEventListener("submit", async (evento) => {
 
 
         formulario.reset();
+
+        await carregarUsuarios();
 
 
     } catch (erro) {

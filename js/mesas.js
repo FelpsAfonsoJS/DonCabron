@@ -41,16 +41,30 @@ window.addEventListener("scroll", () => {
 const btnMenu = document.getElementById("btnMenu");
 const listaCadastro = document.querySelector(".dropdown-cadastro");
 
-btnMenu.addEventListener("click", () => {
-  listaCadastro.classList.toggle("escondido");
-});
+if (btnMenu && listaCadastro) {
+  btnMenu.addEventListener("click", () => {
+    listaCadastro.classList.toggle("escondido");
+  });
+}
 
 const formMesa = document.querySelector("#formMesa");
 const resultadoMesas = document.querySelector("#resultadoMesas");
 
-document.getElementById("btnInicio").addEventListener("click", () => {
+const btnInicio = document.getElementById("btnInicio");
+
+if (btnInicio) {
+  btnInicio.addEventListener("click", () => {
     window.location.href = "/DonCabron/index/index.html";
-});
+  });
+}
+
+const btnRelatorios = document.getElementById("btnRelatorios");
+
+if (btnRelatorios) {
+  btnRelatorios.addEventListener("click", () => {
+    window.location.href = "/DonCabron/index/relatorios.html";
+  });
+}
 
 // ========================================
 // CARREGAR MESAS

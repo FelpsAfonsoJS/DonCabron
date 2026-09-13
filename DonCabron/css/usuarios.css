@@ -156,6 +156,8 @@ body.dark .logo-escura {
   cursor: pointer;
   text-shadow: var(--sombra);
 }
+.menu-link { text-decoration: none; }
+.menu-botao, .menu-link { transition: transform .3s ease, box-shadow .3s ease, color .3s ease, background .3s ease; }
 .menu-botao:hover {
   background:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
