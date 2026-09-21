@@ -372,3 +372,6 @@ async function alterarStatusUsuario(id, statusAtual) {
 }
 // Carrega os funcionários quando a página abre
 carregarUsuarios();
+
+// Garante a recarga após todos os scripts e recursos da página estarem prontos.
+window.addEventListener("load", carregarUsuarios);
