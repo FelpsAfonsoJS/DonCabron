@@ -58,3 +58,70 @@ async function carregarListaGarcons() {
 carregarListaGarcons();
 ["produtoInicio","atendimentoInicio"].forEach(id=>document.querySelector(`#${id}`).value=inicioMes());["produtoFim","atendimentoFim"].forEach(id=>document.querySelector(`#${id}`).value=hoje());
 document.querySelector("#filtroProdutos").addEventListener("submit",e=>{e.preventDefault();carregarProdutos();});document.querySelector("#filtroAtendimentos").addEventListener("submit",e=>{e.preventDefault();carregarAtendimentos();});document.querySelector("#pdfProdutos").addEventListener("click",()=>gerarPdf("Itens mais vendidos",periodo("produto"),colunasProdutos,dadosProdutos));document.querySelector("#pdfAtendimentos").addEventListener("click",()=>gerarPdf("Atendimentos por garçom",periodo("atendimento"),colunasAtendimentos,dadosAtendimentos));carregarListaProdutos();
+
+const colunasMesas = [
+  { titulo: "Mesa", valor: x => `Mesa ${x.numero}` },
+  { titulo: "Pedidos", valor: x => x.quantidade_pedidos },
+  { titulo: "Valor total", valor: x => moeda(x.valor_total) },
+];
+let relatorioMesas = null;
+let consultaMesas = 0;
+const filtroMesas = document.querySelector("#filtroMesas");
+const pdfMesas = document.querySelector("#pdfMesas");
+function invalidarMesas() {
+  consultaMesas++;
+  relatorioMesas = null;
+  pdfMesas.disabled = true;
+  document.querySelector("#resultadoMesas").textContent = "Consulte para atualizar o relatório com os filtros selecionados.";
+}
+async function carregarMesas() {
+  const filtro = periodo("mesa");
+  if (!validar(filtro)) return alert("Informe um período válido.");
+  invalidarMesas();
+  const consulta = consultaMesas;
+  const ordem = document.querySelector("#mesaOrdem").value;
+  const mesaId = document.querySelector("#mesaId").value;
+  const area = document.querySelector("#resultadoMesas");
+  area.textContent = "Carregando relatório...";
+  try {
+    const parametros = new URLSearchParams({ ...filtro, ordem, mesa_id: mesaId });
+    const resposta = await consultar(`${API_RELATORIOS}/mesas?${parametros}`);
+    if (consulta !== consultaMesas) return;
+    const dados = resposta.filter(mesa => (!mesaId || String(mesa.id) === mesaId) && Number(mesa.valor_total) >= 1);
+    tabela("#resultadoMesas", colunasMesas, dados);
+    if (dados.length) {
+      const resumo = document.createElement("p");
+      resumo.textContent = `Total do período: ${moeda(dados.reduce((total, mesa) => total + Number(mesa.valor_total), 0))}`;
+      area.prepend(resumo);
+    }
+    relatorioMesas = { filtro, ordem, dados, mesaId };
+    pdfMesas.disabled = !dados.length;
+  } catch (erro) {
+    if (consulta === consultaMesas) area.textContent = erro.message;
+  }
+}
+document.querySelector("#mesaInicio").value = inicioMes();
+const dataLocal = new Date();
+document.querySelector("#mesaFim").value = `${dataLocal.getFullYear()}-${String(dataLocal.getMonth() + 1).padStart(2, "0")}-${String(dataLocal.getDate()).padStart(2, "0")}`;
+filtroMesas.addEventListener("input", invalidarMesas);
+filtroMesas.addEventListener("change", invalidarMesas);
+filtroMesas.addEventListener("submit", evento => { evento.preventDefault(); carregarMesas(); });
+pdfMesas.addEventListener("click", () => {
+  if (!relatorioMesas) return;
+  const { filtro, ordem, dados, mesaId } = relatorioMesas;
+  const titulo = mesaId ? `Rendimento da mesa ${dados[0].numero}` : `Rendimento por mesa - ${ordem === "menor" ? "Menores" : "Maiores"} valores`;
+  gerarPdf(titulo, filtro, colunasMesas, dados);
+});
+async function carregarListaMesasRelatorio() {
+  try {
+    const mesas = await consultar("http://localhost:3000/mesas/todas");
+    mesas.forEach(mesa => {
+      const opcao = document.createElement("option");
+      opcao.value = mesa.id; opcao.textContent = `Mesa ${mesa.numero}`;
+      document.querySelector("#mesaId").append(opcao);
+    });
+  } catch (erro) {
+    document.querySelector("#erroListaMesas").textContent = "Não foi possível carregar as mesas. Atualize a página para tentar novamente.";
+  }
+}
+carregarListaMesasRelatorio();

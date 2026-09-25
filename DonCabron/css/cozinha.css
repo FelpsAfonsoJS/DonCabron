@@ -1,325 +1,355 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 :root {
-    --texto: #fff;
-    --fundo: #17110d;
-    --card: rgba(25, 25, 25, .92);
-    --borda: rgba(255, 165, 0, .45);
-    --sombra: 0 0 18px rgba(255, 165, 0, .28);
-    --fundo-principal: linear-gradient(135deg, #7a1f1f, #c4451c, #e69a2e, #2e7d32, #123c69);
+  --texto: #fff;
+  --fundo: #17110d;
+  --card: rgba(25, 25, 25, 0.92);
+  --borda: rgba(255, 165, 0, 0.45);
+  --sombra: 0 0 18px rgba(255, 165, 0, 0.28);
+  --fundo-principal: linear-gradient(
+    135deg,
+    #7a1f1f,
+    #c4451c,
+    #e69a2e,
+    #2e7d32,
+    #123c69
+  );
 }
 
 body {
-    min-height: 100vh;
-    font-family: "Poppins", sans-serif;
-    color: var(--texto);
-    background: 
-        linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.72)),
-        url("/DonCabron/img/tema escuro produtos.jpg") center/cover fixed;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  color: var(--texto);
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)),
+    url("/DonCabron/img/tema escuro produtos.jpg") center/cover fixed;
 }
 
 .header-cozinha {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    min-height: 100px;
-    padding: 12px 30px;
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    background: rgba(12, 12, 12, .96);
-    box-shadow: 0 0 20px orange;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  min-height: 100px;
+  padding: 12px 30px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  background: rgba(12, 12, 12, 0.96);
+  box-shadow: 0 0 20px orange;
 }
 
 .logo-cozinha img {
-    width: 120px;
-    max-height: 70px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 8px orange);
+  width: 120px;
+  max-height: 70px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px orange);
 }
 
 .titulo-cozinha {
-    flex: 1;
+  flex: 1;
 }
 
 .titulo-cozinha h1 {
-    color: orange;
-    text-shadow: 0 0 10px orange;
-    letter-spacing: 2px;
+  color: orange;
+  text-shadow: 0 0 10px orange;
+  letter-spacing: 2px;
 }
 
 .titulo-cozinha span {
-    font-size: 13px;
-    opacity: .75;
+  font-size: 13px;
+  opacity: 0.75;
 }
 
 .menu-cozinha-top {
-    display: flex;
-    gap: 12px;
+  display: flex;
+  gap: 12px;
 }
 
 .menu-cozinha-top a {
-    color: orange;
-    text-decoration: none;
-    font-weight: 700;
-    padding: 10px 16px;
-    border-radius: 12px;
+  color: orange;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 12px;
 }
 
 .menu-cozinha-top a:hover {
-    color: white;
-    background: rgba(255, 165, 0, .15);
+  color: white;
+  background: rgba(255, 165, 0, 0.15);
 }
 
 .botao-tema {
-    width: 44px;
-    height: 44px;
-    border: 1px solid orange;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 20px;
-    background: rgba(255, 165, 0, .12);
+  width: 44px;
+  height: 44px;
+  border: 1px solid orange;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  background: rgba(255, 165, 0, 0.12);
 }
 
 body.tema-claro {
-    --texto: #301307;
-    --fundo: #fff1d7;
-    --card: rgba(255, 250, 240, .95);
-    --borda: rgba(132, 57, 12, .42);
-    background: linear-gradient(rgba(255,244,221,.78), rgba(255,244,221,.88)), url("/DonCabron/img/tema claro produtos.jpg") center/cover fixed;
+  --texto: #301307;
+  --fundo: #fff1d7;
+  --card: rgba(255, 250, 240, 0.95);
+  --borda: rgba(132, 57, 12, 0.42);
+  background:
+    linear-gradient(rgba(255, 244, 221, 0.78), rgba(255, 244, 221, 0.88)),
+    url("/DonCabron/img/tema claro produtos.jpg") center/cover fixed;
 }
 
-body.tema-claro .header-cozinha { background: rgba(255, 237, 203, .96); }
-body.tema-claro .menu-cozinha-top a { color: #5a2707; }
-body.tema-claro .botao-tema { background: #fff7e9; }
+body.tema-claro .header-cozinha {
+  background: rgba(255, 237, 203, 0.96);
+}
+body.tema-claro .menu-cozinha-top a {
+  color: #5a2707;
+}
+body.tema-claro .botao-tema {
+  background: #fff7e9;
+}
 
 /* Fundo igual ao restante do Don Cabrón, sem o branco no tema claro. */
 body,
 body.tema-claro {
-    background: var(--fundo-principal);
-    background-size: contain;
-    background-position: center;
+  background: var(--fundo-principal);
+  background-size: contain;
+  background-position: center;
 }
 
 body.dark {
-    --fundo-principal: linear-gradient(135deg, #3a0d0d, #6b2410, #8a5a00, #124020, #06233d);
-    background: var(--fundo-principal);
+  --fundo-principal: linear-gradient(
+    135deg,
+    #3a0d0d,
+    #6b2410,
+    #8a5a00,
+    #124020,
+    #06233d
+  );
+  background: var(--fundo-principal);
 }
 
 .cozinha-container {
-    width: 100%;
-    max-width: 1600px;
-    margin: 220px auto 0;
-    padding: 35px 25px 50px;
-    display: block;
+  width: 100%;
+  max-width: 1600px;
+  margin: 220px auto 0;
+  padding: 35px 25px 50px;
+  display: block;
 }
 
 .cabecalho-pedidos {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 25px;
-    padding: 22px 26px;
-    border: 1px solid rgba(255, 165, 0, .45);
-    border-radius: 18px;
-    background: rgba(45, 15, 7, .72);
-    box-shadow: 0 0 18px rgba(0, 0, 0, .28);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 25px;
+  padding: 22px 26px;
+  border: 1px solid rgba(255, 165, 0, 0.45);
+  border-radius: 18px;
+  background: rgba(45, 15, 7, 0.72);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.28);
 }
 
 .cabecalho-pedidos h2 {
-    font-size: 32px;
-    color: orange;
-    text-shadow: 0 0 10px orange;
+  font-size: 32px;
+  color: orange;
+  text-shadow: 0 0 10px orange;
 }
 
 .cabecalho-pedidos p {
-    opacity: .75;
-    color: white;
+  opacity: 0.75;
+  color: white;
 }
 
 .btn-atualizar {
-    border: 1px solid orange;
-    border-radius: 12px;
-    padding: 11px 18px;
-    background: rgba(255, 165, 0, .12);
-    color: white;
-    font: 600 15px "Poppins", sans-serif;
-    cursor: pointer;
+  border: 1px solid orange;
+  border-radius: 12px;
+  padding: 11px 18px;
+  background: rgba(255, 165, 0, 0.12);
+  color: white;
+  font:
+    600 15px "Poppins",
+    sans-serif;
+  cursor: pointer;
 }
 
 .btn-atualizar:hover {
-    box-shadow: 0 0 15px orange;
+  box-shadow: 0 0 15px orange;
 }
 
 .mensagem {
-    min-height: 24px;
-    margin-bottom: 12px;
-    color: orange;
-    text-align: center;
-    padding: 10px;
+  min-height: 24px;
+  margin-bottom: 12px;
+  color: orange;
+  text-align: center;
+  padding: 10px;
 }
 
 .painel-cozinha {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    align-items: start;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
 }
 
 .coluna {
-    min-height: 520px;
-    padding: 18px;
-    border: 1px solid var(--borda);
-    border-radius: 20px;
-    background: rgba(0, 0, 0, .38);
-    box-shadow: var(--sombra);
-    backdrop-filter: blur(7px);
+  min-height: 520px;
+  padding: 18px;
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.38);
+  box-shadow: var(--sombra);
+  backdrop-filter: blur(7px);
 }
 
 .titulo-coluna {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255,255,255,.12);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .titulo-coluna h3 {
-    font-size: 21px;
+  font-size: 21px;
 }
 
 .titulo-coluna span {
-    min-width: 30px;
-    padding: 3px 9px;
-    border-radius: 20px;
-    text-align: center;
-    background: rgba(255, 165, 0, .18);
-    color: orange;
-    font-weight: 700;
+  min-width: 30px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  text-align: center;
+  background: rgba(255, 165, 0, 0.18);
+  color: orange;
+  font-weight: 700;
 }
 
 .lista-pedidos {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .pedido-card {
-    padding: 18px;
-    border: 1px solid rgba(255, 165, 0, .35);
-    border-radius: 16px;
-    color: white;
-    background: rgba(52, 19, 8, .94);
-    box-shadow: 0 4px 15px rgba(0,0,0,.25);
+  padding: 18px;
+  border: 1px solid rgba(255, 165, 0, 0.35);
+  border-radius: 16px;
+  color: white;
+  background: rgba(52, 19, 8, 0.94);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
 }
 
 .pedido-topo {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .pedido-topo strong {
-    font-size: 19px;
+  font-size: 19px;
 }
 
 .pedido-topo small {
-    opacity: .65;
+  opacity: 0.65;
 }
 
 .pedido-itens {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    margin-bottom: 15px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 15px;
 }
 
 .pedido-itens li {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: rgba(255,255,255,.055);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.055);
 }
 
 .pedido-itens .quantidade {
-    color: orange;
-    font-weight: 700;
-    white-space: nowrap;
+  color: orange;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .btn-status {
-    width: 100%;
-    padding: 11px;
-    border: 0;
-    border-radius: 11px;
-    color: white;
-    background: linear-gradient(135deg, #7a1f1f, #c4451c, #e69a2e);
-    font: 700 14px "Poppins", sans-serif;
-    cursor: pointer;
+  width: 100%;
+  padding: 11px;
+  border: 0;
+  border-radius: 11px;
+  color: white;
+  background: linear-gradient(135deg, #7a1f1f, #c4451c, #e69a2e);
+  font:
+    700 14px "Poppins",
+    sans-serif;
+  cursor: pointer;
 }
 
 .btn-status:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px orange;
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px orange;
 }
 
 .vazio {
-    padding: 35px 12px;
-    text-align: center;
-    opacity: .55;
-    border: 1px dashed rgba(255,255,255,.16);
-    border-radius: 12px;
+  padding: 35px 12px;
+  text-align: center;
+  opacity: 0.55;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
 }
 
 @media (max-width: 1000px) {
-    .painel-cozinha {
-        grid-template-columns: 1fr;
-    }
+  .painel-cozinha {
+    grid-template-columns: 1fr;
+  }
 
-    .coluna {
-        min-height: auto;
-    }
+  .coluna {
+    min-height: auto;
+  }
 }
 
 @media (max-width: 650px) {
-    .header-cozinha {
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 12px 15px;
-    }
+  .header-cozinha {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 12px 15px;
+  }
 
-    .titulo-cozinha {
-        text-align: center;
-    }
+  .titulo-cozinha {
+    text-align: center;
+  }
 
-    .cozinha-container {
-        padding: 25px 12px;
-    }
+  .cozinha-container {
+    padding: 25px 12px;
+  }
 
-    .cabecalho-pedidos {
-        align-items: stretch;
-        flex-direction: column;
-    }
+  .cabecalho-pedidos {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 
 /* Cartões escuros para preservar o contraste do padrão Don Cabrón. */
 body.tema-claro,
 body.tema-claro .pedido-card,
 body.tema-claro .coluna {
-    --texto: #fff;
-    --card: rgba(52, 19, 8, .94);
-    color: #fff;
+  --texto: #fff;
+  --card: rgba(52, 19, 8, 0.94);
+  color: #fff;
 }
 
-body.tema-claro .coluna { background: rgba(45, 15, 7, .66); }
-body.tema-claro .pedido-itens li { background: rgba(255, 255, 255, .08); }
+body.tema-claro .coluna {
+  background: rgba(45, 15, 7, 0.66);
+}
+body.tema-claro .pedido-itens li {
+  background: rgba(255, 255, 255, 0.08);
+}

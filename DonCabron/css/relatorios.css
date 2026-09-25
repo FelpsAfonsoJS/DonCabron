@@ -270,3 +270,13 @@ main {
 body:not(.dark) .relatorio-card {
   background: rgba(62, 18, 7, 0.92);
 }
+
+.acoes button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secao-relatorio { margin-top: 28px; }
+.secao-relatorio h3 { color: var(--laranja); margin-bottom: 12px; }
+.tabela-relatorio { overflow-x: auto; }
+.resumo-relatorio { padding: 16px; border: 1px solid var(--laranja); border-radius: 8px; }

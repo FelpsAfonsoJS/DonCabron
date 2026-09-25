@@ -1,67 +1,51 @@
 <!doctype html>
 <html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>🌶️ Don Cabrón 🌶️ - Usuários</title>
 
-    <link
-        rel="stylesheet"
-        href="/DonCabron/css/usuarios.css"
-    >
+    <link rel="stylesheet" href="/DonCabron/css/usuarios.css" />
+  </head>
 
-</head>
-
-
-<body>
-
+  <body>
     <!-- =====================================================
          HEADER
     ====================================================== -->
 
     <header class="header">
+      <!-- LOGO -->
 
-        <!-- LOGO -->
+      <div class="logo">
+        <img
+          class="logo-clara"
+          src="/DonCabron/img/logo.png"
+          alt="Logo Don Cabrón"
+        />
 
-        <div class="logo">
+        <img
+          class="logo-escura"
+          src="/DonCabron/img/logo escura.png"
+          alt="Logo Don Cabrón"
+        />
+      </div>
 
-            <img
-                class="logo-clara"
-                src="/DonCabron/img/logo.png"
-                alt="Logo Don Cabrón"
-            >
+      <!-- MENU HAMBURGUER -->
 
-            <img
-                class="logo-escura"
-                src="/DonCabron/img/logo escura.png"
-                alt="Logo Don Cabrón"
-            >
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        type="button"
+        aria-label="Abrir menu"
+      >
+        ☰
+      </button>
 
-        </div>
+      <!-- MENU -->
 
-
-        <!-- MENU HAMBURGUER -->
-
-        <button
-            class="menu-toggle"
-            id="menu-toggle"
-            type="button"
-            aria-label="Abrir menu"
-        >
-            ☰
-        </button>
-
-
-        <!-- MENU -->
-
-       <nav class="menu" id="menu">
+      <nav class="menu" id="menu">
         <ul class="menu-list">
           <li>
             <button id="btnInicio" class="menu-botao">INÍCIO</button>
@@ -79,195 +63,134 @@
           </li>
 
           <li>
-            <a class="menu-botao menu-link" href="/DonCabron/index/relatorios.html">RELATÓRIOS</a>
+            <a
+              class="menu-botao menu-link"
+              href="/DonCabron/index/relatorios.html"
+              >RELATÓRIOS</a
+            >
           </li>
           <li>
-            <a class="menu-botao menu-link" href="/DonCabron/index/cozinha.html">COZINHA</a>
+            <a class="menu-botao menu-link" href="/DonCabron/index/cozinha.html"
+              >COZINHA</a
+            >
           </li>
           <li class="menu-sair">
-            <a class="menu-botao menu-link" href="#" onclick="sairSistema(); return false;">SAIR</a>
+            <a
+              class="menu-botao menu-link"
+              href="#"
+              onclick="
+                sairSistema();
+                return false;
+              "
+              >SAIR</a
+            >
           </li>
         </ul>
       </nav>
 
+      <!-- BOTÃO TEMA -->
 
-        <!-- BOTÃO TEMA -->
-
-        <button
-            class="tema"
-            id="tema"
-            type="button"
-            aria-label="Alterar tema"
-        >
-
-            <span class="icone-tema">
-                🌙
-            </span>
-
-        </button>
-
+      <button class="tema" id="tema" type="button" aria-label="Alterar tema">
+        <span class="icone-tema"> 🌙 </span>
+      </button>
     </header>
-
-
 
     <!-- =====================================================
          CONTEÚDO
     ====================================================== -->
 
     <main>
-
-        <section class="cadastro-usuarios">
-
-
-            <!-- =================================================
+      <section class="cadastro-usuarios">
+        <!-- =================================================
                  BLOCO DE CADASTRO
             ================================================== -->
 
-            <div class="bloco-cadastro">
+        <div class="bloco-cadastro">
+          <h1>Cadastro de Funcionários</h1>
 
-                <h1>
-                    Cadastro de Funcionários
-                </h1>
+          <form id="formUsuario" novalidate>
+            <!-- NOME -->
 
+            <div class="campo">
+              <label for="nome"> Nome </label>
 
-                <form
-                    id="formUsuario"
-                    novalidate
-                >
-
-
-                    <!-- NOME -->
-
-                    <div class="campo">
-
-                        <label for="nome">
-                            Nome
-                        </label>
-
-                        <input
-                            type="text"
-                            id="nome"
-                            name="nome"
-                            placeholder="Nome do funcionário"
-                            maxlength="100"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- EMAIL -->
-
-                    <div class="campo">
-
-                        <label for="email">
-                            E-mail
-                        </label>
-
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="E-mail do funcionário"
-                            maxlength="100"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- SENHA -->
-
-                    <div class="campo">
-
-                        <label for="senha">
-                            Senha
-                        </label>
-
-                        <input
-                            type="password"
-                            id="senha"
-                            name="senha"
-                            placeholder="Senha de acesso"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- FUNÇÃO -->
-
-                    <div class="campo">
-
-                        <label for="tipo">
-                            Função
-                        </label>
-
-                        <select
-                            id="tipo"
-                            name="tipo"
-                            required
-                        >
-
-                            <option
-                                value=""
-                                selected
-                                disabled
-                            >
-                                Selecione a função
-                            </option>
-
-
-                            <option value="GARCOM">
-                                Garçom
-                            </option>
-
-
-                            <option value="COZINHA">
-                                Cozinha
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- BOTÃO -->
-
-                    <button
-                        type="submit"
-                        class="botao-cadastrar"
-                    >
-                        Cadastrar Funcionário
-                    </button>
-
-                </form>
-
-
-                <!-- MENSAGEM -->
-
-                <p
-                    id="mensagem-usuario"
-                    class="mensagem-usuario"
-                    aria-live="polite"
-                ></p>
-
+              <input
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Nome do funcionário"
+                maxlength="100"
+                required
+              />
             </div>
 
+            <!-- EMAIL -->
 
+            <div class="campo">
+              <label for="email"> E-mail </label>
 
-            <!-- =================================================
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="E-mail do funcionário"
+                maxlength="100"
+                required
+              />
+            </div>
+
+            <!-- SENHA -->
+
+            <div class="campo">
+              <label for="senha"> Senha </label>
+
+              <input
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Senha de acesso"
+                required
+              />
+            </div>
+
+            <!-- FUNÇÃO -->
+
+            <div class="campo">
+              <label for="tipo"> Função </label>
+
+              <select id="tipo" name="tipo" required>
+                <option value="" selected disabled>Selecione a função</option>
+
+                <option value="GARCOM">Garçom</option>
+
+                <option value="COZINHA">Cozinha</option>
+              </select>
+            </div>
+
+            <!-- BOTÃO -->
+
+            <button type="submit" class="botao-cadastrar">
+              Cadastrar Funcionário
+            </button>
+          </form>
+
+          <!-- MENSAGEM -->
+
+          <p
+            id="mensagem-usuario"
+            class="mensagem-usuario"
+            aria-live="polite"
+          ></p>
+        </div>
+
+        <!-- =================================================
                  LISTA DE FUNCIONÁRIOS
             ================================================== -->
 
-            <div class="lista-usuarios">
+        <div class="lista-usuarios">
+          <h2>Funcionários Cadastrados</h2>
 
-                <h2>
-                    Funcionários Cadastrados
-                </h2>
-
-
-                <!--
+          <!--
                     IMPORTANTE:
 
                     Esta div NÃO usa "lista-usuarios".
@@ -276,25 +199,12 @@
                     "lista-usuarios" pertence ao quadro externo.
                 -->
 
-                <div
-                    id="listaUsuarios"
-                    class="resultado-usuarios"
-                >
-
-                    <p class="carregando">
-                        Carregando funcionários...
-                    </p>
-
-                </div>
-
-            </div>
-
-
-        </section>
-
+          <div id="listaUsuarios" class="resultado-usuarios">
+            <p class="carregando">Carregando funcionários...</p>
+          </div>
+        </div>
+      </section>
     </main>
-
-
 
     <!-- =====================================================
          JAVASCRIPT
@@ -303,8 +213,5 @@
     <script src="/js/script.js"></script>
     <script src="/js/permissoes.js"></script>
     <script src="/js/usuarios.js?v=3"></script>
-
-
-</body>
-
+  </body>
 </html>

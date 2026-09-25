@@ -1,521 +1,435 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: "Poppins", sans-serif;
+  font-family: "Poppins", sans-serif;
 
-    min-height: 100vh;
+  min-height: 100vh;
 
-    background:
-        linear-gradient(
-            135deg,
-            #7a1f1f,
-            #c4451c,
-            #e69a2e,
-            #2e7d32,
-            #123c69
-        );
+  background: linear-gradient(
+    135deg,
+    #7a1f1f,
+    #c4451c,
+    #e69a2e,
+    #2e7d32,
+    #123c69
+  );
 
-    color: white;
+  color: white;
 }
-
 
 /* ============================= */
 /* CABEÇALHO */
 /* ============================= */
 
 .header-pedidos {
-    width: 100%;
+  width: 100%;
 
-    min-height: 120px;
+  min-height: 120px;
 
-    padding: 15px 40px;
+  padding: 15px 40px;
 
-    display: flex;
+  display: flex;
 
-    align-items: center;
+  align-items: center;
 
-    gap: 40px;
+  gap: 40px;
 
-    background:
-        rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.55);
 
-    box-shadow:
-        0 0 20px orange;
+  box-shadow: 0 0 20px orange;
 }
-
 
 .logo-pedidos img {
-    width: 130px;
+  width: 130px;
 
-    filter:
-        drop-shadow(0 0 10px orange);
+  filter: drop-shadow(0 0 10px orange);
 }
-
 
 .informacoes-pedido {
-    display: flex;
+  display: flex;
 
-    align-items: center;
+  align-items: center;
 
-    gap: 30px;
+  gap: 30px;
 }
-
 
 .informacoes-pedido h1 {
-    font-size: 30px;
+  font-size: 30px;
 
-    text-transform: uppercase;
+  text-transform: uppercase;
 
-    text-shadow:
-        0 0 10px orange;
+  text-shadow: 0 0 10px orange;
 }
-
 
 .informacoes-pedido p {
-    font-size: 18px;
+  font-size: 18px;
 }
-
 
 .informacoes-pedido strong {
-    color: orange;
+  color: orange;
 
-    text-shadow:
-        0 0 8px orange;
+  text-shadow: 0 0 8px orange;
 }
-
 
 /* ============================= */
 /* CONTEÚDO */
 /* ============================= */
 
 .container-pedidos {
-    width: 100%;
+  width: 100%;
 
-    max-width: 1400px;
+  max-width: 1400px;
 
-    margin: 40px auto;
+  margin: 40px auto;
 
-    padding: 0 25px;
+  padding: 0 25px;
 
-    display: grid;
+  display: grid;
 
-    grid-template-columns:
-        minmax(0, 2fr)
-        minmax(300px, 1fr);
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(300px, 1fr);
 
-    gap: 30px;
+  gap: 30px;
 }
-
 
 /* ============================= */
 /* CARDÁPIO */
 /* ============================= */
 
 .cardapio-pedido {
-    padding: 30px;
+  padding: 30px;
 
-    background:
-        rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.45);
 
-    border:
-        2px solid rgba(255, 165, 0, 0.5);
+  border: 2px solid rgba(255, 165, 0, 0.5);
 
-    border-radius: 25px;
+  border-radius: 25px;
 
-    backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 
-    box-shadow:
-        0 0 20px rgba(255, 165, 0, 0.25);
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.25);
 }
-
 
 .cardapio-pedido h2,
 .resumo-pedido h2 {
-    margin-bottom: 25px;
+  margin-bottom: 25px;
 
-    text-align: center;
+  text-align: center;
 
-    text-transform: uppercase;
+  text-transform: uppercase;
 
-    text-shadow:
-        0 0 10px orange;
+  text-shadow: 0 0 10px orange;
 }
-
 
 /* ============================= */
 /* PRODUTOS */
 /* ============================= */
 
 .lista-produtos-pedido {
-    display: grid;
+  display: grid;
 
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
-    gap: 20px;
+  gap: 20px;
 }
-
 
 .produto-pedido {
-    padding: 15px;
+  padding: 15px;
 
-    background:
-        rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.45);
 
-    border:
-        1px solid rgba(255, 165, 0, 0.5);
+  border: 1px solid rgba(255, 165, 0, 0.5);
 
-    border-radius: 20px;
+  border-radius: 20px;
 
-    text-align: center;
+  text-align: center;
 
-    transition: 0.3s;
+  transition: 0.3s;
 }
-
 
 .produto-pedido:hover {
-    transform:
-        translateY(-5px);
+  transform: translateY(-5px);
 
-    border-color:
-        orange;
+  border-color: orange;
 
-    box-shadow:
-        0 0 15px rgba(255, 165, 0, 0.5);
+  box-shadow: 0 0 15px rgba(255, 165, 0, 0.5);
 }
-
 
 .produto-pedido img {
-    width: 100%;
+  width: 100%;
 
-    height: 180px;
+  height: 180px;
 
-    object-fit: cover;
+  object-fit: cover;
 
-    border-radius: 15px;
+  border-radius: 15px;
 }
-
 
 .produto-pedido h3 {
-    margin-top: 10px;
+  margin-top: 10px;
 
-    font-size: 20px;
+  font-size: 20px;
 
-    color: orange;
+  color: orange;
 }
-
 
 .produto-pedido p {
-    margin-top: 8px;
+  margin-top: 8px;
 
-    font-size: 14px;
+  font-size: 14px;
 
-    opacity: 0.85;
+  opacity: 0.85;
 }
-
 
 .preco-produto {
-    display: block;
+  display: block;
 
-    margin-top: 10px;
+  margin-top: 10px;
 
-    font-size: 20px;
+  font-size: 20px;
 
-    font-weight: bold;
+  font-weight: bold;
 
-    color: white;
+  color: white;
 }
-
 
 /* ============================= */
 /* BOTÃO ADICIONAR */
 /* ============================= */
 
 .btn-adicionar {
-    width: 100%;
+  width: 100%;
 
-    margin-top: 15px;
+  margin-top: 15px;
 
-    padding: 10px;
+  padding: 10px;
 
-    border: none;
+  border: none;
 
-    border-radius: 12px;
+  border-radius: 12px;
 
-    background:
-        linear-gradient(
-            135deg,
-            #7a1f1f,
-            #c4451c,
-            #e69a2e
-        );
+  background: linear-gradient(135deg, #7a1f1f, #c4451c, #e69a2e);
 
-    color: white;
+  color: white;
 
-    font-family:
-        "Poppins", sans-serif;
+  font-family: "Poppins", sans-serif;
 
-    font-weight: bold;
+  font-weight: bold;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    transition: 0.3s;
+  transition: 0.3s;
 }
-
 
 .btn-adicionar:hover {
-    transform:
-        translateY(-2px);
+  transform: translateY(-2px);
 
-    box-shadow:
-        0 0 15px orange;
+  box-shadow: 0 0 15px orange;
 }
-
 
 /* ============================= */
 /* RESUMO */
 /* ============================= */
 
 .resumo-pedido {
-    height: fit-content;
+  height: fit-content;
 
-    padding: 30px;
+  padding: 30px;
 
-    background:
-        rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.55);
 
-    border:
-        2px solid rgba(255, 165, 0, 0.5);
+  border: 2px solid rgba(255, 165, 0, 0.5);
 
-    border-radius: 25px;
+  border-radius: 25px;
 
-    backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 
-    box-shadow:
-        0 0 20px rgba(255, 165, 0, 0.25);
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.25);
 }
-
 
 .item-pedido {
-    padding: 15px;
+  padding: 15px;
 
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 
-    border:
-        1px solid rgba(255, 165, 0, 0.4);
+  border: 1px solid rgba(255, 165, 0, 0.4);
 
-    border-radius: 12px;
+  border-radius: 12px;
 
-    background:
-        rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
-
 
 .item-pedido strong {
-    display: block;
+  display: block;
 
-    color: orange;
+  color: orange;
 }
-
 
 .item-pedido span {
-    font-size: 14px;
+  font-size: 14px;
 }
-
 
 /* ============================= */
 /* TOTAL */
 /* ============================= */
 
 .total-pedido {
-    margin-top: 25px;
+  margin-top: 25px;
 
-    padding-top: 20px;
+  padding-top: 20px;
 
-    border-top:
-        2px solid orange;
+  border-top: 2px solid orange;
 
-    display: flex;
+  display: flex;
 
-    justify-content: space-between;
+  justify-content: space-between;
 
-    font-size: 20px;
+  font-size: 20px;
 }
-
 
 .total-pedido strong {
-    color: orange;
+  color: orange;
 
-    text-shadow:
-        0 0 8px orange;
+  text-shadow: 0 0 8px orange;
 }
 
-
 .pedido-vazio {
-    text-align: center;
+  text-align: center;
 
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .btn-confirmar {
-    width: 100%;
-    margin-top: 20px;
-    padding: 12px;
-    border: none;
-    border-radius: 15px;
-    background:
-        linear-gradient(
-            135deg,
-            #7a1f1f,
-            #c4451c,
-            #e69a2e
-        );
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #7a1f1f, #c4451c, #e69a2e);
 
-    color: white;
+  color: white;
 
-    font-family:
-        "Poppins", sans-serif;
+  font-family: "Poppins", sans-serif;
 
-    font-weight: bold;
+  font-weight: bold;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    transition: 0.3s;
+  transition: 0.3s;
 }
 
 .btn-quantidade {
-    width: 30px;
-    height: 30px;
-    margin-left: 0;
-    border: none;
-    border-radius: 50%;
-    background:
-        linear-gradient(
-            135deg,
-            #7a1f1f,
-            #c4451c,
-            #e69a2e
-        );
+  width: 30px;
+  height: 30px;
+  margin-left: 0;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7a1f1f, #c4451c, #e69a2e);
 
-    color: white;
+  color: white;
 
-    font-family:
-        "Poppins", sans-serif;
+  font-family: "Poppins", sans-serif;
 
-    font-weight: bold;
+  font-weight: bold;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    transition: 0.3s;
+  transition: 0.3s;
 }
 .btn-confirmar:hover {
-    transform:
-        translateY(-2px);
+  transform: translateY(-2px);
 
-    box-shadow:
-        0 0 15px orange;
+  box-shadow: 0 0 15px orange;
 }
 
 .quantidade {
-    display: inline-block;
-    width: 30px;
-    text-align: center;
+  display: inline-block;
+  width: 30px;
+  text-align: center;
 }
 
 #btnLiberarMesa {
-     width: 100%;
-    margin-top: 20px;
-    padding: 12px;
-    border: none;
-    border-radius: 15px;
-    background:
-        linear-gradient(
-            135deg,
-            #7a1f1f,
-            #c4451c,
-            #e69a2e
-        );
-    color: white;
-    font-family:
-        "Poppins", sans-serif;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #7a1f1f, #c4451c, #e69a2e);
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
 }
 #btnLiberarMesa:hover {
-    transform:
-        translateY(-2px);
+  transform: translateY(-2px);
 
-    box-shadow:
-        0 0 15px orange;
+  box-shadow: 0 0 15px orange;
 }
 /* ============================= */
 /* CELULAR */
 /* ============================= */
 
 @media (max-width: 900px) {
+  .header-pedidos {
+    padding: 15px;
 
-    .header-pedidos {
-        padding: 15px;
+    gap: 15px;
+  }
 
-        gap: 15px;
-    }
+  .informacoes-pedido {
+    flex-direction: column;
 
-    .informacoes-pedido {
-        flex-direction: column;
+    align-items: flex-start;
 
-        align-items: flex-start;
+    gap: 3px;
+  }
 
-        gap: 3px;
-    }
+  .informacoes-pedido h1 {
+    font-size: 24px;
+  }
 
-    .informacoes-pedido h1 {
-        font-size: 24px;
-    }
+  .container-pedidos {
+    grid-template-columns: 1fr;
 
-    .container-pedidos {
-        grid-template-columns: 1fr;
+    margin-top: 25px;
+  }
 
-        margin-top: 25px;
-    }
-
-    .lista-produtos-pedido {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-    }
+  .lista-produtos-pedido {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-
 @media (max-width: 600px) {
+  .header-pedidos {
+    flex-direction: column;
 
-    .header-pedidos {
-        flex-direction: column;
+    text-align: center;
+  }
 
-        text-align: center;
-    }
+  .informacoes-pedido {
+    align-items: center;
+  }
 
-    .informacoes-pedido {
-        align-items: center;
-    }
+  .container-pedidos {
+    padding: 0 10px;
+  }
 
-    .container-pedidos {
-        padding: 0 10px;
-    }
+  .cardapio-pedido,
+  .resumo-pedido {
+    padding: 20px 15px;
+  }
 
-    .cardapio-pedido,
-    .resumo-pedido {
-        padding: 20px 15px;
-    }
+  .lista-produtos-pedido {
+    grid-template-columns: 1fr;
+  }
 
-    .lista-produtos-pedido {
-        grid-template-columns: 1fr;
-    }
-
-    .produto-pedido img {
-        height: 220px;
-    }
+  .produto-pedido img {
+    height: 220px;
+  }
 }

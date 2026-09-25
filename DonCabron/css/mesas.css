@@ -63,7 +63,6 @@ body.dark {
   --cor-menu: white;
 }
 
-
 body {
   font-family: "Poppins", sans-serif;
   background: var(--fundo-principal);
@@ -106,7 +105,6 @@ body {
   filter: drop-shadow(0 0 10px orange);
 }
 
-
 .menu {
   flex: 1;
   display: flex;
@@ -128,12 +126,12 @@ body {
   align-items: center;
 }
 .menu-list > li:not(:last-child)::after {
-    content: "";
-    margin: 0 15px;
-    color: var(--cor-menu);
-    font-size: 30px;
-    font-weight: bold;
-    text-shadow: var(--sombra);
+  content: "";
+  margin: 0 15px;
+  color: var(--cor-menu);
+  font-size: 30px;
+  font-weight: bold;
+  text-shadow: var(--sombra);
 }
 .menu-botao {
   display: block;
@@ -146,8 +144,17 @@ body {
   cursor: pointer;
   text-shadow: var(--sombra);
 }
-.menu-link { text-decoration: none; }
-.menu-botao, .menu-link { transition: transform .3s ease, box-shadow .3s ease, color .3s ease, background .3s ease; }
+.menu-link {
+  text-decoration: none;
+}
+.menu-botao,
+.menu-link {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease,
+    background 0.3s ease;
+}
 .menu-botao:hover {
   background:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -159,62 +166,52 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 .menu-cadastro {
-    position: relative;
+  position: relative;
 }
 .dropdown-cadastro {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 100px;
-    padding: 1px;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background:
-        linear-gradient(
-            rgba(0, 0, 0, 0.6),
-            rgba(0, 0, 0, 0.6)
-        ),
-        var(--header);
-    background-size: cover;
-    border-radius: 15px;
-    box-shadow:
-        0 5px 20px rgba(0, 0, 0, 0.5),
-        0 0 15px orange;
-    z-index: 2000;
-    
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 100px;
+  padding: 1px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), var(--header);
+  background-size: cover;
+  border-radius: 15px;
+  box-shadow:
+    0 5px 20px rgba(0, 0, 0, 0.5),
+    0 0 15px orange;
+  z-index: 2000;
 }
 .dropdown-cadastro a {
-
-    display: block;
-    padding: 10px 20px;
-    color: var(--cor-menu2);
-    text-shadow: var(--sombra);
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    border-radius: 10px;
-    transition: 0.3s;
+  display: block;
+  padding: 10px 20px;
+  color: var(--cor-menu2);
+  text-shadow: var(--sombra);
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 10px;
+  transition: 0.3s;
 }
 
 .dropdown-cadastro a:hover {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(/DonCabron/img/away.png);
 
-    background:
-        linear-gradient(
-            rgba(0, 0, 0, 0.5),
-            rgba(0, 0, 0, 0.5)
-        ),
-        url(/DonCabron/img/away.png);
-
-    background-size: cover;
-    color: white;
-    text-shadow: 2px 2px 5px red;
-    transform: translateX(3px);
+  background-size: cover;
+  color: white;
+  text-shadow: 2px 2px 5px red;
+  transform: translateX(3px);
 }
 .dropdown-cadastro.escondido {
-    display: none;
+  display: none;
 }
 .menu-toggle {
   margin-right: 30px;
@@ -255,14 +252,18 @@ body {
   background: transparent;
   transition: 0.4s;
 }
-    #btnMenu, #btnInicio, #btnRelatorios {
-        font-size: 22px;
+#btnMenu,
+#btnInicio,
+#btnRelatorios {
+  font-size: 22px;
 
-        padding: 8px 15px;
+  padding: 8px 15px;
 
-        cursor: pointer;
-    }
-    #btnMenu:hover, #btnInicio:hover, #btnRelatorios:hover {
+  cursor: pointer;
+}
+#btnMenu:hover,
+#btnInicio:hover,
+#btnRelatorios:hover {
   background:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(/DonCabron/img/away.png);
@@ -377,7 +378,6 @@ h2 {
   border-color: orange;
   box-shadow: 0 0 12px rgba(255, 165, 0, 0.5);
 }
-
 
 #formMesa button {
   grid-column: 1 / -1;
@@ -526,25 +526,25 @@ h2 {
   box-shadow: 0 0 15px rgba(255, 1, 1, 0.5);
 }
 .btn-reativar {
-    margin-top: 10px;
-    padding: 3px 10px;
-    border: 1px solid rgba(0, 255, 0, 0.5);
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.5);
-    color: var(--texto);
-    text-shadow: var(--sombra);
-    text-transform: uppercase;
-    font:
-      15px "Poppins",
-      sans-serif;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-  }
+  margin-top: 10px;
+  padding: 3px 10px;
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--texto);
+  text-shadow: var(--sombra);
+  text-transform: uppercase;
+  font:
+    15px "Poppins",
+    sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
 
-  .btn-reativar:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+.btn-reativar:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
 }
 
 /* =========================================================
@@ -569,7 +569,6 @@ h2 {
   .logo img {
     max-width: 130px;
   }
-
 
   .menu-toggle {
     display: flex;
@@ -620,7 +619,6 @@ h2 {
     flex-direction: column;
     align-items: center;
   }
-
 
   #btnMenu {
     font-size: 22px;

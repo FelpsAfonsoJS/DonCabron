@@ -1,147 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌶️ Don Cabrón 🌶️ - Pedidos </title>
-    
-    <link 
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet" >
-    <link rel="stylesheet" href="/DonCabron/css/pedidos.css">
-</head>
-<body>
-     <header class="header-pedidos">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🌶️ Don Cabrón 🌶️ - Pedidos</title>
 
-        <div class="logo-pedidos">
-            <img
-                src="/DonCabron/img/logo.png"
-                alt="Don Cabrón"
-            >
-        </div>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/DonCabron/css/pedidos.css" />
+  </head>
+  <body>
+    <header class="header-pedidos">
+      <div class="logo-pedidos">
+        <img src="/DonCabron/img/logo.png" alt="Don Cabrón" />
+      </div>
 
-        <div class="informacoes-pedido">
+      <div class="informacoes-pedido">
+        <h1>Pedido</h1>
 
-            <h1>Pedido</h1>
+        <p>
+          Mesa:
+          <strong id="numeroMesa">...</strong>
+        </p>
 
-            <p>
-                Mesa:
-                <strong id="numeroMesa">...</strong>
-            </p>
+        <p>
+          Comanda:
+          <strong id="numeroComanda">...</strong>
+        </p>
 
-            <p>
-                Comanda:
-                <strong id="numeroComanda">...</strong>
-            </p>
-
-            <button id="btnLiberarMesa" type="button" hidden>
-                Liberar mesa sem pedidos
-            </button>
-
-        </div>
-
+        <button id="btnLiberarMesa" type="button" hidden>
+          Liberar mesa sem pedidos
+        </button>
+      </div>
     </header>
 
-
     <main class="container-pedidos">
+      <section class="cardapio-pedido">
+        <h2>Cardápio</h2>
 
-        <section class="cardapio-pedido">
+        <div id="listaProdutos" class="lista-produtos-pedido">
+          <p>Carregando produtos...</p>
+        </div>
+      </section>
 
-            <h2>Cardápio</h2>
+      <aside class="resumo-pedido">
+        <h2>Pedido da Mesa</h2>
 
-            <div
-                id="listaProdutos"
-                class="lista-produtos-pedido"
-            >
-                <p>Carregando produtos...</p>
-            </div>
+        <!-- ITENS JÁ ENVIADOS -->
 
-        </section>
+        <div class="secao-pedido">
+          <h3>
+            Itens enviados
+            <span class="cadeado">🌶️</span>
+          </h3>
 
+          <p class="descricao-secao">
+            Produtos que já foram enviados para a cozinha.
+          </p>
 
-        <aside class="resumo-pedido">
+          <div id="listaItensEnviados">
+            <p class="pedido-vazio">Nenhum item enviado.</p>
+          </div>
+        </div>
 
-            <h2>Pedido da Mesa</h2>
+        <!-- NOVO PEDIDO -->
 
+        <div class="secao-pedido novo-pedido">
+          <h3>Novo pedido ✏️</h3>
 
-            <!-- ITENS JÁ ENVIADOS -->
+          <p class="descricao-secao">
+            Adicione os produtos que o cliente está pedindo agora.
+          </p>
 
-            <div class="secao-pedido">
+          <div id="listaPedidoAtual">
+            <p class="pedido-vazio">Nenhum produto adicionado.</p>
+          </div>
 
-                <h3>
-                    Itens enviados
-                    <span class="cadeado">🌶️</span>
-                </h3>
+          <div class="total-pedido">
+            <span> Total: </span>
 
-                <p class="descricao-secao">
-                    Produtos que já foram enviados para a cozinha.
-                </p>
+            <strong id="totalPedido"> R$ 0,00 </strong>
+          </div>
 
-                <div id="listaItensEnviados">
-
-                    <p class="pedido-vazio">
-                        Nenhum item enviado.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- NOVO PEDIDO -->
-
-            <div class="secao-pedido novo-pedido">
-
-                <h3>
-                    Novo pedido ✏️
-                </h3>
-
-                <p class="descricao-secao">
-                    Adicione os produtos que o cliente está pedindo agora.
-                </p>
-
-
-                <div id="listaPedidoAtual">
-
-                    <p class="pedido-vazio">
-                        Nenhum produto adicionado.
-                    </p>
-
-                </div>
-
-
-                <div class="total-pedido">
-
-                    <span>
-                        Total:
-                    </span>
-
-                    <strong id="totalPedido">
-                        R$ 0,00
-                    </strong>
-
-                </div>
-
-
-                <button
-                    id="btnConfirmarPedido"
-                    class="btn-confirmar"
-                    type="button"
-                    disabled
-                >
-                    Confirmar pedido
-                </button>
-
-            </div>
-
-        </aside>
-
+          <button
+            id="btnConfirmarPedido"
+            class="btn-confirmar"
+            type="button"
+            disabled
+          >
+            Confirmar pedido
+          </button>
+        </div>
+      </aside>
     </main>
 
     <script src="/js/permissoes.js"></script>
     <script src="/js/pedidos.js"></script>
-
-    
-</body>
+  </body>
 </html>

@@ -4,46 +4,35 @@ const router = express.Router();
 
 const conexao = require("../config/database");
 
-
 // ========================================
 // ABRIR COMANDA PARA UMA MESA
 // ========================================
 
 // router.post("/", async (req, res) => {
-router.post(
-    "/",
-    autenticar,
-    permitir("GARCOM", "ADMIN"),
-    async (req, res) => {
-    const conexaoTransacao = await conexao.getConnection();
+router.post("/", autenticar, permitir("GARCOM", "ADMIN"), async (req, res) => {
+  const conexaoTransacao = await conexao.getConnection();
 
-    try {
+  try {
+    const { mesa_id } = req.body;
 
-        const { mesa_id } = req.body;
+    // ========================================
+    // VALIDAR DADOS
+    // ========================================
 
+    if (!mesa_id) {
+      return res.status(400).json({
+        erro: "O ID da mesa é obrigatório",
+      });
+    }
 
-        // ========================================
-        // VALIDAR DADOS
-        // ========================================
+    await conexaoTransacao.beginTransaction();
 
-        if (!mesa_id) {
+    // ========================================
+    // BUSCAR E BLOQUEAR A MESA
+    // ========================================
 
-            return res.status(400).json({
-                erro: "O ID da mesa é obrigatório"
-            });
-
-        }
-
-
-        await conexaoTransacao.beginTransaction();
-
-
-        // ========================================
-        // BUSCAR E BLOQUEAR A MESA
-        // ========================================
-
-        const [mesas] = await conexaoTransacao.query(
-            `
+    const [mesas] = await conexaoTransacao.query(
+      `
             SELECT
                 id,
                 numero,
@@ -54,60 +43,49 @@ router.post(
             WHERE id = ?
             FOR UPDATE
             `,
-            [mesa_id]
-        );
+      [mesa_id],
+    );
 
+    if (mesas.length === 0) {
+      await conexaoTransacao.rollback();
 
-        if (mesas.length === 0) {
+      return res.status(404).json({
+        erro: "Mesa não encontrada",
+      });
+    }
 
-            await conexaoTransacao.rollback();
+    const mesa = mesas[0];
 
-            return res.status(404).json({
-                erro: "Mesa não encontrada"
-            });
+    // ========================================
+    // VERIFICAR SE A MESA ESTÁ ATIVA
+    // ========================================
 
-        }
+    if (mesa.ativo !== 1) {
+      await conexaoTransacao.rollback();
 
+      return res.status(400).json({
+        erro: "Esta mesa está desativada",
+      });
+    }
 
-        const mesa = mesas[0];
+    // ========================================
+    // VERIFICAR SE JÁ ESTÁ OCUPADA
+    // ========================================
 
+    if (mesa.status === "OCUPADA") {
+      await conexaoTransacao.rollback();
 
-        // ========================================
-        // VERIFICAR SE A MESA ESTÁ ATIVA
-        // ========================================
+      return res.status(400).json({
+        erro: "Esta mesa já está ocupada",
+      });
+    }
 
-        if (mesa.ativo !== 1) {
+    // ========================================
+    // CRIAR COMANDA
+    // ========================================
 
-            await conexaoTransacao.rollback();
-
-            return res.status(400).json({
-                erro: "Esta mesa está desativada"
-            });
-
-        }
-
-
-        // ========================================
-        // VERIFICAR SE JÁ ESTÁ OCUPADA
-        // ========================================
-
-        if (mesa.status === "OCUPADA") {
-
-            await conexaoTransacao.rollback();
-
-            return res.status(400).json({
-                erro: "Esta mesa já está ocupada"
-            });
-
-        }
-
-
-        // ========================================
-        // CRIAR COMANDA
-        // ========================================
-
-        const [resultado] = await conexaoTransacao.query(
-            `
+    const [resultado] = await conexaoTransacao.query(
+      `
             INSERT INTO comandas
             (
                 mesa_id,
@@ -116,74 +94,57 @@ router.post(
             )
             VALUES (?, ?, 'ABERTA')
             `,
-            [mesa_id, req.usuario.id]
-        );
+      [mesa_id, req.usuario.id],
+    );
 
+    const comandaId = resultado.insertId;
 
-        const comandaId = resultado.insertId;
+    // ========================================
+    // OCUPAR MESA
+    // ========================================
 
-
-        // ========================================
-        // OCUPAR MESA
-        // ========================================
-
-        await conexaoTransacao.query(
-            `
+    await conexaoTransacao.query(
+      `
             UPDATE mesas
             SET status = 'OCUPADA'
             WHERE id = ?
             `,
-            [mesa_id]
-        );
+      [mesa_id],
+    );
 
+    // ========================================
+    // CONFIRMAR TRANSAÇÃO
+    // ========================================
 
-        // ========================================
-        // CONFIRMAR TRANSAÇÃO
-        // ========================================
+    await conexaoTransacao.commit();
 
-        await conexaoTransacao.commit();
+    return res.status(201).json({
+      mensagem: "Comanda aberta com sucesso",
 
+      mesa: {
+        id: mesa.id,
+        numero: mesa.numero,
+        capacidade: mesa.capacidade,
+        status: "OCUPADA",
+      },
 
-        return res.status(201).json({
+      comanda: {
+        id: comandaId,
+        mesa_id: mesa.id,
+        status: "ABERTA",
+      },
+    });
+  } catch (erro) {
+    await conexaoTransacao.rollback();
 
-            mensagem: "Comanda aberta com sucesso",
+    console.error("Erro ao abrir comanda:", erro);
 
-            mesa: {
-                id: mesa.id,
-                numero: mesa.numero,
-                capacidade: mesa.capacidade,
-                status: "OCUPADA"
-            },
-
-            comanda: {
-                id: comandaId,
-                mesa_id: mesa.id,
-                status: "ABERTA"
-            }
-
-        });
-
-
-    } catch (erro) {
-
-        await conexaoTransacao.rollback();
-
-        console.error(
-            "Erro ao abrir comanda:",
-            erro
-        );
-
-        return res.status(500).json({
-            erro: "Erro ao abrir comanda"
-        });
-
-    } finally {
-
-        conexaoTransacao.release();
-
-    }
-
+    return res.status(500).json({
+      erro: "Erro ao abrir comanda",
+    });
+  } finally {
+    conexaoTransacao.release();
+  }
 });
-
 
 module.exports = router;

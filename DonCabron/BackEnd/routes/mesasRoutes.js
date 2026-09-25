@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 
@@ -11,10 +10,8 @@ const { autenticar, permitir } = require("../middleware/auth");
 // ============================================================
 
 router.get("/todas", async (req, res) => {
-
-    try {
-
-        const [mesas] = await conexao.query(`
+  try {
+    const [mesas] = await conexao.query(`
             SELECT
                 id,
                 numero,
@@ -25,30 +22,23 @@ router.get("/todas", async (req, res) => {
             ORDER BY numero
         `);
 
-        return res.json(mesas);
+    return res.json(mesas);
+  } catch (erro) {
+    console.error("Erro ao buscar todas as mesas:", erro);
 
-    } catch (erro) {
-
-        console.error("Erro ao buscar todas as mesas:", erro);
-
-        return res.status(500).json({
-            erro: "Erro ao buscar todas as mesas"
-        });
-
-    }
-
+    return res.status(500).json({
+      erro: "Erro ao buscar todas as mesas",
+    });
+  }
 });
-
 
 // ============================================================
 // LISTAR MESAS
 // ============================================================
 
 router.get("/", async (req, res) => {
-
-    try {
-
-        const [mesas] = await conexao.query(`
+  try {
+    const [mesas] = await conexao.query(`
             SELECT
                 id,
                 numero,
@@ -59,46 +49,32 @@ router.get("/", async (req, res) => {
             ORDER BY numero
         `);
 
-        return res.json(mesas);
+    return res.json(mesas);
+  } catch (erro) {
+    console.error("Erro ao buscar mesas:", erro);
 
-    } catch (erro) {
-
-        console.error("Erro ao buscar mesas:", erro);
-
-        return res.status(500).json({
-            erro: "Erro ao buscar mesas"
-        });
-
-    }
-
+    return res.status(500).json({
+      erro: "Erro ao buscar mesas",
+    });
+  }
 });
-
 
 // ============================================================
 // CADASTRAR MESA
 // ============================================================
 
 router.post("/", async (req, res) => {
+  try {
+    const { numero, capacidade } = req.body;
 
-    try {
+    if (!numero || !capacidade) {
+      return res.status(400).json({
+        erro: "Número e capacidade são obrigatórios",
+      });
+    }
 
-        const {
-            numero,
-            capacidade
-        } = req.body;
-
-
-        if (!numero || !capacidade) {
-
-            return res.status(400).json({
-                erro: "Número e capacidade são obrigatórios"
-            });
-
-        }
-
-
-        const [resultado] = await conexao.query(
-            `
+    const [resultado] = await conexao.query(
+      `
             INSERT INTO mesas
             (
                 numero,
@@ -108,43 +84,28 @@ router.post("/", async (req, res) => {
             )
             VALUES (?, ?, 'LIVRE', 1)
             `,
-            [
-                numero,
-                capacidade
-            ]
-        );
+      [numero, capacidade],
+    );
 
+    return res.status(201).json({
+      mensagem: "Mesa cadastrada com sucesso",
 
-        return res.status(201).json({
+      id: resultado.insertId,
+    });
+  } catch (erro) {
+    console.error("Erro ao cadastrar mesa:", erro);
 
-            mensagem: "Mesa cadastrada com sucesso",
-
-            id: resultado.insertId
-
-        });
-
-    } catch (erro) {
-
-        console.error("Erro ao cadastrar mesa:", erro);
-
-
-        if (erro.code === "ER_DUP_ENTRY") {
-
-            return res.status(409).json({
-                erro: "Esse número de mesa já está cadastrado."
-            });
-
-        }
-
-
-        return res.status(500).json({
-            erro: "Erro ao cadastrar mesa"
-        });
-
+    if (erro.code === "ER_DUP_ENTRY") {
+      return res.status(409).json({
+        erro: "Esse número de mesa já está cadastrado.",
+      });
     }
 
+    return res.status(500).json({
+      erro: "Erro ao cadastrar mesa",
+    });
+  }
 });
-
 
 // ============================================================
 // ALTERAR MESA
@@ -152,28 +113,19 @@ router.post("/", async (req, res) => {
 // ============================================================
 
 router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
 
-    try {
+    const { numero, capacidade } = req.body;
 
-        const { id } = req.params;
+    if (!numero || !capacidade) {
+      return res.status(400).json({
+        erro: "Número e capacidade são obrigatórios",
+      });
+    }
 
-        const {
-            numero,
-            capacidade
-        } = req.body;
-
-
-        if (!numero || !capacidade) {
-
-            return res.status(400).json({
-                erro: "Número e capacidade são obrigatórios"
-            });
-
-        }
-
-
-        const [mesas] = await conexao.query(
-            `
+    const [mesas] = await conexao.query(
+      `
             SELECT
                 id,
                 numero,
@@ -183,42 +135,31 @@ router.put("/:id", async (req, res) => {
             FROM mesas
             WHERE id = ?
             `,
-            [id]
-        );
+      [id],
+    );
 
+    if (mesas.length === 0) {
+      return res.status(404).json({
+        erro: "Mesa não encontrada",
+      });
+    }
 
-        if (mesas.length === 0) {
+    const mesa = mesas[0];
 
-            return res.status(404).json({
-                erro: "Mesa não encontrada"
-            });
+    if (mesa.ativo !== 1) {
+      return res.status(400).json({
+        erro: "Esta mesa está desativada",
+      });
+    }
 
-        }
+    if (mesa.status === "OCUPADA") {
+      return res.status(400).json({
+        erro: "Não é possível alterar uma mesa que está ocupada",
+      });
+    }
 
-
-        const mesa = mesas[0];
-
-
-        if (mesa.ativo !== 1) {
-
-            return res.status(400).json({
-                erro: "Esta mesa está desativada"
-            });
-
-        }
-
-
-        if (mesa.status === "OCUPADA") {
-
-            return res.status(400).json({
-                erro: "Não é possível alterar uma mesa que está ocupada"
-            });
-
-        }
-
-
-        const [resultado] = await conexao.query(
-            `
+    const [resultado] = await conexao.query(
+      `
             UPDATE mesas
             SET
                 numero = ?,
@@ -226,49 +167,32 @@ router.put("/:id", async (req, res) => {
             WHERE id = ?
             AND ativo = 1
             `,
-            [
-                numero,
-                capacidade,
-                id
-            ]
-        );
+      [numero, capacidade, id],
+    );
 
-
-        if (resultado.affectedRows === 0) {
-
-            return res.status(400).json({
-                erro: "Não foi possível alterar a mesa"
-            });
-
-        }
-
-
-        return res.json({
-            mensagem: "Mesa alterada com sucesso"
-        });
-
-    } catch (erro) {
-
-        console.error("Erro ao alterar mesa:", erro);
-
-
-        if (erro.code === "ER_DUP_ENTRY") {
-
-            return res.status(409).json({
-                erro: "Esse número de mesa já está cadastrado."
-            });
-
-        }
-
-
-        return res.status(500).json({
-            erro: "Erro ao alterar mesa"
-        });
-
+    if (resultado.affectedRows === 0) {
+      return res.status(400).json({
+        erro: "Não foi possível alterar a mesa",
+      });
     }
 
-});
+    return res.json({
+      mensagem: "Mesa alterada com sucesso",
+    });
+  } catch (erro) {
+    console.error("Erro ao alterar mesa:", erro);
 
+    if (erro.code === "ER_DUP_ENTRY") {
+      return res.status(409).json({
+        erro: "Esse número de mesa já está cadastrado.",
+      });
+    }
+
+    return res.status(500).json({
+      erro: "Erro ao alterar mesa",
+    });
+  }
+});
 
 // ============================================================
 // DESATIVAR MESA
@@ -276,14 +200,11 @@ router.put("/:id", async (req, res) => {
 // ============================================================
 
 router.patch("/:id/desativar", async (req, res) => {
+  try {
+    const { id } = req.params;
 
-    try {
-
-        const { id } = req.params;
-
-
-        const [mesas] = await conexao.query(
-            `
+    const [mesas] = await conexao.query(
+      `
             SELECT
                 id,
                 numero,
@@ -292,90 +213,67 @@ router.patch("/:id/desativar", async (req, res) => {
             FROM mesas
             WHERE id = ?
             `,
-            [id]
-        );
+      [id],
+    );
 
+    if (mesas.length === 0) {
+      return res.status(404).json({
+        erro: "Mesa não encontrada",
+      });
+    }
 
-        if (mesas.length === 0) {
+    const mesa = mesas[0];
 
-            return res.status(404).json({
-                erro: "Mesa não encontrada"
-            });
+    if (mesa.ativo !== 1) {
+      return res.status(400).json({
+        erro: "Mesa já está desativada",
+      });
+    }
 
-        }
+    if (mesa.status === "OCUPADA") {
+      return res.status(400).json({
+        erro: "Não é possível desativar uma mesa que está ocupada",
+      });
+    }
 
-
-        const mesa = mesas[0];
-
-
-        if (mesa.ativo !== 1) {
-
-            return res.status(400).json({
-                erro: "Mesa já está desativada"
-            });
-
-        }
-
-
-        if (mesa.status === "OCUPADA") {
-
-            return res.status(400).json({
-                erro: "Não é possível desativar uma mesa que está ocupada"
-            });
-
-        }
-
-
-        const [resultado] = await conexao.query(
-            `
+    const [resultado] = await conexao.query(
+      `
             UPDATE mesas
             SET ativo = 0
             WHERE id = ?
             AND ativo = 1
             `,
-            [id]
-        );
+      [id],
+    );
 
-
-        if (resultado.affectedRows === 0) {
-
-            return res.status(400).json({
-                erro: "Não foi possível desativar a mesa"
-            });
-
-        }
-
-
-        return res.json({
-            mensagem: "Mesa desativada com sucesso"
-        });
-
-    } catch (erro) {
-
-        console.error("Erro ao desativar mesa:", erro);
-
-        return res.status(500).json({
-            erro: "Erro ao desativar mesa"
-        });
-
+    if (resultado.affectedRows === 0) {
+      return res.status(400).json({
+        erro: "Não foi possível desativar a mesa",
+      });
     }
 
-});
+    return res.json({
+      mensagem: "Mesa desativada com sucesso",
+    });
+  } catch (erro) {
+    console.error("Erro ao desativar mesa:", erro);
 
+    return res.status(500).json({
+      erro: "Erro ao desativar mesa",
+    });
+  }
+});
 
 // ============================================================
 // REATIVAR MESA
 // ============================================================
 
 router.patch("/:id/reativar", async (req, res) => {
+  try {
+    const { id } = req.params;
 
-    try {
-
-        const { id } = req.params;
-
-
-        const [mesas] = await conexao.query(
-            `
+    const [mesas] = await conexao.query(
+      `
             SELECT
                 id,
                 numero,
@@ -385,42 +283,31 @@ router.patch("/:id/reativar", async (req, res) => {
             FROM mesas
             WHERE id = ?
             `,
-            [id]
-        );
+      [id],
+    );
 
+    if (mesas.length === 0) {
+      return res.status(404).json({
+        erro: "Mesa não encontrada",
+      });
+    }
 
-        if (mesas.length === 0) {
+    const mesa = mesas[0];
 
-            return res.status(404).json({
-                erro: "Mesa não encontrada"
-            });
+    if (mesa.ativo === 1) {
+      return res.status(400).json({
+        erro: "Esta mesa já está ativa",
+      });
+    }
 
-        }
+    if (mesa.status === "OCUPADA") {
+      return res.status(400).json({
+        erro: "Não é possível reativar uma mesa ocupada",
+      });
+    }
 
-
-        const mesa = mesas[0];
-
-
-        if (mesa.ativo === 1) {
-
-            return res.status(400).json({
-                erro: "Esta mesa já está ativa"
-            });
-
-        }
-
-
-        if (mesa.status === "OCUPADA") {
-
-            return res.status(400).json({
-                erro: "Não é possível reativar uma mesa ocupada"
-            });
-
-        }
-
-
-        const [resultado] = await conexao.query(
-            `
+    const [resultado] = await conexao.query(
+      `
             UPDATE mesas
             SET
                 ativo = 1,
@@ -428,55 +315,40 @@ router.patch("/:id/reativar", async (req, res) => {
             WHERE id = ?
             AND ativo = 0
             `,
-            [id]
-        );
+      [id],
+    );
 
-
-        if (resultado.affectedRows === 0) {
-
-            return res.status(400).json({
-                erro: "Não foi possível reativar a mesa"
-            });
-
-        }
-
-
-        return res.json({
-
-            mensagem: "Mesa reativada com sucesso",
-
-            mesa: {
-                id: mesa.id,
-                numero: mesa.numero,
-                capacidade: mesa.capacidade,
-                status: mesa.status,
-                ativo: 1
-            }
-
-        });
-
-    } catch (erro) {
-
-        console.error("Erro ao reativar mesa:", erro);
-
-
-        if (erro.code === "ER_DUP_ENTRY") {
-
-            return res.status(409).json({
-                erro: "Não é possível reativar esta mesa porque o número já está sendo usado por outra mesa."
-            });
-
-        }
-
-
-        return res.status(500).json({
-            erro: "Erro ao reativar mesa"
-        });
-
+    if (resultado.affectedRows === 0) {
+      return res.status(400).json({
+        erro: "Não foi possível reativar a mesa",
+      });
     }
 
-});
+    return res.json({
+      mensagem: "Mesa reativada com sucesso",
 
+      mesa: {
+        id: mesa.id,
+        numero: mesa.numero,
+        capacidade: mesa.capacidade,
+        status: mesa.status,
+        ativo: 1,
+      },
+    });
+  } catch (erro) {
+    console.error("Erro ao reativar mesa:", erro);
+
+    if (erro.code === "ER_DUP_ENTRY") {
+      return res.status(409).json({
+        erro: "Não é possível reativar esta mesa porque o número já está sendo usado por outra mesa.",
+      });
+    }
+
+    return res.status(500).json({
+      erro: "Erro ao reativar mesa",
+    });
+  }
+});
 
 // ============================================================
 // ABRIR MESA
@@ -489,27 +361,23 @@ router.patch("/:id/reativar", async (req, res) => {
 // ============================================================
 
 router.post(
-    "/:id/abrir",
-    autenticar,
-    permitir("GARCOM", "ADMIN"),
-    async (req, res) => {
-
+  "/:id/abrir",
+  autenticar,
+  permitir("GARCOM", "ADMIN"),
+  async (req, res) => {
     const conexaoTransacao = await conexao.getConnection();
 
     try {
+      const { id } = req.params;
 
-        const { id } = req.params;
+      await conexaoTransacao.beginTransaction();
 
+      // ----------------------------------------------------
+      // BUSCAR MESA
+      // ----------------------------------------------------
 
-        await conexaoTransacao.beginTransaction();
-
-
-        // ----------------------------------------------------
-        // BUSCAR MESA
-        // ----------------------------------------------------
-
-        const [mesas] = await conexaoTransacao.query(
-            `
+      const [mesas] = await conexaoTransacao.query(
+        `
             SELECT
                 id,
                 numero,
@@ -520,49 +388,40 @@ router.post(
             WHERE id = ?
             FOR UPDATE
             `,
-            [id]
-        );
+        [id],
+      );
 
+      if (mesas.length === 0) {
+        await conexaoTransacao.rollback();
 
-        if (mesas.length === 0) {
+        return res.status(404).json({
+          erro: "Mesa não encontrada",
+        });
+      }
 
-            await conexaoTransacao.rollback();
+      const mesa = mesas[0];
 
-            return res.status(404).json({
-                erro: "Mesa não encontrada"
-            });
+      // ----------------------------------------------------
+      // MESA DESATIVADA
+      // ----------------------------------------------------
 
-        }
+      if (mesa.ativo !== 1) {
+        await conexaoTransacao.rollback();
 
+        return res.status(400).json({
+          erro: "Esta mesa está desativada",
+        });
+      }
 
-        const mesa = mesas[0];
+      // ----------------------------------------------------
+      // MESA OCUPADA
+      //
+      // RECUPERAR COMANDA EXISTENTE
+      // ----------------------------------------------------
 
-
-        // ----------------------------------------------------
-        // MESA DESATIVADA
-        // ----------------------------------------------------
-
-        if (mesa.ativo !== 1) {
-
-            await conexaoTransacao.rollback();
-
-            return res.status(400).json({
-                erro: "Esta mesa está desativada"
-            });
-
-        }
-
-
-        // ----------------------------------------------------
-        // MESA OCUPADA
-        //
-        // RECUPERAR COMANDA EXISTENTE
-        // ----------------------------------------------------
-
-        if (mesa.status === "OCUPADA") {
-
-            const [comandas] = await conexaoTransacao.query(
-                `
+      if (mesa.status === "OCUPADA") {
+        const [comandas] = await conexaoTransacao.query(
+          `
                 SELECT
                     id,
                     mesa_id,
@@ -575,74 +434,64 @@ router.post(
                 ORDER BY id DESC
                 LIMIT 1
                 `,
-                [id]
-            );
+          [id],
+        );
 
+        if (comandas.length === 0) {
+          await conexaoTransacao.rollback();
 
-            if (comandas.length === 0) {
+          return res.status(409).json({
+            erro: "A mesa está ocupada, mas não possui uma comanda aberta.",
+          });
+        }
 
-                await conexaoTransacao.rollback();
-
-                return res.status(409).json({
-                    erro: "A mesa está ocupada, mas não possui uma comanda aberta."
-                });
-
-            }
-
-            const [pedidos] = await conexaoTransacao.query(
-                `
+        const [pedidos] = await conexaoTransacao.query(
+          `
                 SELECT id
                 FROM pedidos
                 WHERE comanda_id = ?
                 LIMIT 1
                 `,
-                [comandas[0].id]
-            );
+          [comandas[0].id],
+        );
 
-            const [itens] = await conexaoTransacao.query(
-                `
+        const [itens] = await conexaoTransacao.query(
+          `
                 SELECT id
                 FROM itens_comanda
                 WHERE comanda_id = ?
                 LIMIT 1
                 `,
-                [comandas[0].id]
-            );
+          [comandas[0].id],
+        );
 
+        await conexaoTransacao.commit();
 
-            await conexaoTransacao.commit();
+        return res.json({
+          mensagem: "Comanda existente recuperada",
 
+          mesa: {
+            id: mesa.id,
+            numero: mesa.numero,
+            capacidade: mesa.capacidade,
+            status: mesa.status,
+            ativo: mesa.ativo,
+          },
 
-            return res.json({
+          comanda: comandas[0],
 
-                mensagem: "Comanda existente recuperada",
+          pode_liberar: pedidos.length === 0 && itens.length === 0,
+        });
+      }
 
-                mesa: {
-                    id: mesa.id,
-                    numero: mesa.numero,
-                    capacidade: mesa.capacidade,
-                    status: mesa.status,
-                    ativo: mesa.ativo
-                },
+      // ----------------------------------------------------
+      // MESA LIVRE
+      //
+      // CRIAR NOVA COMANDA
+      // ----------------------------------------------------
 
-                comanda: comandas[0],
-
-                pode_liberar:
-                    pedidos.length === 0 && itens.length === 0
-
-            });
-
-        }
-
-
-        // ----------------------------------------------------
-        // MESA LIVRE
-        //
-        // CRIAR NOVA COMANDA
-        // ----------------------------------------------------
-
-        const [resultado] = await conexaoTransacao.query(
-            `
+      const [resultado] = await conexaoTransacao.query(
+        `
             INSERT INTO comandas
             (
                 mesa_id,
@@ -651,70 +500,58 @@ router.post(
             )
             VALUES (?, ?, 'ABERTA')
             `,
-            [id, req.usuario.id]
-        );
+        [id, req.usuario.id],
+      );
 
+      const comandaId = resultado.insertId;
 
-        const comandaId = resultado.insertId;
+      // ----------------------------------------------------
+      // ALTERAR STATUS DA MESA
+      // ----------------------------------------------------
 
-
-        // ----------------------------------------------------
-        // ALTERAR STATUS DA MESA
-        // ----------------------------------------------------
-
-        await conexaoTransacao.query(
-            `
+      await conexaoTransacao.query(
+        `
             UPDATE mesas
             SET status = 'OCUPADA'
             WHERE id = ?
             `,
-            [id]
-        );
+        [id],
+      );
 
+      await conexaoTransacao.commit();
 
-        await conexaoTransacao.commit();
+      return res.status(201).json({
+        mensagem: "Mesa aberta com sucesso",
 
+        mesa: {
+          id: mesa.id,
+          numero: mesa.numero,
+          capacidade: mesa.capacidade,
+          status: "OCUPADA",
+          ativo: mesa.ativo,
+        },
 
-        return res.status(201).json({
+        comanda: {
+          id: comandaId,
+          mesa_id: mesa.id,
+          status: "ABERTA",
+        },
 
-            mensagem: "Mesa aberta com sucesso",
-
-            mesa: {
-                id: mesa.id,
-                numero: mesa.numero,
-                capacidade: mesa.capacidade,
-                status: "OCUPADA",
-                ativo: mesa.ativo
-            },
-
-            comanda: {
-                id: comandaId,
-                mesa_id: mesa.id,
-                status: "ABERTA"
-            },
-
-            pode_liberar: true
-
-        });
-
+        pode_liberar: true,
+      });
     } catch (erro) {
+      await conexaoTransacao.rollback();
 
-        await conexaoTransacao.rollback();
+      console.error("Erro ao abrir mesa:", erro);
 
-        console.error("Erro ao abrir mesa:", erro);
-
-        return res.status(500).json({
-            erro: "Erro ao abrir mesa"
-        });
-
+      return res.status(500).json({
+        erro: "Erro ao abrir mesa",
+      });
     } finally {
-
-        conexaoTransacao.release();
-
+      conexaoTransacao.release();
     }
-
-});
-
+  },
+);
 
 // ============================================================
 // LIBERAR MESA SEM PEDIDOS
@@ -722,49 +559,47 @@ router.post(
 // ============================================================
 
 router.post(
-    "/:id/liberar-sem-pedidos",
-    autenticar,
-    permitir("GARCOM", "ADMIN"),
-    async (req, res) => {
+  "/:id/liberar-sem-pedidos",
+  autenticar,
+  permitir("GARCOM", "ADMIN"),
+  async (req, res) => {
+    const conexaoTransacao = await conexao.getConnection();
 
-        const conexaoTransacao = await conexao.getConnection();
+    try {
+      const { id } = req.params;
 
-        try {
+      await conexaoTransacao.beginTransaction();
 
-            const { id } = req.params;
-
-            await conexaoTransacao.beginTransaction();
-
-            const [mesas] = await conexaoTransacao.query(
-                `
+      const [mesas] = await conexaoTransacao.query(
+        `
                 SELECT id, numero, status, ativo
                 FROM mesas
                 WHERE id = ?
                 FOR UPDATE
                 `,
-                [id]
-            );
+        [id],
+      );
 
-            if (mesas.length === 0) {
-                await conexaoTransacao.rollback();
+      if (mesas.length === 0) {
+        await conexaoTransacao.rollback();
 
-                return res.status(404).json({
-                    erro: "Mesa não encontrada"
-                });
-            }
+        return res.status(404).json({
+          erro: "Mesa não encontrada",
+        });
+      }
 
-            const mesa = mesas[0];
+      const mesa = mesas[0];
 
-            if (mesa.ativo !== 1 || mesa.status !== "OCUPADA") {
-                await conexaoTransacao.rollback();
+      if (mesa.ativo !== 1 || mesa.status !== "OCUPADA") {
+        await conexaoTransacao.rollback();
 
-                return res.status(409).json({
-                    erro: "A mesa não está ocupada e ativa"
-                });
-            }
+        return res.status(409).json({
+          erro: "A mesa não está ocupada e ativa",
+        });
+      }
 
-            const [comandas] = await conexaoTransacao.query(
-                `
+      const [comandas] = await conexaoTransacao.query(
+        `
                 SELECT id
                 FROM comandas
                 WHERE mesa_id = ?
@@ -773,51 +608,51 @@ router.post(
                 LIMIT 1
                 FOR UPDATE
                 `,
-                [id]
-            );
+        [id],
+      );
 
-            if (comandas.length === 0) {
-                await conexaoTransacao.rollback();
+      if (comandas.length === 0) {
+        await conexaoTransacao.rollback();
 
-                return res.status(409).json({
-                    erro: "A mesa não possui uma comanda aberta para liberar"
-                });
-            }
+        return res.status(409).json({
+          erro: "A mesa não possui uma comanda aberta para liberar",
+        });
+      }
 
-            const comandaId = comandas[0].id;
+      const comandaId = comandas[0].id;
 
-            const [pedidos] = await conexaoTransacao.query(
-                `
+      const [pedidos] = await conexaoTransacao.query(
+        `
                 SELECT id
                 FROM pedidos
                 WHERE comanda_id = ?
                 LIMIT 1
                 FOR UPDATE
                 `,
-                [comandaId]
-            );
+        [comandaId],
+      );
 
-            const [itens] = await conexaoTransacao.query(
-                `
+      const [itens] = await conexaoTransacao.query(
+        `
                 SELECT id
                 FROM itens_comanda
                 WHERE comanda_id = ?
                 LIMIT 1
                 FOR UPDATE
                 `,
-                [comandaId]
-            );
+        [comandaId],
+      );
 
-            if (pedidos.length > 0 || itens.length > 0) {
-                await conexaoTransacao.rollback();
+      if (pedidos.length > 0 || itens.length > 0) {
+        await conexaoTransacao.rollback();
 
-                return res.status(409).json({
-                    erro: "A mesa não pode ser liberada porque já possui pedido ou itens lançados"
-                });
-            }
+        return res.status(409).json({
+          erro: "A mesa não pode ser liberada porque já possui pedido ou itens lançados",
+        });
+      }
 
-            await conexaoTransacao.query(
-                `
+      await conexaoTransacao.query(
+        `
                 UPDATE comandas
                 SET
                     status = 'FECHADA',
@@ -825,60 +660,50 @@ router.post(
                 WHERE id = ?
                 AND status = 'ABERTA'
                 `,
-                [comandaId]
-            );
+        [comandaId],
+      );
 
-            await conexaoTransacao.query(
-                `
+      await conexaoTransacao.query(
+        `
                 UPDATE mesas
                 SET status = 'LIVRE'
                 WHERE id = ?
                 AND status = 'OCUPADA'
                 `,
-                [id]
-            );
+        [id],
+      );
 
-            await conexaoTransacao.commit();
+      await conexaoTransacao.commit();
 
-            return res.json({
-                mensagem: "Mesa liberada com segurança",
-                mesa_id: Number(id),
-                comanda_id: comandaId,
-                status: "LIVRE"
-            });
+      return res.json({
+        mensagem: "Mesa liberada com segurança",
+        mesa_id: Number(id),
+        comanda_id: comandaId,
+        status: "LIVRE",
+      });
+    } catch (erro) {
+      await conexaoTransacao.rollback();
+      console.error("Erro ao liberar mesa sem pedidos:", erro);
 
-        } catch (erro) {
-
-            await conexaoTransacao.rollback();
-            console.error("Erro ao liberar mesa sem pedidos:", erro);
-
-            return res.status(500).json({
-                erro: "Erro interno ao liberar mesa"
-            });
-
-        } finally {
-
-            conexaoTransacao.release();
-
-        }
-
+      return res.status(500).json({
+        erro: "Erro interno ao liberar mesa",
+      });
+    } finally {
+      conexaoTransacao.release();
     }
+  },
 );
-
 
 // ============================================================
 // BUSCAR COMANDA ABERTA DA MESA
 // ============================================================
 
 router.get("/:id/comanda", async (req, res) => {
+  try {
+    const { id } = req.params;
 
-    try {
-
-        const { id } = req.params;
-
-
-        const [comandas] = await conexao.query(
-            `
+    const [comandas] = await conexao.query(
+      `
             SELECT
                 c.id,
                 c.mesa_id,
@@ -891,54 +716,39 @@ router.get("/:id/comanda", async (req, res) => {
             ORDER BY c.id DESC
             LIMIT 1
             `,
-            [id]
-        );
+      [id],
+    );
 
-
-        if (comandas.length === 0) {
-
-            return res.status(404).json({
-                erro: "Não existe uma comanda aberta para esta mesa"
-            });
-
-        }
-
-
-        return res.json(comandas[0]);
-
-    } catch (erro) {
-
-        console.error(
-            "Erro ao buscar comanda da mesa:",
-            erro
-        );
-
-        return res.status(500).json({
-            erro: "Erro ao buscar comanda da mesa"
-        });
-
+    if (comandas.length === 0) {
+      return res.status(404).json({
+        erro: "Não existe uma comanda aberta para esta mesa",
+      });
     }
 
-});
+    return res.json(comandas[0]);
+  } catch (erro) {
+    console.error("Erro ao buscar comanda da mesa:", erro);
 
+    return res.status(500).json({
+      erro: "Erro ao buscar comanda da mesa",
+    });
+  }
+});
 
 // ============================================================
 // BUSCAR ITENS DA COMANDA ABERTA
 // ============================================================
 
 router.get(
-    "/:id/comanda/itens",
-    autenticar,
-    permitir("GARCOM", "ADMIN"),
-    async (req, res) => {
-
+  "/:id/comanda/itens",
+  autenticar,
+  permitir("GARCOM", "ADMIN"),
+  async (req, res) => {
     try {
+      const { id } = req.params;
 
-        const { id } = req.params;
-
-
-        const [itens] = await conexao.query(
-            `
+      const [itens] = await conexao.query(
+        `
             SELECT
 
                 ic.id,
@@ -981,76 +791,56 @@ router.get(
 
             ORDER BY ic.id
             `,
-            [id]
-        );
+        [id],
+      );
 
-
-        return res.json(itens);
-
+      return res.json(itens);
     } catch (erro) {
+      console.error("Erro ao buscar itens da mesa:", erro);
 
-        console.error(
-            "Erro ao buscar itens da mesa:",
-            erro
-        );
-
-        return res.status(500).json({
-            erro: "Erro ao buscar itens da mesa"
-        });
-
+      return res.status(500).json({
+        erro: "Erro ao buscar itens da mesa",
+      });
     }
-
-});
-
+  },
+);
 
 // ============================================================
 // ADICIONAR PRODUTO À COMANDA
 // ============================================================
 
 router.post(
-    "/:id/comanda/itens",
-    autenticar,
-    permitir("GARCOM", "ADMIN"),
-    async (req, res) => {
-
+  "/:id/comanda/itens",
+  autenticar,
+  permitir("GARCOM", "ADMIN"),
+  async (req, res) => {
     try {
+      const { id } = req.params;
 
-        const { id } = req.params;
+      const { produto_id, quantidade } = req.body;
 
-        const {
-            produto_id,
-            quantidade
-        } = req.body;
+      // ----------------------------------------------------
+      // VALIDAR
+      // ----------------------------------------------------
 
+      if (!produto_id || !quantidade) {
+        return res.status(400).json({
+          erro: "Produto e quantidade são obrigatórios",
+        });
+      }
 
-        // ----------------------------------------------------
-        // VALIDAR
-        // ----------------------------------------------------
+      if (Number(quantidade) <= 0) {
+        return res.status(400).json({
+          erro: "A quantidade deve ser maior que zero",
+        });
+      }
 
-        if (!produto_id || !quantidade) {
+      // ----------------------------------------------------
+      // BUSCAR COMANDA ABERTA
+      // ----------------------------------------------------
 
-            return res.status(400).json({
-                erro: "Produto e quantidade são obrigatórios"
-            });
-
-        }
-
-
-        if (Number(quantidade) <= 0) {
-
-            return res.status(400).json({
-                erro: "A quantidade deve ser maior que zero"
-            });
-
-        }
-
-
-        // ----------------------------------------------------
-        // BUSCAR COMANDA ABERTA
-        // ----------------------------------------------------
-
-        const [comandas] = await conexao.query(
-            `
+      const [comandas] = await conexao.query(
+        `
             SELECT
                 id,
                 mesa_id,
@@ -1061,28 +851,23 @@ router.post(
             ORDER BY id DESC
             LIMIT 1
             `,
-            [id]
-        );
+        [id],
+      );
 
+      if (comandas.length === 0) {
+        return res.status(404).json({
+          erro: "Não existe uma comanda aberta para esta mesa",
+        });
+      }
 
-        if (comandas.length === 0) {
+      const comanda = comandas[0];
 
-            return res.status(404).json({
-                erro: "Não existe uma comanda aberta para esta mesa"
-            });
+      // ----------------------------------------------------
+      // BUSCAR PRODUTO
+      // ----------------------------------------------------
 
-        }
-
-
-        const comanda = comandas[0];
-
-
-        // ----------------------------------------------------
-        // BUSCAR PRODUTO
-        // ----------------------------------------------------
-
-        const [produtos] = await conexao.query(
-            `
+      const [produtos] = await conexao.query(
+        `
             SELECT
                 id,
                 nome,
@@ -1091,70 +876,53 @@ router.post(
             FROM produtos
             WHERE id = ?
             `,
-            [produto_id]
-        );
+        [produto_id],
+      );
 
+      if (produtos.length === 0) {
+        return res.status(404).json({
+          erro: "Produto não encontrado",
+        });
+      }
 
-        if (produtos.length === 0) {
+      const produto = produtos[0];
 
-            return res.status(404).json({
-                erro: "Produto não encontrado"
-            });
+      const quantidadeNumerica = Number(quantidade);
 
-        }
+      // ----------------------------------------------------
+      // VERIFICAR ESTOQUE
+      // ----------------------------------------------------
 
-
-        const produto = produtos[0];
-
-        const quantidadeNumerica = Number(quantidade);
-
-
-        // ----------------------------------------------------
-        // VERIFICAR ESTOQUE
-        // ----------------------------------------------------
-
-        if (produto.controla_estoque === 1) {
-
-            const [estoque] = await conexao.query(
-                `
+      if (produto.controla_estoque === 1) {
+        const [estoque] = await conexao.query(
+          `
                 SELECT
                     quantidade
                 FROM estoque
                 WHERE produto_id = ?
                 `,
-                [produto_id]
-            );
+          [produto_id],
+        );
 
-
-            if (estoque.length === 0) {
-
-                return res.status(400).json({
-                    erro: "Produto não possui estoque cadastrado"
-                });
-
-            }
-
-
-            if (
-                estoque[0].quantidade <
-                quantidadeNumerica
-            ) {
-
-                return res.status(400).json({
-                    erro: "Quantidade em estoque insuficiente"
-                });
-
-            }
-
+        if (estoque.length === 0) {
+          return res.status(400).json({
+            erro: "Produto não possui estoque cadastrado",
+          });
         }
 
+        if (estoque[0].quantidade < quantidadeNumerica) {
+          return res.status(400).json({
+            erro: "Quantidade em estoque insuficiente",
+          });
+        }
+      }
 
-        // ----------------------------------------------------
-        // ADICIONAR ITEM
-        // ----------------------------------------------------
+      // ----------------------------------------------------
+      // ADICIONAR ITEM
+      // ----------------------------------------------------
 
-        const [resultado] = await conexao.query(
-            `
+      const [resultado] = await conexao.query(
+        `
             INSERT INTO itens_comanda
             (
                 comanda_id,
@@ -1165,75 +933,51 @@ router.post(
             )
             VALUES (?, ?, ?, 0, ?)
             `,
-            [
-                comanda.id,
-                produto.id,
-                quantidadeNumerica,
-                produto.preco
-            ]
-        );
+        [comanda.id, produto.id, quantidadeNumerica, produto.preco],
+      );
 
+      // ----------------------------------------------------
+      // DIMINUIR ESTOQUE
+      // ----------------------------------------------------
 
-        // ----------------------------------------------------
-        // DIMINUIR ESTOQUE
-        // ----------------------------------------------------
-
-        if (produto.controla_estoque === 1) {
-
-            await conexao.query(
-                `
+      if (produto.controla_estoque === 1) {
+        await conexao.query(
+          `
                 UPDATE estoque
                 SET quantidade = quantidade - ?
                 WHERE produto_id = ?
                 `,
-                [
-                    quantidadeNumerica,
-                    produto_id
-                ]
-            );
-
-        }
-
-
-        // ----------------------------------------------------
-        // RESPOSTA
-        // ----------------------------------------------------
-
-        return res.status(201).json({
-
-            mensagem: "Produto adicionado à comanda",
-
-            item: {
-                id: resultado.insertId,
-                comanda_id: comanda.id,
-                produto_id: produto.id,
-                produto: produto.nome,
-                quantidade: quantidadeNumerica,
-                quantidade_paga: 0,
-                preco_unitario: produto.preco,
-                subtotal:
-                    quantidadeNumerica *
-                    Number(produto.preco),
-                controla_estoque:
-                    produto.controla_estoque
-            }
-
-        });
-
-    } catch (erro) {
-
-        console.error(
-            "Erro ao adicionar produto à comanda:",
-            erro
+          [quantidadeNumerica, produto_id],
         );
+      }
 
-        return res.status(500).json({
-            erro: "Erro ao adicionar produto à comanda"
-        });
+      // ----------------------------------------------------
+      // RESPOSTA
+      // ----------------------------------------------------
 
+      return res.status(201).json({
+        mensagem: "Produto adicionado à comanda",
+
+        item: {
+          id: resultado.insertId,
+          comanda_id: comanda.id,
+          produto_id: produto.id,
+          produto: produto.nome,
+          quantidade: quantidadeNumerica,
+          quantidade_paga: 0,
+          preco_unitario: produto.preco,
+          subtotal: quantidadeNumerica * Number(produto.preco),
+          controla_estoque: produto.controla_estoque,
+        },
+      });
+    } catch (erro) {
+      console.error("Erro ao adicionar produto à comanda:", erro);
+
+      return res.status(500).json({
+        erro: "Erro ao adicionar produto à comanda",
+      });
     }
-
-});
-
+  },
+);
 
 module.exports = router;

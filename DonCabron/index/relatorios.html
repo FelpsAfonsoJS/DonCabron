@@ -128,12 +128,60 @@
             <p>Selecione o período para consultar os atendimentos.</p>
           </div>
         </section>
+        <section class="relatorio-card">
+          <div class="titulo-card"><span>03</span><div>
+            <h2>Rendimento por mesa</h2>
+            <p>Valor dos pedidos por mesa no período, pela data do pedido.</p>
+          </div></div>
+          <form id="filtroMesas" class="filtros">
+            <label>Mesa<select id="mesaId"><option value="">Todas as mesas</option></select></label>
+            <label>Data inicial<input id="mesaInicio" type="date" required /></label>
+            <label>Data final<input id="mesaFim" type="date" required /></label>
+            <label>Ordenar por<select id="mesaOrdem">
+              <option value="maior">Maiores valores</option><option value="menor">Menores valores</option>
+            </select></label>
+            <div class="acoes">
+              <button type="submit">Consultar</button>
+              <button type="button" class="secundario" id="pdfMesas" disabled>Gerar PDF</button>
+            </div>
+          </form>
+          <p>Inclui pedidos recebidos, em preparo e prontos. Exibe apenas mesas com total de pelo menos R$ 1,00 no período. Os valores não representam lucro líquido.</p>
+          <p id="erroListaMesas" role="status"></p>
+          <div id="resultadoMesas" class="resultado" aria-live="polite">
+            <p>Selecione o período para consultar o rendimento das mesas.</p>
+          </div>
+        </section>
+        <section class="relatorio-card">
+          <div class="titulo-card"><span>04</span><div>
+            <h2>Relatório consolidado</h2>
+            <p>Escolha uma mesa ou compare todas no período.</p>
+          </div></div>
+          <form id="filtroRelatorio" class="filtros">
+            <label>Mesa<select id="consolidadoMesaId"><option value="">Todas as mesas</option></select></label>
+            <label>Data inicial<input id="relatorioInicio" type="date" required /></label>
+            <label>Data final<input id="relatorioFim" type="date" required /></label>
+            <label>Ordenar mesas por<select id="consolidadoOrdem">
+              <option value="maior">Maiores valores</option><option value="menor">Menores valores</option>
+            </select></label>
+            <div class="acoes">
+              <button type="submit">Consultar</button>
+              <button type="button" class="secundario" id="pdfRelatorio" disabled>Gerar PDF completo</button>
+            </div>
+          </form>
+          <p>Considera pedidos recebidos, em preparo e prontos pela data do pedido. Exibe mesas com total de pelo menos R$ 1,00. Os valores representam vendas, não lucro líquido.</p>
+          <p>Um atendimento corresponde a uma comanda com pedidos no período, atribuída ao garçom de abertura. A mesa mais atendida de cada garçom considera todas as mesas no período. Empates são exibidos.</p>
+          <p id="erroListaMesasConsolidado" role="status"></p>
+          <div id="resultadoRelatorio" class="resultado" aria-live="polite">
+            <p>Selecione os filtros e clique em Consultar.</p>
+          </div>
+        </section>
       </div>
     </main>
     <script src="/js/permissoes.js"></script>
     <script src="/js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <script src="/js/relatorios.js?v=2"></script>
+    <script src="/js/relatorios.js?v=7"></script>
+    <script src="/js/relatorioConsolidado.js?v=1"></script>
   </body>
 </html>

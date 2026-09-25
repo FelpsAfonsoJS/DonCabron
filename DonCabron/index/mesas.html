@@ -1,20 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🌶️ Don Cabron 🌶️ - Mesas</title>
-    <link rel="stylesheet" href="../css/mesas.css">
-
-</head>
-<body>
+    <link rel="stylesheet" href="../css/mesas.css" />
+  </head>
+  <body>
     <header class="header">
       <div class="logo">
-        <img class="logo-clara" src="/DonCabron/img/logo.png" alt="Logo"/>
-        <img class="logo-escura" src="/DonCabron/img/logo escura.png" srcset="">
+        <img class="logo-clara" src="/DonCabron/img/logo.png" alt="Logo" />
+        <img
+          class="logo-escura"
+          src="/DonCabron/img/logo escura.png"
+          srcset=""
+        />
       </div>
       <button class="menu-toggle" id="menu-toggle">☰</button>
-     <nav class="menu" id="menu">
+      <nav class="menu" id="menu">
         <ul class="menu-list">
           <li class="menu-admin" hidden>
             <button id="btnInicio" class="menu-botao">INÍCIO</button>
@@ -33,28 +36,28 @@
             <button id="btnRelatorios" class="menu-botao">RELATÓRIOS</button>
           </li>
 
+
+
+
+
           <li class="menu-admin" hidden>
-    <a class="menu-botao menu-link"
-       href="/DonCabron/index/mesas.html">
-       MESAS
-    </a>
-</li>
-
-<li class="menu-admin" hidden>
-    <a class="menu-botao menu-link"
-       href="/DonCabron/index/pedidos.html">
-       PEDIDOS
-    </a>
-</li>
-
-<li class="menu-admin" hidden>
-    <a class="menu-botao menu-link"
-       href="/DonCabron/index/cozinha.html">
-       COZINHA
-    </a>
-</li>
+            <a
+              class="menu-botao menu-link"
+              href="/DonCabron/index/cozinha.html"
+            >
+              COZINHA
+            </a>
+          </li>
           <li class="menu-sair">
-            <a class="menu-botao menu-link" href="#" onclick="sairSistema(); return false;">SAIR</a>
+            <a
+              class="menu-botao menu-link"
+              href="#"
+              onclick="
+                sairSistema();
+                return false;
+              "
+              >SAIR</a
+            >
           </li>
         </ul>
       </nav>
@@ -62,70 +65,57 @@
         <span class="icone-tema">🌙</span>
       </button>
     </header>
-<main>
+    <main>
+      <div class="cadastro">
+        <section class="cadastro-mesas">
+          <h1>Cadastro de Mesas</h1>
 
-  <div class="cadastro">
+          <form id="formMesa" novalidate>
+            <div class="campo">
+              <label for="numero">Número da Mesa</label>
 
-    <section class="cadastro-mesas">
+              <input
+                type="number"
+                id="numero"
+                name="numero"
+                placeholder="Digite o número da mesa"
+                min="1"
+                required
+              />
+            </div>
 
-      <h1>Cadastro de Mesas</h1>
+            <div class="campo">
+              <label for="capacidade">Capacidade</label>
 
-      <form id="formMesa" novalidate>
+              <input
+                type="number"
+                id="capacidade"
+                name="capacidade"
+                placeholder="Quantidade de lugares"
+                min="1"
+                required
+              />
+            </div>
 
-        <div class="campo">
-          <label for="numero">Número da Mesa</label>
+            <button type="submit">Cadastrar Mesa</button>
+          </form>
 
-          <input
-            type="number"
-            id="numero"
-            name="numero"
-            placeholder="Digite o número da mesa"
-            min="1"
-            required
-          />
-        </div>
+          <hr />
 
-        <div class="campo">
-          <label for="capacidade">Capacidade</label>
+          <section class="lista-mesas">
+            <h2>Mesas cadastradas</h2>
 
-          <input
-            type="number"
-            id="capacidade"
-            name="capacidade"
-            placeholder="Quantidade de lugares"
-            min="1"
-            required
-          />
-        </div>
+            <div
+              id="resultadoMesas"
+              class="resultado-mesas"
+              aria-live="polite"
+            ></div>
+          </section>
+        </section>
+      </div>
+    </main>
 
-        <button type="submit">Cadastrar Mesa</button>
-
-      </form>
-
-      <hr />
-
-      <section class="lista-mesas">
-
-        <h2>Mesas cadastradas</h2>
-
-        <div
-          id="resultadoMesas"
-          class="resultado-mesas"
-          aria-live="polite"
-        >
-        </div>
-
-      </section>
-
-    </section>
-
-  </div>
-
-</main>
-
-<script src="/js/permissoes.js"></script>
-<script src="/js/mesas.js"></script>
-
-    
-</body>
+    <script src="/js/permissoes.js"></script>
+    <script src="/js/mesas.js"></script>
+  </body>
 </html>
