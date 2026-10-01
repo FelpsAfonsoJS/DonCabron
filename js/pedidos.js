@@ -54,7 +54,7 @@ async function lerRespostaJson(resposta) {
 
 if (!mesaId) {
 
-    alert("Nenhuma mesa foi informada.");
+    mostrarAlerta("Nenhuma mesa foi informada.", "Mesa não informada");
 
     window.location.href =
         "/DonCabron/index/mesas.html";
@@ -113,8 +113,9 @@ function atualizarOpcaoLiberarMesa(podeLiberar) {
 
 async function liberarMesaSemPedidos() {
 
-    const confirmou = confirm(
-        "Liberar esta mesa? A comanda vazia será fechada e não poderá receber pedidos."
+    const confirmou = await confirmarAcao(
+        "Liberar esta mesa? A comanda vazia será fechada e não poderá receber pedidos.",
+        "Liberar mesa"
     );
 
     if (!confirmou) {
@@ -144,13 +145,13 @@ async function liberarMesaSemPedidos() {
             );
         }
 
-        alert("Mesa liberada com sucesso.");
+        await mostrarAlerta("Mesa liberada com sucesso.", "Mesa liberada");
         window.location.href = "/DonCabron/index/mesas.html";
 
     } catch (erro) {
 
         console.error("Erro ao liberar mesa:", erro);
-        alert(erro.message || "Não foi possível liberar a mesa.");
+        await mostrarAlerta(erro.message || "Não foi possível liberar a mesa.", "Erro ao liberar mesa");
         btnLiberarMesa.disabled = false;
 
     }
@@ -272,9 +273,10 @@ async function abrirComanda() {
         );
 
 
-        alert(
+        await mostrarAlerta(
             erro.message ||
-            "Não foi possível abrir a comanda."
+            "Não foi possível abrir a comanda.",
+            "Erro ao abrir comanda"
         );
 
 
@@ -871,10 +873,11 @@ async function confirmarPedido() {
     // ========================================
 
     const confirmou =
-        confirm(
+        await confirmarAcao(
             `CONFIRME O PEDIDO:\n\n` +
             `${resumo}\n\n` +
-            `O cliente confirmou o pedido?`
+            `O cliente confirmou o pedido?`,
+            "Confirmar pedido"
         );
 
 
@@ -1014,8 +1017,9 @@ async function confirmarPedido() {
         // 4. PEDIDO CONFIRMADO
         // ========================================
 
-        alert(
-            "Pedido confirmado e enviado para a cozinha!"
+        await mostrarAlerta(
+            "Pedido confirmado e enviado para a cozinha!",
+            "Pedido confirmado"
         );
 
 
@@ -1047,9 +1051,10 @@ async function confirmarPedido() {
         );
 
 
-        alert(
+        await mostrarAlerta(
             erro.message ||
-            "Não foi possível confirmar o pedido."
+            "Não foi possível confirmar o pedido.",
+            "Erro ao confirmar pedido"
         );
 
     }

@@ -179,13 +179,14 @@ async function carregarPedidos() {
 }
 
 async function alterarStatusPedido(pedidoId, acao, botao) {
-    const confirmar = confirm(
+    const confirmou = await confirmarAcao(
         acao === "preparo"
             ? "Iniciar o preparo deste pedido?"
-            : "Marcar este pedido como pronto?"
+            : "Marcar este pedido como pronto?",
+        "Atualizar pedido"
     );
 
-    if (!confirmar) return;
+    if (!confirmou) return;
 
     botao.disabled = true;
     botao.textContent = "Atualizando...";
@@ -216,7 +217,7 @@ async function alterarStatusPedido(pedidoId, acao, botao) {
 
     } catch (erro) {
         console.error("Erro ao alterar status:", erro);
-        alert(erro.message);
+        await mostrarAlerta(erro.message || "Não foi possível atualizar o pedido.", "Erro no pedido");
         botao.disabled = false;
         botao.textContent =
             acao === "preparo"

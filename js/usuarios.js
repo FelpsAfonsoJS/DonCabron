@@ -282,8 +282,9 @@ async function alterarStatusUsuario(id, statusAtual) {
 
     if (!token) {
 
-        alert(
-            "Sessão expirada. Faça login novamente."
+        await mostrarAlerta(
+            "Sessão expirada. Faça login novamente.",
+            "Sessão encerrada"
         );
 
         return;
@@ -302,12 +303,13 @@ async function alterarStatusUsuario(id, statusAtual) {
             : "desativar";
 
 
-    const confirmar = confirm(
-        `Deseja ${acao} este funcionário?`
+    const confirmou = await confirmarAcao(
+        `Deseja ${acao} este funcionário?`,
+        "Confirmar alteração"
     );
 
 
-    if (!confirmar) {
+    if (!confirmou) {
         return;
     }
 
@@ -343,9 +345,10 @@ async function alterarStatusUsuario(id, statusAtual) {
 
         if (!resposta.ok) {
 
-            alert(
+            await mostrarAlerta(
                 dados.mensagem ||
-                "Erro ao alterar status."
+                "Erro ao alterar status.",
+                "Status do funcionário"
             );
 
             return;
@@ -363,8 +366,9 @@ async function alterarStatusUsuario(id, statusAtual) {
         );
 
 
-        alert(
-            "Não foi possível conectar ao servidor."
+        await mostrarAlerta(
+            "Não foi possível conectar ao servidor.",
+            "Erro de conexão"
         );
 
     }

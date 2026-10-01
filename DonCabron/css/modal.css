@@ -1,0 +1,144 @@
+.modal-global {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-global.hidden {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 15, 20, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(480px, 100%);
+  background: rgba(26, 17, 8, 0.97);
+  border: 1px solid rgba(255, 165, 0, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 18px rgba(255, 157, 0, 0.25);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #ffbf5a;
+  font-size: 1.2rem;
+}
+
+.modal-close {
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.modal-body {
+  padding: 18px 20px;
+  color: #f5f0ea;
+}
+
+.modal-body p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.modal-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 18px;
+  color: #ffe0a8;
+  font-weight: 500;
+}
+
+.modal-input-wrap.hidden {
+  display: none;
+}
+
+.modal-input-wrap input {
+  border: 1px solid rgba(255, 177, 66, 0.5);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.modal-input-wrap input:focus {
+  outline: 2px solid rgba(255, 174, 0, 0.55);
+  border-color: rgba(255, 174, 0, 0.9);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 20px 20px;
+}
+
+.modal-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 0.96rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.modal-btn:hover {
+  transform: translateY(-1px);
+}
+
+.modal-btn-primary {
+  background: linear-gradient(135deg, #ff9f1c, #ff7f50);
+  color: #fff;
+}
+
+.modal-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffd79d;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.modal-btn.hidden {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .modal-card {
+    border-radius: 16px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-btn {
+    width: 100%;
+  }
+}

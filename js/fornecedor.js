@@ -105,7 +105,7 @@ formulario.addEventListener("submit", async (evento) => {
 
     if (!validarDocumento(documentoValor)) {
 
-        alert("Digite um CPF com 11 números ou CNPJ com 14 números.");
+        await mostrarAlerta("Digite um CPF com 11 números ou CNPJ com 14 números.", "CPF / CNPJ inválido");
         documento.focus();
         return;
 
@@ -113,7 +113,7 @@ formulario.addEventListener("submit", async (evento) => {
 
     if (!validarTelefone(telefoneValor)) {
 
-        alert("Digite um telefone válido com 10 ou 11 números.");
+        await mostrarAlerta("Digite um telefone válido com 10 ou 11 números.", "Telefone inválido");
         telefone.focus();
         return;
 
@@ -148,12 +148,12 @@ formulario.addEventListener("submit", async (evento) => {
 
         if (!resposta.ok) {
 
-            alert(dados.mensagem);
+            await mostrarAlerta(dados.mensagem || "Erro ao cadastrar fornecedor.", "Fornecedor");
             return;
 
         }
 
-        alert(dados.mensagem);
+        await mostrarAlerta(dados.mensagem || "Fornecedor cadastrado com sucesso.", "Fornecedor");
 
         formulario.reset();
 
@@ -161,7 +161,7 @@ formulario.addEventListener("submit", async (evento) => {
 
         console.error("Erro ao cadastrar fornecedor:", erro);
 
-        alert("Não foi possível conectar ao servidor.");
+        await mostrarAlerta("Não foi possível conectar ao servidor.", "Erro de conexão");
 
     }
 

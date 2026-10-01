@@ -109,7 +109,7 @@ async function carregarMesas() {
 
         // Mesa desativada não pode ser aberta
         if (mesa.ativo !== 1) {
-          alert("Esta mesa está desativada.");
+          mostrarAlerta("Esta mesa está desativada.", "Mesa inativa");
 
           return;
         }
@@ -190,7 +190,7 @@ formMesa.addEventListener("submit", async (event) => {
   const capacidade = document.querySelector("#capacidade").value;
 
   if (!numero || !capacidade) {
-    alert("Preencha todos os campos.");
+    await mostrarAlerta("Preencha todos os campos.", "Campos obrigatórios");
 
     return;
   }
@@ -215,7 +215,7 @@ formMesa.addEventListener("submit", async (event) => {
       throw new Error(dados.erro || "Erro ao cadastrar mesa");
     }
 
-    alert("Mesa cadastrada com sucesso!");
+    await mostrarAlerta("Mesa cadastrada com sucesso!", "Cadastro realizado");
 
     formMesa.reset();
 
@@ -223,7 +223,7 @@ formMesa.addEventListener("submit", async (event) => {
   } catch (erro) {
     console.error("Erro ao cadastrar mesa:", erro);
 
-    alert(erro.message || "Não foi possível cadastrar a mesa.");
+    await mostrarAlerta(erro.message || "Não foi possível cadastrar a mesa.", "Erro ao cadastrar mesa");
   }
 });
 
@@ -232,15 +232,24 @@ formMesa.addEventListener("submit", async (event) => {
 // ========================================
 
 async function alterarMesa(id, numeroAtual, capacidadeAtual) {
-  const novoNumero = prompt("Digite o novo número da mesa:", numeroAtual);
+  const novoNumero = await pedirValorModal(
+    "Digite o novo número da mesa:",
+    String(numeroAtual),
+    "Alterar mesa",
+    "Número da mesa",
+    "number"
+  );
 
   if (novoNumero === null) {
     return;
   }
 
-  const novaCapacidade = prompt(
+  const novaCapacidade = await pedirValorModal(
     "Digite a nova capacidade da mesa:",
-    capacidadeAtual,
+    String(capacidadeAtual),
+    "Alterar mesa",
+    "Capacidade da mesa",
+    "number"
   );
 
   if (novaCapacidade === null) {
@@ -248,7 +257,7 @@ async function alterarMesa(id, numeroAtual, capacidadeAtual) {
   }
 
   if (!novoNumero || !novaCapacidade) {
-    alert("Preencha os dados corretamente.");
+    await mostrarAlerta("Preencha os dados corretamente.", "Dados inválidos");
 
     return;
   }
@@ -273,13 +282,13 @@ async function alterarMesa(id, numeroAtual, capacidadeAtual) {
       throw new Error(dados.erro || "Erro ao alterar mesa");
     }
 
-    alert("Mesa alterada com sucesso!");
+    await mostrarAlerta("Mesa alterada com sucesso!", "Mesa atualizada");
 
     await carregarMesas();
   } catch (erro) {
     console.error("Erro ao alterar mesa:", erro);
 
-    alert(erro.message);
+    await mostrarAlerta(erro.message || "Não foi possível alterar a mesa.", "Erro ao alterar mesa");
   }
 }
 
@@ -288,9 +297,9 @@ async function alterarMesa(id, numeroAtual, capacidadeAtual) {
 // ========================================
 
 async function desativarMesa(id) {
-  const confirmar = confirm("Tem certeza que deseja desativar esta mesa?");
+  const confirmou = await confirmarAcao("Tem certeza que deseja desativar esta mesa?", "Desativar mesa");
 
-  if (!confirmar) {
+  if (!confirmou) {
     return;
   }
 
@@ -308,13 +317,13 @@ async function desativarMesa(id) {
       throw new Error(dados.erro || "Erro ao desativar mesa");
     }
 
-    alert("Mesa desativada com sucesso!");
+    await mostrarAlerta("Mesa desativada com sucesso!", "Mesa desativada");
 
     await carregarMesas();
   } catch (erro) {
     console.error("Erro ao desativar mesa:", erro);
 
-    alert(erro.message);
+    await mostrarAlerta(erro.message || "Não foi possível desativar a mesa.", "Erro ao desativar mesa");
   }
 }
 async function reativarMesa(id) {
@@ -338,7 +347,7 @@ async function reativarMesa(id) {
 
         }
 
-        alert(dados.mensagem);
+        await mostrarAlerta(dados.mensagem || "Mesa reativada com sucesso.", "Mesa reativada");
 
         await carregarMesas();
 
@@ -349,7 +358,7 @@ async function reativarMesa(id) {
             erro
         );
 
-        alert(erro.message);
+        await mostrarAlerta(erro.message || "Não foi possível reativar a mesa.", "Erro ao reativar mesa");
 
     }
 

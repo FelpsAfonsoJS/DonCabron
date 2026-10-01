@@ -18,9 +18,9 @@ function tabela(destino, colunas, dados) {
 async function consultar(url) { const resposta=await fetch(url,{headers:headers()}); const dados=await resposta.json(); if(!resposta.ok) throw new Error(dados.mensagem||"Não foi possível gerar o relatório."); return dados; }
 const colunasProdutos=[{titulo:"Item",valor:x=>x.nome},{titulo:"Quantidade vendida",valor:x=>x.quantidade_vendida},{titulo:"Valor total",valor:x=>moeda(x.valor_total)}];
 const colunasAtendimentos=[{titulo:"Garçom",valor:x=>x.garcom},{titulo:"Atendimentos",valor:x=>x.quantidade_atendimentos}];
-async function carregarProdutos(){ const p=periodo("produto"); if(!validar(p)) return alert("Informe um período válido."); const item=document.querySelector("#produtoId").value; try { dadosProdutos=await consultar(`${API_RELATORIOS}/produtos?inicio=${p.inicio}&fim=${p.fim}&produto_id=${item}`); tabela("#resultadoProdutos",colunasProdutos,dadosProdutos); }catch(e){alert(e.message);} }
-async function carregarAtendimentos(){ const p=periodo("atendimento"); if(!validar(p)) return alert("Informe um período válido."); try { dadosAtendimentos=await consultar(`${API_RELATORIOS}/atendimentos?inicio=${p.inicio}&fim=${p.fim}`); tabela("#resultadoAtendimentos",colunasAtendimentos,dadosAtendimentos); }catch(e){alert(e.message);} }
-function gerarPdf(titulo, periodoRelatorio, colunas, dados) { if(!dados.length) return alert("Consulte o relatório antes de gerar o PDF."); const jsPDF=window.jspdf?.jsPDF; if(!jsPDF) return alert("Não foi possível carregar o gerador de PDF."); const pdf=new jsPDF(); pdf.setFillColor(62,18,7);pdf.rect(0,0,210,30,"F");pdf.setTextColor(255,157,0);pdf.setFontSize(20);pdf.text("DON CABRÓN",14,15);pdf.setFontSize(12);pdf.text(titulo,14,24);pdf.setTextColor(40,20,10);pdf.setFontSize(10);pdf.text(`Período: ${periodoRelatorio.inicio.split('-').reverse().join('/')} a ${periodoRelatorio.fim.split('-').reverse().join('/')}`,14,38); pdf.autoTable({startY:44,head:[colunas.map(c=>c.titulo)],body:dados.map(d=>colunas.map(c=>c.valor(d))),headStyles:{fillColor:[129,44,9]},alternateRowStyles:{fillColor:[255,244,226]},margin:{bottom:18}});const paginas=pdf.getNumberOfPages();for(let i=1;i<=paginas;i++){pdf.setPage(i);pdf.setFontSize(9);pdf.setTextColor(90);pdf.text(`Don Cabrón • Página ${i} de ${paginas}`,105,290,{align:"center"});}pdf.save(`${titulo.toLowerCase().replaceAll(" ","-")}.pdf`); }
+async function carregarProdutos(){ const p=periodo("produto"); if(!validar(p)) return mostrarAlerta("Informe um período válido.", "Período inválido"); const item=document.querySelector("#produtoId").value; try { dadosProdutos=await consultar(`${API_RELATORIOS}/produtos?inicio=${p.inicio}&fim=${p.fim}&produto_id=${item}`); tabela("#resultadoProdutos",colunasProdutos,dadosProdutos); }catch(e){await mostrarAlerta(e.message, "Erro no relatório");} }
+async function carregarAtendimentos(){ const p=periodo("atendimento"); if(!validar(p)) return mostrarAlerta("Informe um período válido.", "Período inválido"); try { dadosAtendimentos=await consultar(`${API_RELATORIOS}/atendimentos?inicio=${p.inicio}&fim=${p.fim}`); tabela("#resultadoAtendimentos",colunasAtendimentos,dadosAtendimentos); }catch(e){await mostrarAlerta(e.message, "Erro no relatório");} }
+function gerarPdf(titulo, periodoRelatorio, colunas, dados) { if(!dados.length) return mostrarAlerta("Consulte o relatório antes de gerar o PDF.", "PDF indisponível"); const jsPDF=window.jspdf?.jsPDF; if(!jsPDF) return mostrarAlerta("Não foi possível carregar o gerador de PDF.", "PDF indisponível"); const pdf=new jsPDF(); pdf.setFillColor(62,18,7);pdf.rect(0,0,210,30,"F");pdf.setTextColor(255,157,0);pdf.setFontSize(20);pdf.text("DON CABRÓN",14,15);pdf.setFontSize(12);pdf.text(titulo,14,24);pdf.setTextColor(40,20,10);pdf.setFontSize(10);pdf.text(`Período: ${periodoRelatorio.inicio.split('-').reverse().join('/')} a ${periodoRelatorio.fim.split('-').reverse().join('/')}`,14,38); pdf.autoTable({startY:44,head:[colunas.map(c=>c.titulo)],body:dados.map(d=>colunas.map(c=>c.valor(d))),headStyles:{fillColor:[129,44,9]},alternateRowStyles:{fillColor:[255,244,226]},margin:{bottom:18}});const paginas=pdf.getNumberOfPages();for(let i=1;i<=paginas;i++){pdf.setPage(i);pdf.setFontSize(9);pdf.setTextColor(90);pdf.text(`Don Cabrón • Página ${i} de ${paginas}`,105,290,{align:"center"});}pdf.save(`${titulo.toLowerCase().replaceAll(" ","-")}.pdf`); }
 async function carregarListaProdutos(){ try { const r=await fetch("http://localhost:3000/produtos");const produtos=await r.json();const select=document.querySelector("#produtoId");produtos.forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=p.nome;select.append(o);}); }catch(e){console.error(e);} }
 async function consultar(url) {
   const resposta = await fetch(url, { headers: headers() });
@@ -34,12 +34,12 @@ async function consultar(url) {
 
 async function carregarAtendimentos() {
   const filtro = periodo("atendimento");
-  if (!validar(filtro)) return alert("Informe um período válido.");
+  if (!validar(filtro)) return mostrarAlerta("Informe um período válido.", "Período inválido");
   const garcomId = document.querySelector("#garcomId").value;
   try {
     dadosAtendimentos = await consultar(`${API_RELATORIOS}/atendimentos?inicio=${filtro.inicio}&fim=${filtro.fim}&garcom_id=${garcomId}`);
     tabela("#resultadoAtendimentos", colunasAtendimentos, dadosAtendimentos);
-  } catch (erro) { alert(erro.message); }
+  } catch (erro) { await mostrarAlerta(erro.message, "Erro no relatório"); }
 }
 
 async function carregarListaGarcons() {
@@ -76,7 +76,7 @@ function invalidarMesas() {
 }
 async function carregarMesas() {
   const filtro = periodo("mesa");
-  if (!validar(filtro)) return alert("Informe um período válido.");
+  if (!validar(filtro)) return mostrarAlerta("Informe um período válido.", "Período inválido");
   invalidarMesas();
   const consulta = consultaMesas;
   const ordem = document.querySelector("#mesaOrdem").value;

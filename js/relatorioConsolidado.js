@@ -112,7 +112,7 @@ async function carregarRelatorio(evento) {
 function gerarPdf() {
   if (!relatorio?.mesas.length) return;
   const jsPDF = window.jspdf?.jsPDF;
-  if (!jsPDF) return alert("Não foi possível carregar o gerador de PDF.");
+  if (!jsPDF) return mostrarAlerta("Não foi possível carregar o gerador de PDF.", "PDF indisponível");
   const pdf = new jsPDF();
   const dados = relatorio;
   pdf.setFontSize(18);
