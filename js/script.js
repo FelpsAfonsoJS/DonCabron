@@ -76,7 +76,8 @@ async function carregarProdutos() {
     try {
 
         const resposta = await fetch(
-            "http://localhost:3000/produtos"
+          "http://localhost:3000/produtos",
+          { headers: cabecalhosDaSessao() }
         );
 
         if (!resposta.ok) {
@@ -99,26 +100,27 @@ async function carregarProdutos() {
             card.classList.add("produto");
 
 
-            card.innerHTML = `
+            const imagem = document.createElement("img");
+            const arquivoImagem = String(produto.imagem ?? "");
+            imagem.alt = String(produto.nome ?? "");
+            if (/^[a-zA-Z0-9_-]+\.(?:jpe?g|png|webp|gif)$/i.test(arquivoImagem)) {
+              imagem.src = `/DonCabron/img/Produtos/${encodeURIComponent(arquivoImagem)}`;
+            }
 
-                <img
-                    src="/DonCabron/img/Produtos/${produto.imagem}"
-                    alt="${produto.nome}"
-                >
+            const nome = document.createElement("h3");
+            nome.textContent = String(produto.nome ?? "");
 
-                <h3>
-                    ${produto.nome}
-                </h3>
+            const descricao = document.createElement("p");
+            descricao.classList.add("descricao");
+            descricao.textContent = String(produto.descricao ?? "");
 
-                <p class="descricao">
-                    ${produto.descricao}
-                </p>
+            const preco = document.createElement("span");
+            const valor = Number(produto.preco);
+            preco.textContent = Number.isFinite(valor)
+              ? `R$ ${valor.toFixed(2).replace(".", ",")}`
+              : "Preço indisponível";
 
-                <span>
-                    R$ ${Number(produto.preco).toFixed(2).replace(".", ",")}
-                </span>
-
-            `;
+            card.append(imagem, nome, descricao, preco);
 
 
             // ========================================

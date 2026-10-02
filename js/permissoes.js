@@ -28,6 +28,19 @@ const usuarioLogado = (() => {
 const tokenLogado = sessionStorage.getItem("token");
 const tipoUsuario = usuarioLogado?.tipo;
 
+function cabecalhosDaSessao(incluirJson = false) {
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("Sua sessão expirou. Faça login novamente.");
+    }
+
+    const cabecalhos = { Authorization: `Bearer ${token}` };
+    if (incluirJson) cabecalhos["Content-Type"] = "application/json";
+
+    return cabecalhos;
+}
+
 function redirecionarPorPerfil() {
     switch (tipoUsuario) {
         case "ADMIN":

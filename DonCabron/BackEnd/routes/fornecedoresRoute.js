@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const conexao = require("../config/database");
+const { autenticar, permitir } = require("../middleware/auth");
 
 // Buscar todos os fornecedores
-router.get("/", async (req, res) => {
+router.get("/", autenticar, permitir("ADMIN"), async (req, res) => {
   try {
     const busca = req.query.busca?.trim() || "";
 
@@ -48,21 +49,49 @@ router.get("/", async (req, res) => {
 });
 
 // Cadastrar fornecedor
-router.post("/", async (req, res) => {
+router.post("/", autenticar, permitir("ADMIN"), async (req, res) => {
   try {
-    const { documento, nome, endereco, bairro, cidade, telefone } = req.body;
+    const { documento, nome, endereco, bairro, cidade, telefone } = req.body || {};
 
-    if (!documento || !nome || !endereco || !bairro || !cidade || !telefone) {
+    if (
+      [documento, nome, endereco, bairro, cidade, telefone].some(
+        (valor) => typeof valor !== "string" || !valor.trim(),
+      )
+    ) {
       return res.status(400).json({
         mensagem: "Todos os campos são obrigatórios",
       });
+    }
+
+    const documentoNormalizado = documento.trim();
+    const telefoneNormalizado = telefone.trim();
+    if (!/^(\d{11}|\d{14})$/.test(documentoNormalizado)) {
+      return res.status(400).json({ mensagem: "CPF/CNPJ deve conter 11 ou 14 dígitos" });
+    }
+    if (!/^\d{10,11}$/.test(telefoneNormalizado)) {
+      return res.status(400).json({ mensagem: "Telefone deve conter 10 ou 11 dígitos" });
+    }
+    if (
+      nome.trim().length > 150 ||
+      endereco.trim().length > 150 ||
+      bairro.trim().length > 100 ||
+      cidade.trim().length > 100
+    ) {
+      return res.status(400).json({ mensagem: "Um ou mais campos excedem o limite permitido" });
     }
 
     const [resultado] = await conexao.query(
       `INSERT INTO fornecedores
             (documento, nome, endereco, bairro, cidade, telefone)
             VALUES (?, ?, ?, ?, ?, ?)`,
-      [documento, nome, endereco, bairro, cidade, telefone],
+      [
+        documentoNormalizado,
+        nome.trim(),
+        endereco.trim(),
+        bairro.trim(),
+        cidade.trim(),
+        telefoneNormalizado,
+      ],
     );
 
     res.status(201).json({

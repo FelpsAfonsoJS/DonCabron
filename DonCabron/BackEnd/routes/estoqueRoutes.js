@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const conexao = require("../config/database");
+const { autenticar, permitir } = require("../middleware/auth");
 
-router.get("/", async (req, res) => {
+router.get("/", autenticar, permitir("ADMIN"), async (req, res) => {
   try {
     const [estoque] = await conexao.query(`
             SELECT 
@@ -19,9 +20,7 @@ router.get("/", async (req, res) => {
   } catch (erro) {
     console.log(erro);
 
-    res.status(500).json({
-      erro: erro.message,
-    });
+    res.status(500).json({ erro: "Erro ao consultar estoque" });
   }
 });
 

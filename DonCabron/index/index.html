@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🌶️ Don Cabrón 🌶️ - Cardapio</title>
+    <title>Don Cabrón - Painel administrativo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="/DonCabron/css/style.css" />
     <link rel="stylesheet" href="/DonCabron/css/modal.css" />
+    <link rel="stylesheet" href="/DonCabron/css/adminDashboard.css?v=2" />
   </head>
   <body>
     <header class="header">
@@ -57,28 +58,60 @@
       </button>
     </header>
 
-    <main>
-      <section class="produtos">
-        <h2>Nosso Cardapio</h2>
-
-        <div class="lista-produtos" id="listaComidas"></div>
-
-        <h2 class="bebidas">Bebidas Alcoolicas</h2>
-
-        <div class="lista-produtos" id="listaAlcoolicas"></div>
-
-        <h2 class="bebidas">Bebidas Gaseificadas</h2>
-
-        <div class="lista-produtos" id="listaGaseificadas"></div>
-
-        <h2 class="bebidas">Artesanais</h2>
-
-        <div class="lista-produtos" id="listaArtesanais"></div>
+    <main class="painel-admin-main">
+      <section class="painel-cabecalho">
+        <div>
+          <p class="painel-sobretitulo">OPERAÇÃO</p>
+          <h1>Painel do restaurante</h1>
+        </div>
+        <div class="painel-filtros">
+          <label for="dataPainel">Pedidos do dia</label>
+          <input id="dataPainel" type="date" />
+          <button id="atualizarPainel" type="button" aria-label="Atualizar painel">
+            Atualizar
+          </button>
+        </div>
       </section>
+
+      <p id="mensagemPainel" class="mensagem-painel" role="status" aria-live="polite"></p>
+
+      <div class="painel-grade">
+        <section class="painel-secao mesas-ocupadas">
+          <header class="painel-secao-titulo">
+            <div>
+              <p class="painel-sobretitulo">SALÃO</p>
+              <h2>Mesas ocupadas</h2>
+            </div>
+            <span id="totalMesas" class="painel-contador">0</span>
+          </header>
+          <div id="listaMesas" class="lista-mesas-painel"></div>
+        </section>
+
+        <section class="painel-secao pedidos-cozinha">
+          <header class="painel-secao-titulo">
+            <div>
+              <p class="painel-sobretitulo">PRODUÇÃO</p>
+              <h2>Pedidos na cozinha</h2>
+            </div>
+            <span id="totalPedidos" class="painel-contador">0</span>
+          </header>
+          <div id="listaPedidosCozinha" class="lista-pedidos-painel"></div>
+        </section>
+
+        <section class="painel-secao mais-vendidos">
+          <header class="painel-secao-titulo">
+            <div>
+              <p class="painel-sobretitulo">DESEMPENHO DO DIA</p>
+              <h2>3 itens mais vendidos</h2>
+            </div>
+          </header>
+          <ol id="listaMaisVendidos" class="lista-mais-vendidos"></ol>
+        </section>
+      </div>
     </main>
     <script src="/js/modal.js"></script>
     <script src="/js/permissoes.js"></script>
     <script src="/js/script.js"></script>
-    <script src="/js/login.js"></script>
+    <script src="/js/adminDashboard.js?v=2"></script>
   </body>
 </html>

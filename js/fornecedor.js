@@ -137,7 +137,7 @@ formulario.addEventListener("submit", async (evento) => {
             method: "POST",
 
             headers: {
-                "Content-Type": "application/json"
+                ...cabecalhosDaSessao(true)
             },
 
             body: JSON.stringify(fornecedor)
@@ -171,6 +171,15 @@ formulario.addEventListener("submit", async (evento) => {
 const pesquisaFornecedor = document.querySelector("#pesquisaFornecedor");
 const resultadoFornecedores = document.querySelector("#resultadoFornecedores");
 
+function criarCampoFornecedor(rotulo, valor) {
+    const campo = document.createElement("p");
+    const titulo = document.createElement("strong");
+
+    titulo.textContent = `${rotulo}: `;
+    campo.append(titulo, document.createTextNode(String(valor ?? "")));
+
+    return campo;
+}
 
 //pesquisa fornecedores no banco de dados
 pesquisaFornecedor.addEventListener("input", async () => {
@@ -186,7 +195,8 @@ pesquisaFornecedor.addEventListener("input", async () => {
     try {
 
         const resposta = await fetch(
-            `http://localhost:3000/fornecedores?busca=${encodeURIComponent(pesquisa)}`
+            `http://localhost:3000/fornecedores?busca=${encodeURIComponent(pesquisa)}`,
+            { headers: cabecalhosDaSessao() }
         );
 
         const fornecedores = await resposta.json();
@@ -215,32 +225,24 @@ pesquisaFornecedor.addEventListener("input", async () => {
 
             div.classList.add("resultado-fornecedor");
 
-            div.innerHTML = `
-                <h3>${fornecedor.nome}</h3>
+            const titulo = document.createElement("h3");
+            titulo.textContent = fornecedor.nome ?? "";
+            div.append(
+                titulo,
+                criarCampoFornecedor("CPF/CNPJ", fornecedor.documento),
+                criarCampoFornecedor("Endereço", fornecedor.endereco),
+                criarCampoFornecedor("Bairro", fornecedor.bairro),
+                criarCampoFornecedor("Cidade", fornecedor.cidade),
+                criarCampoFornecedor("Telefone", fornecedor.telefone),
+            );
 
-                <p>CPF/CNPJ: ${fornecedor.documento}</p>
-
-                <p>Endereço: ${fornecedor.endereco}</p>
-
-                <p>Bairro: ${fornecedor.bairro}</p>
-
-                <p>Cidade: ${fornecedor.cidade}</p>
-
-                <p>Telefone: ${fornecedor.telefone}</p>
-
-                <button
-                    type="button"
-                    data-id="${fornecedor.id}"
-                    data-nome="${fornecedor.nome}"
-                    data-documento="${fornecedor.documento}"
-                    data-endereco="${fornecedor.endereco}"
-                    data-bairro="${fornecedor.bairro}"
-                    data-cidade="${fornecedor.cidade}"
-                    data-telefone="${fornecedor.telefone}"
-                >
-                    Selecionar
-                </button>
-            `;
+            const botao = document.createElement("button");
+            botao.type = "button";
+            botao.textContent = "Selecionar";
+            for (const campo of ["id", "nome", "documento", "endereco", "bairro", "cidade", "telefone"]) {
+                botao.dataset[campo] = String(fornecedor[campo] ?? "");
+            }
+            div.appendChild(botao);
 
             resultadoFornecedores.appendChild(div);
 
@@ -279,27 +281,22 @@ resultadoFornecedores.addEventListener("click", (evento) => {
 
     };
 
-    console.log("Fornecedor selecionado:", fornecedor);
+    const selecionado = document.createElement("div");
+    selecionado.classList.add("fornecedor-selecionado");
 
-    resultadoFornecedores.innerHTML = `
-        <div class="fornecedor-selecionado">
+    const titulo = document.createElement("h3");
+    titulo.textContent = "Fornecedor selecionado";
+    selecionado.append(
+        titulo,
+        criarCampoFornecedor("Nome", fornecedor.nome),
+        criarCampoFornecedor("CPF/CNPJ", fornecedor.documento),
+        criarCampoFornecedor("Endereço", fornecedor.endereco),
+        criarCampoFornecedor("Bairro", fornecedor.bairro),
+        criarCampoFornecedor("Cidade", fornecedor.cidade),
+        criarCampoFornecedor("Telefone", fornecedor.telefone),
+    );
 
-            <h3>Fornecedor selecionado</h3>
-
-            <p><strong>Nome:</strong> ${fornecedor.nome}</p>
-
-            <p><strong>CPF/CNPJ:</strong> ${fornecedor.documento}</p>
-
-            <p><strong>Endereço:</strong> ${fornecedor.endereco}</p>
-
-            <p><strong>Bairro:</strong> ${fornecedor.bairro}</p>
-
-            <p><strong>Cidade:</strong> ${fornecedor.cidade}</p>
-
-            <p><strong>Telefone:</strong> ${fornecedor.telefone}</p>
-
-        </div>
-    `;
+    resultadoFornecedores.replaceChildren(selecionado);
 
     pesquisaFornecedor.value = fornecedor.nome;
 

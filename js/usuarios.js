@@ -5,9 +5,6 @@ document.getElementById("btnInicio").addEventListener("click", () => {
     window.location.href = "/DonCabron/index/index.html";
 });
 
-const btnMenu = document.getElementById("btnMenu");
-const listaCadastro = document.querySelector(".dropdown-cadastro");
-
 formulario.addEventListener("submit", async (evento) => {
 
     evento.preventDefault();
@@ -207,46 +204,35 @@ async function carregarUsuarios() {
                     : "Ativar";
 
 
-            card.innerHTML = `
+            const informacoes = document.createElement("div");
+            informacoes.classList.add("usuario-informacoes");
 
-                <div class="usuario-informacoes">
+            const nome = document.createElement("h3");
+            nome.textContent = String(usuario.nome ?? "");
 
-                    <h3>
-                        ${usuario.nome}
-                    </h3>
+            const email = document.createElement("p");
+            email.textContent = `E-mail: ${String(usuario.email ?? "")}`;
 
-                    <p>
-                        <strong>E-mail:</strong>
-                        ${usuario.email}
-                    </p>
+            const funcao = document.createElement("p");
+            funcao.textContent = `Função: ${tipoFormatado}`;
 
-                    <p>
-                        <strong>Função:</strong>
-                        ${tipoFormatado}
-                    </p>
+            const statusCampo = document.createElement("p");
+            const statusTexto = document.createElement("strong");
+            statusTexto.textContent = "Status: ";
+            const statusValor = document.createElement("span");
+            statusValor.classList.add("status", classeStatus);
+            statusValor.textContent = status;
+            statusCampo.append(statusTexto, statusValor);
+            informacoes.append(nome, email, funcao, statusCampo);
 
-                    <p>
-                        <strong>Status:</strong>
+            const botaoStatus = document.createElement("button");
+            botaoStatus.classList.add("botao-status", classeStatus);
+            botaoStatus.textContent = textoBotao;
+            botaoStatus.addEventListener("click", () => {
+                alterarStatusUsuario(usuario.id, usuario.ativo);
+            });
 
-                        <span class="status ${classeStatus}">
-                            ${status}
-                        </span>
-                    </p>
-
-                </div>
-
-
-                <button
-                    class="botao-status ${classeStatus}"
-                    onclick="alterarStatusUsuario(
-                        ${usuario.id},
-                        ${usuario.ativo}
-                    )"
-                >
-                    ${textoBotao}
-                </button>
-
-            `;
+            card.append(informacoes, botaoStatus);
 
 
             lista.appendChild(card);

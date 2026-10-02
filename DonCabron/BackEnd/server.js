@@ -12,16 +12,35 @@ const comandasRoutes = require("./routes/comandasRoutes"); //consulta as comanda
 const comandaItensRoutes = require("./routes/comandaItensRoutes"); //consulta os itens das comandas
 const authRoutes = require("./routes/authRoutes"); //rotas para segurança e autenticaçao para o login e cadastro de usuarios
 const relatoriosRoutes = require("./routes/relatoriosRoutes");
+const { autenticar, permitir } = require("./middleware/auth");
 const app = express();
 
 const PORT = 3000;
+const origensPermitidas = new Set(
+  (process.env.FRONTEND_ORIGINS ||
+    `http://localhost:${PORT},http://127.0.0.1:${PORT},http://localhost:5500,http://127.0.0.1:5500`)
+    .split(",")
+    .map((origem) => origem.trim())
+    .filter(Boolean),
+);
 
-app.use(cors());
-app.use(express.json());
+app.disable("x-powered-by");
+app.use(
+  cors({
+    origin(origem, callback) {
+      if (!origem || origensPermitidas.has(origem)) {
+        return callback(null, true);
+      }
 
-app.use(express.static(path.join(__dirname, "..")));
-app.use("/DonCabron", express.static(path.join(__dirname, "..")));
+      return callback(new Error("Origem não permitida"));
+    },
+  }),
+);
+app.use(express.json({ limit: "1mb" }));
 
+app.use("/DonCabron/css", express.static(path.join(__dirname, "../css")));
+app.use("/DonCabron/img", express.static(path.join(__dirname, "../img")));
+app.use("/DonCabron/index", express.static(path.join(__dirname, "../index")));
 app.use("/js", express.static(path.join(__dirname, "../../", "js")));
 
 app.use("/auth", authRoutes); //autenticação
@@ -36,7 +55,7 @@ app.get("/", (req, res) => {
   res.send("Backend do Don Cabrón esta funcionando corretamente");
 });
 
-app.get("/teste-banco", async (req, res) => {
+app.get("/teste-banco", autenticar, permitir("ADMIN"), async (req, res) => {
   try {
     const [resultado] = await conexao.query("SELECT 1");
 
@@ -49,7 +68,6 @@ app.get("/teste-banco", async (req, res) => {
 
     res.status(500).json({
       mensagem: "Erro ao conectar no banco",
-      erro: erro.message,
     });
   }
 });

@@ -477,6 +477,11 @@ h2 {
   border: 1px solid #4caf50;
 }
 
+.mesa .desativada {
+  color: #ffca28;
+  border: 1px solid #ffca28;
+}
+
 .mesa .ocupada {
   color: #ff4444;
   border: 1px solid #ff4444;

@@ -49,6 +49,24 @@ if (btnMenu && listaCadastro) {
 
 const formMesa = document.querySelector("#formMesa");
 const resultadoMesas = document.querySelector("#resultadoMesas");
+const usuarioPodeGerenciarMesas = tipoUsuario === "ADMIN";
+const usuarioPodeCadastrarMesas = ["ADMIN", "GARCOM"].includes(tipoUsuario);
+
+if (!usuarioPodeCadastrarMesas) {
+  formMesa.hidden = true;
+  document.querySelector(".cadastro-mesas > h1").hidden = true;
+  formMesa.nextElementSibling.hidden = true;
+}
+
+function inteiroMesaValido(valor) {
+  const numero = Number(valor);
+  return (
+    /^\d+$/.test(String(valor)) &&
+    Number.isSafeInteger(numero) &&
+    numero > 0 &&
+    numero <= 2147483647
+  );
+}
 
 const btnInicio = document.getElementById("btnInicio");
 
@@ -72,7 +90,9 @@ if (btnRelatorios) {
 
 async function carregarMesas() {
   try {
-    const resposta = await fetch("http://localhost:3000/mesas");
+    const resposta = await fetch("http://localhost:3000/mesas", {
+      headers: cabecalhosDaSessao(),
+    });
 
     if (!resposta.ok) {
       throw new Error("Erro ao buscar mesas");
@@ -117,54 +137,44 @@ async function carregarMesas() {
         window.location.href = `/DonCabron/index/pedidos.html?mesa=${mesa.id}`;
       });
 
-      const statusClasse = mesa.status === "OCUPADA" ? "ocupada" : "livre";
+        const titulo = document.createElement("h3");
+        titulo.textContent = `Mesa ${mesa.numero}`;
+        const capacidade = document.createElement("p");
+        capacidade.textContent = `Capacidade: ${mesa.capacidade} lugares`;
+        const status = document.createElement("span");
+        status.classList.add(
+        "status",
+        mesa.ativo !== 1 ? "desativada" : mesa.status === "OCUPADA" ? "ocupada" : "livre",
+        );
+        status.textContent = mesa.ativo !== 1 ? "DESATIVADA" : mesa.status;
+        const acoes = document.createElement("div");
+        acoes.classList.add("acoes-mesa");
 
-      card.innerHTML = `
-                <h3>Mesa ${mesa.numero}</h3>
+        if (usuarioPodeGerenciarMesas && mesa.ativo === 1) {
+        const alterar = document.createElement("button");
+        alterar.type = "button";
+        alterar.classList.add("btn-alterar");
+        alterar.textContent = "Alterar";
+        alterar.addEventListener("click", () => {
+          alterarMesa(mesa.id, mesa.numero, mesa.capacidade);
+        });
 
-                <p>
-                    Capacidade:
-                    ${mesa.capacidade} lugares
-                </p>
+        const desativar = document.createElement("button");
+        desativar.type = "button";
+        desativar.classList.add("btn-desativar");
+        desativar.textContent = "Desativar";
+        desativar.addEventListener("click", () => desativarMesa(mesa.id));
+        acoes.append(alterar, desativar);
+        } else if (usuarioPodeGerenciarMesas) {
+        const reativar = document.createElement("button");
+        reativar.type = "button";
+        reativar.classList.add("btn-reativar");
+        reativar.textContent = "Reativar";
+        reativar.addEventListener("click", () => reativarMesa(mesa.id));
+        acoes.appendChild(reativar);
+        }
 
-                <span class="status ${statusClasse}">
-                    ${mesa.status}
-                </span>
-
-                <div class="acoes-mesa">
-
-    ${
-      mesa.ativo === 1
-        ? `
-            <button
-                type="button"
-                class="btn-alterar"
-                onclick="alterarMesa(${mesa.id}, ${mesa.numero}, ${mesa.capacidade})"
-            >
-                Alterar
-            </button>
-
-            <button
-                type="button"
-                class="btn-desativar"
-                onclick="desativarMesa(${mesa.id})"
-            >
-                Desativar
-            </button>
-        `
-        : `
-            <button
-                type="button"
-                class="btn-reativar"
-                onclick="reativarMesa(${mesa.id})"
-            >
-                Reativar
-            </button>
-        `
-    }
-
-</div>
-            `;
+        card.append(titulo, capacidade, status, acoes);
 
       resultadoMesas.appendChild(card);
     });
@@ -189,8 +199,11 @@ formMesa.addEventListener("submit", async (event) => {
   const numero = document.querySelector("#numero").value;
   const capacidade = document.querySelector("#capacidade").value;
 
-  if (!numero || !capacidade) {
-    await mostrarAlerta("Preencha todos os campos.", "Campos obrigatórios");
+  if (!inteiroMesaValido(numero) || !inteiroMesaValido(capacidade)) {
+    await mostrarAlerta(
+      "Número e capacidade devem ser inteiros positivos.",
+      "Dados inválidos",
+    );
 
     return;
   }
@@ -199,9 +212,7 @@ formMesa.addEventListener("submit", async (event) => {
     const resposta = await fetch("http://localhost:3000/mesas", {
       method: "POST",
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: cabecalhosDaSessao(true),
 
       body: JSON.stringify({
         numero: Number(numero),
@@ -212,7 +223,7 @@ formMesa.addEventListener("submit", async (event) => {
     const dados = await resposta.json();
 
     if (!resposta.ok) {
-      throw new Error(dados.erro || "Erro ao cadastrar mesa");
+      throw new Error(dados.erro || dados.mensagem || "Erro ao cadastrar mesa");
     }
 
     await mostrarAlerta("Mesa cadastrada com sucesso!", "Cadastro realizado");
@@ -256,8 +267,11 @@ async function alterarMesa(id, numeroAtual, capacidadeAtual) {
     return;
   }
 
-  if (!novoNumero || !novaCapacidade) {
-    await mostrarAlerta("Preencha os dados corretamente.", "Dados inválidos");
+  if (!inteiroMesaValido(novoNumero) || !inteiroMesaValido(novaCapacidade)) {
+    await mostrarAlerta(
+      "Número e capacidade devem ser inteiros positivos.",
+      "Dados inválidos",
+    );
 
     return;
   }
@@ -266,9 +280,7 @@ async function alterarMesa(id, numeroAtual, capacidadeAtual) {
     const resposta = await fetch(`http://localhost:3000/mesas/${id}`, {
       method: "PUT",
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: cabecalhosDaSessao(true),
 
       body: JSON.stringify({
         numero: Number(novoNumero),
@@ -279,7 +291,7 @@ async function alterarMesa(id, numeroAtual, capacidadeAtual) {
     const dados = await resposta.json();
 
     if (!resposta.ok) {
-      throw new Error(dados.erro || "Erro ao alterar mesa");
+      throw new Error(dados.erro || dados.mensagem || "Erro ao alterar mesa");
     }
 
     await mostrarAlerta("Mesa alterada com sucesso!", "Mesa atualizada");
@@ -308,13 +320,14 @@ async function desativarMesa(id) {
       `http://localhost:3000/mesas/${id}/desativar`,
       {
         method: "PATCH",
+        headers: cabecalhosDaSessao(),
       },
     );
 
     const dados = await resposta.json();
 
     if (!resposta.ok) {
-      throw new Error(dados.erro || "Erro ao desativar mesa");
+      throw new Error(dados.erro || dados.mensagem || "Erro ao desativar mesa");
     }
 
     await mostrarAlerta("Mesa desativada com sucesso!", "Mesa desativada");
@@ -333,7 +346,8 @@ async function reativarMesa(id) {
         const resposta = await fetch(
             `http://localhost:3000/mesas/${id}/reativar`,
             {
-                method: "PATCH"
+                method: "PATCH",
+                headers: cabecalhosDaSessao(),
             }
         );
 
@@ -342,7 +356,7 @@ async function reativarMesa(id) {
         if (!resposta.ok) {
 
             throw new Error(
-                dados.erro || "Erro ao reativar mesa"
+                dados.erro || dados.mensagem || "Erro ao reativar mesa"
             );
 
         }

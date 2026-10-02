@@ -13,18 +13,17 @@ function consolidar(linhas, mesaId, ordem) {
     const produto = mesa.produtos.get(produtoId);
     produto.quantidade += Number(item.quantidade);
     produto.centavos += centavos;
-    const garcomId = item.garcom_id == null ? "sem-garcom" : String(item.garcom_id);
+    const garcomId = item.garcom_id == null ? "administrador-sem-vinculo" : String(item.garcom_id);
     if (!mesa.garcons.has(garcomId)) mesa.garcons.set(garcomId, { id: item.garcom_id, nome: item.garcom, comandas: new Set() });
     mesa.garcons.get(garcomId).comandas.add(item.comanda_id);
-    if (item.garcom_id != null) {
-      if (!frequencias.has(garcomId)) frequencias.set(garcomId, new Map());
-      const porMesa = frequencias.get(garcomId);
-      if (!porMesa.has(id)) porMesa.set(id, { numero: item.numero, comandas: new Set() });
-      porMesa.get(id).comandas.add(item.comanda_id);
-    }
+    if (!frequencias.has(garcomId)) frequencias.set(garcomId, new Map());
+    const porMesa = frequencias.get(garcomId);
+    if (!porMesa.has(id)) porMesa.set(id, { numero: item.numero, comandas: new Set() });
+    porMesa.get(id).comandas.add(item.comanda_id);
   }
   const favoritos = id => {
-    const dados = [...(frequencias.get(String(id)) || new Map()).values()];
+    const chave = id == null ? "administrador-sem-vinculo" : String(id);
+    const dados = [...(frequencias.get(chave) || new Map()).values()];
     const maximo = Math.max(0, ...dados.map(x => x.comandas.size));
     return dados.filter(x => x.comandas.size === maximo)
       .sort((a,b) => Number(a.numero) - Number(b.numero))

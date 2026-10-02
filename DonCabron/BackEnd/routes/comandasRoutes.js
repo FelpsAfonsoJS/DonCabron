@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const conexao = require("../config/database");
+const { inteiroPositivo } = require("../middleware/validacao");
 
 // ========================================
 // ABRIR COMANDA PARA UMA MESA
@@ -13,15 +14,15 @@ router.post("/", autenticar, permitir("GARCOM", "ADMIN"), async (req, res) => {
   const conexaoTransacao = await conexao.getConnection();
 
   try {
-    const { mesa_id } = req.body;
+    const { mesa_id } = req.body || {};
 
     // ========================================
     // VALIDAR DADOS
     // ========================================
 
-    if (!mesa_id) {
+    if (!inteiroPositivo(mesa_id)) {
       return res.status(400).json({
-        erro: "O ID da mesa é obrigatório",
+        erro: "O ID da mesa deve ser um inteiro positivo",
       });
     }
 

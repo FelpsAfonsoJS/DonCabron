@@ -84,6 +84,8 @@ const listaPedidoAtual =
 const totalPedido =
     document.querySelector("#totalPedido");
 
+const totalMesa = document.querySelector("#totalMesa");
+
 const btnConfirmarPedido =
     document.querySelector("#btnConfirmarPedido");
 
@@ -320,6 +322,15 @@ async function carregarItensEnviados() {
 
         renderizarItensEnviados();
 
+        const valorMesa = itensEnviados.reduce((total, item) =>
+            total + Number(item.quantidade) * Number(item.preco_unitario ?? item.preco ?? 0),
+            0
+        );
+        totalMesa.textContent = valorMesa.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+
 
     } catch (erro) {
 
@@ -328,6 +339,8 @@ async function carregarItensEnviados() {
             erro
         );
 
+
+        totalMesa.textContent = "Indisponível";
 
         listaItensEnviados.innerHTML = `
 
@@ -361,6 +374,8 @@ function renderizarItensEnviados() {
     listaItensEnviados.innerHTML = "";
 
     if (itensEnviados.length === 0) {
+
+        totalMesa.textContent = "Indisponível";
 
         listaItensEnviados.innerHTML = `
             <p class="pedido-vazio">
@@ -443,26 +458,18 @@ function renderizarItensEnviados() {
         );
 
 
-        div.innerHTML = `
-
-            <div class="item-info">
-
-                <strong>
-                    ${item.nome}
-                </strong>
-
-                <span>
-                    ${item.quantidade}x
-                    R$ ${item.preco_unitario
-                        .toFixed(2)
-                        .replace(".", ",")}
-                </span>
-
-            </div>
-
-            <span class="item-lock"></span>
-
-        `;
+        const informacoes = document.createElement("div");
+        informacoes.classList.add("item-info");
+        const nome = document.createElement("strong");
+        nome.textContent = String(item.nome ?? "Produto");
+        const resumo = document.createElement("span");
+        resumo.textContent = `${item.quantidade}x R$ ${item.preco_unitario
+            .toFixed(2)
+            .replace(".", ",")}`;
+        informacoes.append(nome, resumo);
+        const bloqueio = document.createElement("span");
+        bloqueio.classList.add("item-lock");
+        div.append(informacoes, bloqueio);
 
 
         listaItensEnviados.appendChild(div);
@@ -481,7 +488,8 @@ async function carregarProdutos() {
 
         const resposta =
             await fetch(
-                `${API}/produtos`
+                `${API}/produtos`,
+                { headers: obterCabecalhosAutenticados() }
             );
 
 
@@ -512,45 +520,28 @@ async function carregarProdutos() {
             );
 
 
-            card.innerHTML = `
+            const imagem = document.createElement("img");
+            const arquivoImagem = String(produto.imagem ?? "");
+            imagem.alt = String(produto.nome ?? "");
+            if (/^[a-zA-Z0-9_-]+\.(?:jpe?g|png|webp|gif)$/i.test(arquivoImagem)) {
+                imagem.src = `/DonCabron/img/Produtos/${encodeURIComponent(arquivoImagem)}`;
+            }
 
-                <img
-                    src="/DonCabron/img/Produtos/${produto.imagem}"
-                    alt="${produto.nome}"
-                >
-
-                <h3>
-                    ${produto.nome}
-                </h3>
-
-                <p>
-                    ${produto.descricao || ""}
-                </p>
-
-                <span class="preco-produto">
-
-                    R$
-                    ${Number(produto.preco)
-                        .toFixed(2)
-                        .replace(".", ",")}
-
-                </span>
-
-
-                <button
-                    class="btn-adicionar"
-                    type="button"
-                >
-                    Adicionar
-                </button>
-
-            `;
-
-
-            const botao =
-                card.querySelector(
-                    ".btn-adicionar"
-                );
+            const nome = document.createElement("h3");
+            nome.textContent = String(produto.nome ?? "");
+            const descricao = document.createElement("p");
+            descricao.textContent = String(produto.descricao ?? "");
+            const preco = document.createElement("span");
+            preco.classList.add("preco-produto");
+            const valor = Number(produto.preco);
+            preco.textContent = Number.isFinite(valor)
+                ? `R$ ${valor.toFixed(2).replace(".", ",")}`
+                : "Preço indisponível";
+            const botao = document.createElement("button");
+            botao.classList.add("btn-adicionar");
+            botao.type = "button";
+            botao.textContent = "Adicionar";
+            card.append(imagem, nome, descricao, preco, botao);
 
 
             botao.addEventListener(
@@ -690,64 +681,31 @@ function renderizarPedidoAtual() {
             );
 
 
-            div.innerHTML = `
+            const informacoes = document.createElement("div");
+            informacoes.classList.add("item-info");
+            const nome = document.createElement("strong");
+            nome.textContent = String(item.nome ?? "Produto");
+            const preco = document.createElement("span");
+            preco.textContent = `R$ ${item.preco.toFixed(2).replace(".", ",")} cada`;
+            informacoes.append(nome, preco);
 
-                <div class="item-info">
-
-                    <strong>
-                        ${item.nome}
-                    </strong>
-
-                    <span>
-                        R$
-                        ${item.preco
-                            .toFixed(2)
-                            .replace(".", ",")}
-                        cada
-                    </span>
-
-                </div>
-
-
-                <div class="controles-quantidade">
-
-                    <button
-                        type="button"
-                        class="btn-quantidade"
-                        data-acao="diminuir"
-                    >
-                        −
-                    </button>
-
-
-                    <span class="quantidade">
-                        ${item.quantidade}
-                    </span>
-
-
-                    <button
-                        type="button"
-                        class="btn-quantidade"
-                        data-acao="aumentar"
-                    >
-                        +
-                    </button>
-
-                </div>
-
-            `;
-
-
-            const botaoDiminuir =
-                div.querySelector(
-                    '[data-acao="diminuir"]'
-                );
-
-
-            const botaoAumentar =
-                div.querySelector(
-                    '[data-acao="aumentar"]'
-                );
+            const controles = document.createElement("div");
+            controles.classList.add("controles-quantidade");
+            const botaoDiminuir = document.createElement("button");
+            botaoDiminuir.type = "button";
+            botaoDiminuir.classList.add("btn-quantidade");
+            botaoDiminuir.dataset.acao = "diminuir";
+            botaoDiminuir.textContent = "−";
+            const quantidade = document.createElement("span");
+            quantidade.classList.add("quantidade");
+            quantidade.textContent = String(item.quantidade);
+            const botaoAumentar = document.createElement("button");
+            botaoAumentar.type = "button";
+            botaoAumentar.classList.add("btn-quantidade");
+            botaoAumentar.dataset.acao = "aumentar";
+            botaoAumentar.textContent = "+";
+            controles.append(botaoDiminuir, quantidade, botaoAumentar);
+            div.append(informacoes, controles);
 
 
             botaoDiminuir.addEventListener(
@@ -897,129 +855,70 @@ async function confirmarPedido() {
     try {
 
         // ========================================
-        // 1. ADICIONAR ITENS AO PEDIDO PENDENTE
+        // 1. ADICIONAR TODOS OS ITENS EM UMA ÚNICA OPERAÇÃO
         // ========================================
 
-        for (const item of pedidoAtual) {
-
-            const resposta =
-                await fetch(
-                    `${API}/comandas/${comandaId}/itens`,
-                    {
-
-                        method: "POST",
-
-                        headers: {
-                            ...obterCabecalhosAutenticados(true)
-                        },
-
-                        body: JSON.stringify({
-
-                            produto_id:
-                                item.produto_id,
-
-                            quantidade:
-                                item.quantidade
-
-                        })
-
-                    }
-                );
-
-
-            const dados =
-                await lerRespostaJson(resposta);
-
-
-            if (!resposta.ok) {
-
-                throw new Error(
-                    mensagemDaResposta(
-                        dados,
-                        "Erro ao adicionar produto ao pedido."
-                    )
-                );
-
-            }
-
+        const itensParaEnviar = pedidoAtual.map((item) => ({
+            produto_id: item.produto_id,
+            quantidade: item.quantidade,
+        }));
+        const chaveSolicitacao = `pedido:${comandaId}:solicitacao`;
+        let solicitacaoSalva;
+        try {
+            solicitacaoSalva = JSON.parse(
+                sessionStorage.getItem(chaveSolicitacao) || "null",
+            );
+        } catch {
+            solicitacaoSalva = null;
         }
 
+        const itensSerializados = JSON.stringify(itensParaEnviar);
+        if (solicitacaoSalva?.itens !== itensSerializados) {
+            solicitacaoSalva = {
+                itens: itensSerializados,
+                chave: crypto.randomUUID(),
+            };
+            sessionStorage.setItem(chaveSolicitacao, JSON.stringify(solicitacaoSalva));
+        }
 
-        // ========================================
-        // 2. BUSCAR PEDIDO PENDENTE
-        // ========================================
+        const respostaItens = await fetch(
+            `${API}/comandas/${comandaId}/itens`,
+            {
+                method: "POST",
+                headers: obterCabecalhosAutenticados(true),
+                body: JSON.stringify({
+                    itens: itensParaEnviar,
+                    chave_idempotencia: solicitacaoSalva.chave,
+                }),
+            },
+        );
+        const dadosItens = await lerRespostaJson(respostaItens);
 
-        const respostaPedidos =
-            await fetch(
-                `${API}/comandas/${comandaId}/pedido-pendente`,
-                {
-                    headers: obterCabecalhosAutenticados()
-                }
-            );
-
-
-        const dadosPedido =
-            await lerRespostaJson(respostaPedidos);
-
-
-        if (!respostaPedidos.ok) {
-
+        if (!respostaItens.ok) {
             throw new Error(
-                mensagemDaResposta(
-                    dadosPedido,
-                    "Não foi possível localizar o pedido."
-                )
+                mensagemDaResposta(dadosItens, "Erro ao adicionar itens ao pedido."),
             );
-
         }
 
-
-        const pedidoId =
-            dadosPedido.pedido_id;
-
-
-        // ========================================
-        // 3. CONFIRMAR PEDIDO
-        // ========================================
-
-        const respostaConfirmacao =
-            await fetch(
-                `${API}/comandas/${comandaId}/pedido/${pedidoId}/confirmar`,
-                {
-
-                    method: "PUT",
-
-                    headers: {
-                        ...obterCabecalhosAutenticados(true)
-                    }
-
-                }
-            );
-
-
-        const dadosConfirmacao =
-            await lerRespostaJson(respostaConfirmacao);
-
-
-        if (!respostaConfirmacao.ok) {
-
-            throw new Error(
-                mensagemDaResposta(
-                    dadosConfirmacao,
-                    "Erro ao confirmar pedido."
-                )
-            );
-
-        }
+        sessionStorage.removeItem(chaveSolicitacao);
 
 
         // ========================================
         // 4. PEDIDO CONFIRMADO
         // ========================================
 
+        const itensConfirmados = Array.isArray(dadosItens.itens)
+            ? dadosItens.itens
+            : [];
+        const resumoConfirmado = itensConfirmados
+            .map((item) => `${item.quantidade}x ${item.produto}`)
+            .join("\n");
+
         await mostrarAlerta(
-            "Pedido confirmado e enviado para a cozinha!",
-            "Pedido confirmado"
+            resumoConfirmado
+                ? `Enviado para a cozinha:\n${resumoConfirmado}`
+                : "Pedido enviado para a cozinha.",
+            itensConfirmados.length > 1 ? "Itens enviados" : "Item enviado"
         );
 
 

@@ -3,6 +3,17 @@ const express = require("express");
 const router = express.Router();
 
 const conexao = require("../config/database");
+const { inteiroPositivo } = require("../middleware/validacao");
+
+for (const nome of ["comanda_id", "pedido_id"]) {
+  router.param(nome, (req, res, next, id) => {
+    if (!/^[1-9]\d*$/.test(id) || !inteiroPositivo(Number(id))) {
+      return res.status(400).json({ erro: "Identificador inválido" });
+    }
+
+    next();
+  });
+}
 
 // =====================================================
 // ADICIONAR PRODUTO AO PEDIDO PENDENTE
@@ -18,19 +29,48 @@ router.post(
 
     try {
       const { comanda_id } = req.params;
-      const { produto_id, quantidade } = req.body;
+      const corpo =
+        req.body && typeof req.body === "object" && !Array.isArray(req.body)
+          ? req.body
+          : {};
+      const { chave_idempotencia } = corpo;
+      const itensSolicitados = Array.isArray(corpo.itens)
+        ? corpo.itens
+        : [corpo];
 
-      if (!produto_id || quantidade === undefined) {
+      if (
+        itensSolicitados.length === 0 ||
+        itensSolicitados.length > 100 ||
+        itensSolicitados.some(
+          (item) =>
+            !item ||
+            !inteiroPositivo(item.produto_id) ||
+            !inteiroPositivo(item.quantidade),
+        )
+      ) {
         return res.status(400).json({
-          erro: "Produto e quantidade são obrigatórios",
+          erro: "Envie de 1 a 100 itens com produto e quantidade inteiros positivos",
         });
       }
 
-      const quantidadeNumero = Number(quantidade);
+      const quantidadesPorProduto = new Map();
+      for (const item of itensSolicitados) {
+        const quantidadeTotal =
+          (quantidadesPorProduto.get(item.produto_id) || 0) + item.quantidade;
+        if (!inteiroPositivo(quantidadeTotal)) {
+          return res.status(400).json({ erro: "Quantidade total inválida" });
+        }
+        quantidadesPorProduto.set(item.produto_id, quantidadeTotal);
+      }
 
-      if (!Number.isInteger(quantidadeNumero) || quantidadeNumero <= 0) {
+      if (
+        typeof chave_idempotencia !== "string" ||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          chave_idempotencia,
+        )
+      ) {
         return res.status(400).json({
-          erro: "A quantidade deve ser um número inteiro maior que zero",
+          erro: "Chave de idempotência inválida",
         });
       }
 
@@ -59,11 +99,28 @@ router.post(
 
       const comanda = comandas[0];
 
-      if (comanda.status !== "ABERTA") {
+      const [solicitacoes] = await conexaoTransacao.query(
+        `SELECT r.comanda_id, r.pedido_id, p.status
+         FROM requisicoes_pedido r
+         INNER JOIN pedidos p ON p.id = r.pedido_id
+         WHERE r.chave_idempotencia = ?
+         FOR UPDATE`,
+        [chave_idempotencia],
+      );
+
+      if (solicitacoes.length > 0) {
+        const solicitacao = solicitacoes[0];
         await conexaoTransacao.rollback();
 
-        return res.status(400).json({
-          erro: "A comanda está fechada",
+        if (Number(solicitacao.comanda_id) !== Number(comanda_id)) {
+          return res.status(409).json({ erro: "Chave já usada em outra comanda" });
+        }
+
+        return res.json({
+          mensagem: "Solicitação já processada",
+          pedido_id: solicitacao.pedido_id,
+          status: solicitacao.status,
+          repetida: true,
         });
       }
 
@@ -109,116 +166,118 @@ router.post(
         };
       }
 
+      const produtoIds = [...quantidadesPorProduto.keys()];
       const [produtos] = await conexaoTransacao.query(
         `
             SELECT
                 id,
                 nome,
-                preco
+                preco,
+                controla_estoque
             FROM produtos
-            WHERE id = ?
+            WHERE id IN (?)
+            ORDER BY id
+            FOR UPDATE
             `,
-        [produto_id],
+        [produtoIds],
       );
 
-      if (produtos.length === 0) {
+      if (produtos.length !== produtoIds.length) {
         await conexaoTransacao.rollback();
-
-        return res.status(404).json({
-          erro: "Produto não encontrado",
-        });
+        return res.status(404).json({ erro: "Um ou mais produtos não existem" });
       }
 
-      const produto = produtos[0];
+      const itensResultado = [];
 
-      const [itensExistentes] = await conexaoTransacao.query(
-        `
-                SELECT
-                    id,
-                    quantidade
-                FROM itens_comanda
-                WHERE pedido_id = ?
-                AND produto_id = ?
-                FOR UPDATE
-                `,
-        [pedido.id, produto_id],
-      );
+      for (const produto of produtos) {
+        const itemSolicitado = itensSolicitados.find(
+          (item) => Number(item.produto_id) === Number(produto.id),
+        );
+        if (!itemSolicitado) continue;
 
-      if (itensExistentes.length > 0) {
-        const item = itensExistentes[0];
+        const quantidadeNumero = quantidadesPorProduto.get(Number(produto.id));
 
-        const novaQuantidade = Number(item.quantidade) + quantidadeNumero;
+        if (Number(produto.controla_estoque) === 1) {
+          await conexaoTransacao.query(
+            "UPDATE estoque SET quantidade = GREATEST(0, quantidade - ?) WHERE produto_id = ?",
+            [quantidadeNumero, produto.id],
+          );
+        }
 
-        await conexaoTransacao.query(
-          `
-                UPDATE itens_comanda
-                SET quantidade = ?
-                WHERE id = ?
-                `,
-          [novaQuantidade, item.id],
+        const [itensExistentes] = await conexaoTransacao.query(
+          `SELECT id, quantidade FROM itens_comanda
+           WHERE pedido_id = ? AND produto_id = ? FOR UPDATE`,
+          [pedido.id, produto.id],
         );
 
-        await conexaoTransacao.commit();
-
-        return res.json({
-          mensagem: "Quantidade atualizada no pedido",
-
-          pedido_id: pedido.id,
-
-          item_id: item.id,
-
-          comanda_id: Number(comanda_id),
-
-          produto_id: produto.id,
-
-          produto: produto.nome,
-
-          quantidade: novaQuantidade,
-
-          preco_unitario: produto.preco,
-        });
+        if (itensExistentes.length > 0) {
+          const item = itensExistentes[0];
+          const novaQuantidade = Number(item.quantidade) + quantidadeNumero;
+          await conexaoTransacao.query(
+            "UPDATE itens_comanda SET quantidade = ? WHERE id = ?",
+            [novaQuantidade, item.id],
+          );
+          itensResultado.push({
+            item_id: item.id,
+            produto_id: produto.id,
+            produto: produto.nome,
+            quantidade: novaQuantidade,
+            preco_unitario: produto.preco,
+          });
+        } else {
+          const [resultadoItem] = await conexaoTransacao.query(
+            `INSERT INTO itens_comanda
+             (pedido_id, comanda_id, produto_id, quantidade, quantidade_paga, preco_unitario, valor_pago)
+             VALUES (?, ?, ?, ?, 0, ?, 0.00)`,
+            [pedido.id, comanda_id, produto.id, quantidadeNumero, produto.preco],
+          );
+          itensResultado.push({
+            item_id: resultadoItem.insertId,
+            produto_id: produto.id,
+            produto: produto.nome,
+            quantidade: quantidadeNumero,
+            preco_unitario: produto.preco,
+          });
+        }
       }
 
-      const [resultadoItem] = await conexaoTransacao.query(
-        `
-                INSERT INTO itens_comanda
-                (
-                    pedido_id,
-                    comanda_id,
-                    produto_id,
-                    quantidade,
-                    quantidade_paga,
-                    preco_unitario,
-                    valor_pago
-                )
-                VALUES (?, ?, ?, ?, 0, ?, 0.00)
-                `,
-        [pedido.id, comanda_id, produto_id, quantidadeNumero, produto.preco],
+      await conexaoTransacao.query(
+        "UPDATE pedidos SET status = 'RECEBIDO' WHERE id = ? AND status = 'PENDENTE'",
+        [pedido.id],
+      );
+      pedido.status = "RECEBIDO";
+
+      await conexaoTransacao.query(
+        `INSERT INTO requisicoes_pedido (chave_idempotencia, comanda_id, pedido_id)
+         VALUES (?, ?, ?)`,
+        [chave_idempotencia, comanda_id, pedido.id],
       );
 
       await conexaoTransacao.commit();
 
       return res.status(201).json({
-        mensagem: "Produto adicionado ao pedido",
-
+        mensagem: "Itens adicionados ao pedido",
         pedido_id: pedido.id,
-
-        item_id: resultadoItem.insertId,
-
         comanda_id: Number(comanda_id),
-
-        produto_id: produto.id,
-
-        produto: produto.nome,
-
-        quantidade: quantidadeNumero,
-
-        preco_unitario: produto.preco,
+        status: pedido.status,
+        itens: itensResultado,
       });
     } catch (erro) {
       await conexaoTransacao.rollback();
 
       console.error("Erro ao adicionar produto ao pedido:", erro);
+
+      if (erro.code === "ER_NO_SUCH_TABLE" && erro.message.includes("requisicoes_pedido")) {
+        return res.status(503).json({
+          erro: "Banco desatualizado. Aplique a migração 002_requisicoes_pedido.sql e reinicie a API.",
+        });
+      }
+
+      if (erro.code === "ER_BAD_FIELD_ERROR") {
+        return res.status(503).json({
+          erro: "O schema do banco está desatualizado. Confira as migrações 001 e 003 e reinicie a API.",
+        });
+      }
 
       return res.status(500).json({
         erro: "Erro interno ao adicionar produto ao pedido",
@@ -400,6 +459,14 @@ router.put(
       }
 
       if (comandas[0].status !== "ABERTA") {
+        await conexaoTransacao.rollback();
+
+        return res.status(400).json({
+          erro: "A comanda está fechada",
+        });
+      }
+
+      if (comanda.status !== "ABERTA") {
         await conexaoTransacao.rollback();
 
         return res.status(400).json({

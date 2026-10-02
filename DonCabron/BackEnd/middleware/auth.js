@@ -1,8 +1,11 @@
 const jwt = require("jsonwebtoken");
+const conexao = require("../config/database");
 
 const CHAVE_SECRETA = process.env.JWT_SECRET;
 
-function autenticar(req, res, next) {
+async function autenticar(req, res, next) {
+  let usuarioToken;
+
   try {
     const cabecalho = req.headers.authorization;
 
@@ -22,17 +25,28 @@ function autenticar(req, res, next) {
 
     const token = partes[1];
 
-    const usuario = jwt.verify(token, CHAVE_SECRETA);
-
-    req.usuario = usuario;
-
-    next();
+    usuarioToken = jwt.verify(token, CHAVE_SECRETA);
   } catch (erro) {
-    console.error("Erro de autenticação:", erro.message);
-
     return res.status(401).json({
       mensagem: "Sessão inválida ou expirada.",
     });
+  }
+
+  try {
+    const [usuarios] = await conexao.query(
+      "SELECT id, nome, email, tipo FROM usuarios WHERE id = ? AND ativo = 1 LIMIT 1",
+      [usuarioToken.id],
+    );
+
+    if (usuarios.length === 0) {
+      return res.status(401).json({ mensagem: "Usuário inativo ou inexistente." });
+    }
+
+    req.usuario = { ...usuarioToken, ...usuarios[0] };
+    return next();
+  } catch (erro) {
+    console.error("Erro ao validar usuário autenticado:", erro.message);
+    return res.status(503).json({ mensagem: "Não foi possível validar a sessão." });
   }
 }
 

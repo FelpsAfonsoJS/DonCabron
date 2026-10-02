@@ -59,43 +59,39 @@ function criarPedidoCard(pedido) {
     const card = document.createElement("article");
     card.className = "pedido-card";
 
-    const itens = pedido.itens.map(item => `
-        <li>
-            <span>${item.produto}</span>
-            <span class="quantidade">${item.quantidade}x</span>
-        </li>
-    `).join("");
+    const topo = document.createElement("div");
+    topo.classList.add("pedido-topo");
+    const mesa = document.createElement("strong");
+    mesa.textContent = `Mesa ${pedido.mesa}`;
+    const detalhes = document.createElement("small");
+    detalhes.textContent = `Pedido #${pedido.pedido_id} - ${formatarData(pedido.data_pedido)}`;
+    topo.append(mesa, detalhes);
 
-    let botao = "";
+    const listaItens = document.createElement("ul");
+    listaItens.classList.add("pedido-itens");
+    pedido.itens.forEach((item) => {
+        const linha = document.createElement("li");
+        const nome = document.createElement("span");
+        nome.textContent = String(item.produto ?? "Produto");
+        const quantidade = document.createElement("span");
+        quantidade.classList.add("quantidade");
+        quantidade.textContent = `${item.quantidade}x`;
+        linha.append(nome, quantidade);
+        listaItens.appendChild(linha);
+    });
 
-    if (pedido.status === "RECEBIDO") {
-        botao = `
-            <button class="btn-status" data-acao="preparo" data-id="${pedido.pedido_id}">
-                👨‍🍳 Iniciar preparo
-            </button>
-        `;
-    } else if (pedido.status === "EM_PREPARO") {
-        botao = `
-            <button class="btn-status" data-acao="pronto" data-id="${pedido.pedido_id}">
-                ✓ Marcar como pronto
-            </button>
-        `;
+    card.append(topo, listaItens);
+    let botaoStatus;
+    if (pedido.status === "RECEBIDO" || pedido.status === "EM_PREPARO") {
+        botaoStatus = document.createElement("button");
+        botaoStatus.classList.add("btn-status");
+        botaoStatus.dataset.acao = pedido.status === "RECEBIDO" ? "preparo" : "pronto";
+        botaoStatus.dataset.id = String(pedido.pedido_id);
+        botaoStatus.textContent = pedido.status === "RECEBIDO"
+            ? "Iniciar preparo"
+            : "Marcar como pronto";
+        card.appendChild(botaoStatus);
     }
-
-    card.innerHTML = `
-        <div class="pedido-topo">
-            <strong>Mesa ${pedido.mesa}</strong>
-            <small>Pedido #${pedido.pedido_id} • ${formatarData(pedido.data_pedido)}</small>
-        </div>
-
-        <ul class="pedido-itens">
-            ${itens}
-        </ul>
-
-        ${botao}
-    `;
-
-    const botaoStatus = card.querySelector(".btn-status");
 
     if (botaoStatus) {
         botaoStatus.addEventListener("click", () => {

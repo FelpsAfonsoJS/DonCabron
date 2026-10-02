@@ -3,13 +3,22 @@ const router = express.Router();
 
 const conexao = require("../config/database");
 const { autenticar, permitir } = require("../middleware/auth");
+const { inteiroPositivo } = require("../middleware/validacao");
+
+router.param("id", (req, res, next, id) => {
+  if (!/^[1-9]\d*$/.test(id) || !inteiroPositivo(Number(id))) {
+    return res.status(400).json({ erro: "Identificador de mesa inválido" });
+  }
+
+  next();
+});
 
 // ============================================================
 // LISTAR TODAS AS MESAS
 // ATIVAS E DESATIVADAS
 // ============================================================
 
-router.get("/todas", async (req, res) => {
+router.get("/todas", autenticar, permitir("ADMIN"), async (req, res) => {
   try {
     const [mesas] = await conexao.query(`
             SELECT
@@ -36,7 +45,7 @@ router.get("/todas", async (req, res) => {
 // LISTAR MESAS
 // ============================================================
 
-router.get("/", async (req, res) => {
+router.get("/", autenticar, permitir("GARCOM", "ADMIN"), async (req, res) => {
   try {
     const [mesas] = await conexao.query(`
             SELECT
@@ -63,13 +72,13 @@ router.get("/", async (req, res) => {
 // CADASTRAR MESA
 // ============================================================
 
-router.post("/", async (req, res) => {
+router.post("/", autenticar, permitir("GARCOM", "ADMIN"), async (req, res) => {
   try {
-    const { numero, capacidade } = req.body;
+    const { numero, capacidade } = req.body || {};
 
-    if (!numero || !capacidade) {
+    if (!inteiroPositivo(numero) || !inteiroPositivo(capacidade)) {
       return res.status(400).json({
-        erro: "Número e capacidade são obrigatórios",
+        erro: "Número e capacidade devem ser inteiros positivos",
       });
     }
 
@@ -112,15 +121,15 @@ router.post("/", async (req, res) => {
 // NÃO PERMITE ALTERAR MESA OCUPADA
 // ============================================================
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", autenticar, permitir("ADMIN"), async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { numero, capacidade } = req.body;
+    const { numero, capacidade } = req.body || {};
 
-    if (!numero || !capacidade) {
+    if (!inteiroPositivo(numero) || !inteiroPositivo(capacidade)) {
       return res.status(400).json({
-        erro: "Número e capacidade são obrigatórios",
+        erro: "Número e capacidade devem ser inteiros positivos",
       });
     }
 
@@ -199,7 +208,7 @@ router.put("/:id", async (req, res) => {
 // NÃO PERMITE DESATIVAR MESA OCUPADA
 // ============================================================
 
-router.patch("/:id/desativar", async (req, res) => {
+router.patch("/:id/desativar", autenticar, permitir("ADMIN"), async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -268,7 +277,7 @@ router.patch("/:id/desativar", async (req, res) => {
 // REATIVAR MESA
 // ============================================================
 
-router.patch("/:id/reativar", async (req, res) => {
+router.patch("/:id/reativar", autenticar, permitir("ADMIN"), async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -698,7 +707,11 @@ router.post(
 // BUSCAR COMANDA ABERTA DA MESA
 // ============================================================
 
-router.get("/:id/comanda", async (req, res) => {
+router.get(
+  "/:id/comanda",
+  autenticar,
+  permitir("GARCOM", "ADMIN"),
+  async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -733,7 +746,8 @@ router.get("/:id/comanda", async (req, res) => {
       erro: "Erro ao buscar comanda da mesa",
     });
   }
-});
+  },
+);
 
 // ============================================================
 // BUSCAR ITENS DA COMANDA ABERTA
@@ -806,178 +820,17 @@ router.get(
 );
 
 // ============================================================
-// ADICIONAR PRODUTO À COMANDA
+// ENDPOINT LEGADO: os itens agora são incluídos pelo fluxo de pedidos.
 // ============================================================
 
 router.post(
   "/:id/comanda/itens",
   autenticar,
   permitir("GARCOM", "ADMIN"),
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      const { produto_id, quantidade } = req.body;
-
-      // ----------------------------------------------------
-      // VALIDAR
-      // ----------------------------------------------------
-
-      if (!produto_id || !quantidade) {
-        return res.status(400).json({
-          erro: "Produto e quantidade são obrigatórios",
-        });
-      }
-
-      if (Number(quantidade) <= 0) {
-        return res.status(400).json({
-          erro: "A quantidade deve ser maior que zero",
-        });
-      }
-
-      // ----------------------------------------------------
-      // BUSCAR COMANDA ABERTA
-      // ----------------------------------------------------
-
-      const [comandas] = await conexao.query(
-        `
-            SELECT
-                id,
-                mesa_id,
-                status
-            FROM comandas
-            WHERE mesa_id = ?
-            AND status = 'ABERTA'
-            ORDER BY id DESC
-            LIMIT 1
-            `,
-        [id],
-      );
-
-      if (comandas.length === 0) {
-        return res.status(404).json({
-          erro: "Não existe uma comanda aberta para esta mesa",
-        });
-      }
-
-      const comanda = comandas[0];
-
-      // ----------------------------------------------------
-      // BUSCAR PRODUTO
-      // ----------------------------------------------------
-
-      const [produtos] = await conexao.query(
-        `
-            SELECT
-                id,
-                nome,
-                preco,
-                controla_estoque
-            FROM produtos
-            WHERE id = ?
-            `,
-        [produto_id],
-      );
-
-      if (produtos.length === 0) {
-        return res.status(404).json({
-          erro: "Produto não encontrado",
-        });
-      }
-
-      const produto = produtos[0];
-
-      const quantidadeNumerica = Number(quantidade);
-
-      // ----------------------------------------------------
-      // VERIFICAR ESTOQUE
-      // ----------------------------------------------------
-
-      if (produto.controla_estoque === 1) {
-        const [estoque] = await conexao.query(
-          `
-                SELECT
-                    quantidade
-                FROM estoque
-                WHERE produto_id = ?
-                `,
-          [produto_id],
-        );
-
-        if (estoque.length === 0) {
-          return res.status(400).json({
-            erro: "Produto não possui estoque cadastrado",
-          });
-        }
-
-        if (estoque[0].quantidade < quantidadeNumerica) {
-          return res.status(400).json({
-            erro: "Quantidade em estoque insuficiente",
-          });
-        }
-      }
-
-      // ----------------------------------------------------
-      // ADICIONAR ITEM
-      // ----------------------------------------------------
-
-      const [resultado] = await conexao.query(
-        `
-            INSERT INTO itens_comanda
-            (
-                comanda_id,
-                produto_id,
-                quantidade,
-                quantidade_paga,
-                preco_unitario
-            )
-            VALUES (?, ?, ?, 0, ?)
-            `,
-        [comanda.id, produto.id, quantidadeNumerica, produto.preco],
-      );
-
-      // ----------------------------------------------------
-      // DIMINUIR ESTOQUE
-      // ----------------------------------------------------
-
-      if (produto.controla_estoque === 1) {
-        await conexao.query(
-          `
-                UPDATE estoque
-                SET quantidade = quantidade - ?
-                WHERE produto_id = ?
-                `,
-          [quantidadeNumerica, produto_id],
-        );
-      }
-
-      // ----------------------------------------------------
-      // RESPOSTA
-      // ----------------------------------------------------
-
-      return res.status(201).json({
-        mensagem: "Produto adicionado à comanda",
-
-        item: {
-          id: resultado.insertId,
-          comanda_id: comanda.id,
-          produto_id: produto.id,
-          produto: produto.nome,
-          quantidade: quantidadeNumerica,
-          quantidade_paga: 0,
-          preco_unitario: produto.preco,
-          subtotal: quantidadeNumerica * Number(produto.preco),
-          controla_estoque: produto.controla_estoque,
-        },
-      });
-    } catch (erro) {
-      console.error("Erro ao adicionar produto à comanda:", erro);
-
-      return res.status(500).json({
-        erro: "Erro ao adicionar produto à comanda",
-      });
-    }
-  },
+  (req, res) =>
+    res.status(410).json({
+      erro: "Rota desativada. Inclua os itens pelo endpoint de pedidos da comanda.",
+    }),
 );
 
 module.exports = router;

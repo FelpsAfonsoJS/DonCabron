@@ -5,15 +5,24 @@ const jwt = require("jsonwebtoken");
 const conexao = require("../config/database");
 
 const { autenticar, permitir } = require("../middleware/auth");
+const { inteiroPositivo } = require("../middleware/validacao");
 
 const router = express.Router();
 
 const CHAVE_SECRETA = process.env.JWT_SECRET;
 
+router.param("id", (req, res, next, id) => {
+  if (!/^[1-9]\d*$/.test(id) || !inteiroPositivo(Number(id))) {
+    return res.status(400).json({ mensagem: "Identificador de usuário inválido." });
+  }
+
+  next();
+});
+
 // LOGIN
 router.post("/login", async (req, res) => {
   try {
-    const { email, senha } = req.body;
+    const { email, senha } = req.body || {};
 
     if (!email || !senha) {
       return res.status(400).json({
@@ -82,7 +91,7 @@ router.post("/login", async (req, res) => {
 //criaçao de novo usuario, apenas o admin pode criar novos usuarios
 router.post("/usuarios", autenticar, permitir("ADMIN"), async (req, res) => {
   try {
-    const { nome, email, senha, tipo } = req.body;
+    const { nome, email, senha, tipo } = req.body || {};
 
     // Verifica os campos obrigatórios
     if (!nome || !email || !senha || !tipo) {
@@ -177,7 +186,7 @@ router.patch(
     try {
       const { id } = req.params;
 
-      const { ativo } = req.body;
+      const { ativo } = req.body || {};
 
       // Verifica se o valor recebido é válido
       if (ativo !== 0 && ativo !== 1) {
